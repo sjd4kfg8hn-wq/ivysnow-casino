@@ -404,6 +404,7 @@
         let sb = 5;
         let bb = 10;
         let timerSeconds = 120;
+        let actedThisRound = new Set();
 
         setInterval(() => {
             timerSeconds--;
@@ -464,7 +465,6 @@
                 });
             });
 
-            // RENDERIZADO PERSISTENTE SEGURO DE CARTAS COMUNITARIAS
             const commContainer = document.getElementById('communityGrid');
             commContainer.innerHTML = '';
             communityCards.forEach(c => {
@@ -512,6 +512,7 @@
             postBet(sbIdx, Math.min(sb, players[sbIdx].chips));
             postBet(bbIdx, Math.min(bb, players[bbIdx].chips));
 
+            actedThisRound.clear();
             turnIdx = (bbIdx + 1) % 6;
             updateBanner(`Pre-Flop | Ciegas ${sb}/${bb}`);
             updateUI();
@@ -536,10 +537,12 @@
                 return;
             }
 
+            // Comprobar si la ronda de apuestas ha terminado
             let activeUnfolded = players.filter(p => !p.folded && !p.allIn);
             let allMatched = activeUnfolded.every(p => p.bet === currentBet);
+            let everyoneActed = activeUnfolded.every(p => actedThisRound.has(p.id));
 
-            if (activeUnfolded.length === 0 || (allMatched && players[turnIdx]?.bet === currentBet)) {
+            if (activeUnfolded.length === 0 || (allMatched && everyoneActed)) {
                 advanceStage();
                 return;
             }
@@ -555,20 +558,21 @@
         function advanceStage() {
             players.forEach(p => p.bet = 0);
             currentBet = 0;
+            actedThisRound.clear();
 
             if (gameStage === 'PREFLOP') {
                 gameStage = 'FLOP';
                 communityCards.push(deck.pop(), deck.pop(), deck.pop());
                 toggleStorm(true);
-                updateBanner("FLOP - Tormenta en las cumbres");
+                updateBanner("FLOP - Ronda de apuestas");
             } else if (gameStage === 'FLOP') {
                 gameStage = 'TURN';
                 communityCards.push(deck.pop());
-                updateBanner("TURN");
+                updateBanner("TURN - Ronda de apuestas");
             } else if (gameStage === 'TURN') {
                 gameStage = 'RIVER';
                 communityCards.push(deck.pop());
-                updateBanner("RIVER - Última carta");
+                updateBanner("RIVER - Ronda de apuestas");
             } else if (gameStage === 'RIVER') {
                 gameStage = 'SHOWDOWN';
                 evaluateShowdown();
@@ -587,6 +591,8 @@
             if (turnIdx !== 0 || players[0].folded || players[0].allIn) return;
 
             const user = players[0];
+            actedThisRound.add(user.id);
+
             if (act === 'fold') {
                 user.folded = true;
             } else if (act === 'call') {
@@ -599,11 +605,17 @@
                 if(add > 0) {
                     postBet(0, add);
                     currentBet = user.bet;
+                    actedThisRound.clear(); // Si alguien sube, los demás deben volver a hablar
+                    actedThisRound.add(user.id);
                 }
             } else if (act === 'allin') {
                 const pay = user.chips;
                 postBet(0, pay);
-                if(user.bet > currentBet) currentBet = user.bet;
+                if(user.bet > currentBet) {
+                    currentBet = user.bet;
+                    actedThisRound.clear();
+                    actedThisRound.add(user.id);
+                }
             }
 
             nextTurn();
@@ -613,6 +625,7 @@
             if (turnIdx !== 0 && !players[turnIdx].folded && !players[turnIdx].allIn && gameStage !== 'SHOWDOWN') {
                 setTimeout(() => {
                     const ai = players[turnIdx];
+                    actedThisRound.add(ai.id);
                     const callCost = currentBet - ai.bet;
 
                     if (callCost > ai.chips * 0.8 && Math.random() > 0.3) {
@@ -625,10 +638,12 @@
                             const raiseAmt = currentBet + bb;
                             postBet(turnIdx, Math.min(raiseAmt - ai.bet, ai.chips));
                             currentBet = ai.bet;
+                            actedThisRound.clear();
+                            actedThisRound.add(ai.id);
                         }
                     }
                     nextTurn();
-                }, 800);
+                }, 900);
             }
         }
 
