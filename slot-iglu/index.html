@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Iglú - IVYSNOWCASINO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+
+        body {
+            background-color: #030712;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        .btn-back {
+            position: absolute;
+            top: 15px; left: 15px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid #38bdf8;
+            color: #38bdf8;
+            padding: 8px 16px; border-radius: 10px;
+            font-size: 0.85rem; font-weight: 700;
+            text-decoration: none;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        .btn-back:hover { background: #38bdf8; color: #000; box-shadow: 0 0 25px #38bdf8; }
+
+        /* CONTENEDOR PRINCIPAL QUE USA LA FOTO 3D COMO CHASIS EXACTO */
+        .igloo-machine-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            aspect-ratio: 16 / 10;
+            background-image: url('images/slot-iglu-chassis.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.3);
+            overflow: hidden;
+        }
+
+        /* CAPA SUPERIOR: PANTALLA DE MINIJUEGOS DEL ÁRTICO */
+        .marquee-screen {
+            position: absolute;
+            top: 8%;
+            left: 41%;
+            width: 25%;
+            height: 18%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 15, 30, 0.85);
+            border: 2px solid #38bdf8;
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.4), 0 0 10px rgba(56, 189, 248, 0.5);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .marquee-screen:hover { transform: scale(1.03); }
+        .marquee-title { font-size: 0.65rem; color: #38bdf8; font-weight: 900; text-transform: uppercase; }
+        .marquee-sub { font-size: 0.75rem; color: #facc15; font-weight: 700; margin-top: 2px; }
+        .marquee-pts { font-size: 0.55rem; color: #94a3b8; margin-top: 2px; }
+
+        /* CAPA CENTRAL: LOS 5 RODILLOS EN LA PANTALLA AZUL */
+        .reels-overlay {
+            position: absolute;
+            top: 31%;
+            left: 36.5%;
+            width: 32%;
+            height: 38%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+            padding: 4px;
+        }
+
+        .reel-col {
+            background: rgba(2, 6, 23, 0.9);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            overflow: hidden;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .symbol-box {
+            font-size: 1.6rem;
+            height: 28%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+        }
+
+        /* CAPA INFERIOR: BOTONERA TÁCTIL SOBRE LA REPISA */
+        .controls-overlay {
+            position: absolute;
+            bottom: 12%;
+            left: 34%;
+            width: 38%;
+            height: 12%;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 10px;
+        }
+
+        .mini-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(250, 204, 21, 0.4);
+        }
+        .mini-label { font-size: 0.45rem; color: #94a3b8; font-weight: 900; }
+        .mini-val { font-size: 0.75rem; color: #facc15; font-weight: 900; }
+
+        .btn-spin-igloo {
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            color: #000;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+            transition: transform 0.2s;
+            text-transform: uppercase;
+        }
+        .btn-spin-igloo:hover { transform: scale(1.05); }
+        .btn-spin-igloo:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; }
+
+        /* MODAL DE MINIJUEGOS */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 7, 18, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border: 3px solid #38bdf8;
+            border-radius: 16px;
+            padding: 25px;
+            width: 90%; max-width: 500px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(56, 189, 248, 0.5);
+        }
+        .modal-title { font-size: 1.4rem; color: #38bdf8; font-weight: 900; margin-bottom: 10px; }
+        .modal-desc { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 20px; }
+        .igloos-container { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
+        .igloo-option {
+            font-size: 3.5rem;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #38bdf8;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .igloo-option:hover { background: rgba(56, 189, 248, 0.2); transform: scale(1.08); }
+        .btn-close-modal {
+            background: #facc15; color: #000; border: none; padding: 10px 20px;
+            border-radius: 8px; font-weight: 900; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="../index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> VOLVER AL LOBBY</a>
+
+    <div class="igloo-machine-wrapper">
+        <!-- PANTALLA SUPERIOR DE MINIJUEGOS -->
+        <div class="marquee-screen" onclick="abrirMinijuego()">
+            <div class="marquee-title">MINIJUEGOS ÁRTICO</div>
+            <div class="marquee-sub" id="marqueeStatus">¡LISTO! (Click)</div>
+            <div class="marquee-pts">Puntos: <span id="miniPoints">100</span>/100</div>
+        </div>
+
+        <!-- REJILLA DE 5 RODILLOS -->
+        <div class="reels-overlay" id="reelsGrid">
+            <div class="reel-col" id="rc1"><div class="symbol-box">👦</div><div class="symbol-box">❄️</div><div class="symbol-box">🧊</div></div>
+            <div class="reel-col" id="rc2"><div class="symbol-box">🐻</div><div class="symbol-box">🦭</div><div class="symbol-box">J</div></div>
+            <div class="reel-col" id="rc3"><div class="symbol-box">🐺</div><div class="symbol-box">🐟</div><div class="symbol-box">Q</div></div>
+            <div class="reel-col" id="rc4"><div class="symbol-box">🧊</div><div class="symbol-box">🛖</div><div class="symbol-box">K</div></div>
+            <div class="reel-col" id="rc5"><div class="symbol-box">👦</div><div class="symbol-box">❄️</div><div class="symbol-box">A</div></div>
+        </div>
+
+        <!-- BOTONERA INFERIOR -->
+        <div class="controls-overlay">
+            <div class="mini-stat">
+                <span class="mini-label">SALDO</span>
+                <span class="mini-val" id="playerBal">500</span>
+            </div>
+            <button class="btn-spin-igloo" id="spinBtn" onclick="girarSlotIglu()">GIRAR ❄️</button>
+            <div class="mini-stat">
+                <span class="mini-label">APUESTA</span>
+                <span class="mini-val">50</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL DE MINIJUEGOS -->
+    <div class="modal-overlay" id="gameModal">
+        <div class="modal-content">
+            <div class="modal-title">🧊 TRILE DE LOS IGLÚS 🧊</div>
+            <div class="modal-desc" id="modalText">Elige un iglú ártico para descubrir tu premio oculto en forfaits.</div>
+            <div class="igloos-container" id="igloosChoices">
+                <div class="igloo-option" onclick="elegirIgloo(0)">🛖</div>
+                <div class="igloo-option" onclick="elegirIgloo(1)">🛖</div>
+                <div class="igloo-option" onclick="elegirIgloo(2)">🛖</div>
+            </div>
+            <button class="btn-close-modal" id="closeModalBtn" style="display:none;" onclick="cerrarModal()">Continuar Jugando</button>
+        </div>
+    </div>
+
+    <script>
+        let balance = parseInt(localStorage.getItem('ivysnow_forfaits')) || 500;
+        let miniGamePoints = 100; // Iniciado en 100 para probar el minijuego de inmediato
+        document.getElementById('playerBal').textContent = balance;
+
+        const simbolosIglu = ['👦', '🐻', '🦭', '🐺', '🧊', '🛖', '🐟', '❄️', 'J', 'Q', 'K', 'A'];
+
+        function girarSlotIglu() {
+            if (balance < 50) { alert("¡Sin forfaits suficientes!"); return; }
+            balance -= 50;
+            localStorage.setItem('ivysnow_forfaits', balance);
+            document.getElementById('playerBal').textContent = balance;
+
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
+
+            let loops = 0;
+            const interval = setInterval(() => {
+                for (let i = 1; i <= 5; i++) {
+                    const col = document.getElementById(`rc${i}`).children;
+                    for (let j = 0; j < 3; j++) {
+                        col[j].textContent = simbolosIglu[Math.floor(Math.random() * simbolosIglu.length)];
+                    }
+                }
+                loops++;
+                if (loops > 14) {
+                    clearInterval(interval);
+                    btn.disabled = false;
+                    // Sumar premio aleatorio y puntos de minijuego
+                    if (Math.random() > 0.5) {
+                        balance += 150;
+                        localStorage.setItem('ivysnow_forfaits', balance);
+                        document.getElementById('playerBal').textContent = balance;
+                    }
+                    miniGamePoints = Math.min(100, miniGamePoints + 25);
+                    document.getElementById('miniPoints').textContent = miniGamePoints;
+                    if (miniGamePoints >= 100) {
+                        document.getElementById('marqueeStatus').textContent = "¡MINIJUEGO LISTO!";
+                    }
+                }
+            }, 80);
+        }
+
+        function abrirMinijuego() {
+            if (miniGamePoints < 100) {
+                alert("¡Sigue girando los rodillos para acumular puntos y desbloquear el minijuego!");
+                return;
+            }
+            document.getElementById('gameModal').style.display = 'flex';
+        }
+
+        function elegirIgloo(index) {
+            const premios = [10, 50, 100];
+            const premioElegido = premios[Math.floor(Math.random() * premios.length)];
+            balance += premioElegido;
+            localStorage.setItem('ivysnow_forfaits', balance);
+            document.getElementById('playerBal').textContent = balance;
+
+            document.getElementById('modalText').innerHTML = `🎉 ¡Has encontrado <strong>${premioElegido} Forfaits</strong> ocultos en el iglú! 🎉`;
+            document.getElementById('igloosChoices').style.display = 'none';
+            document.getElementById('closeModalBtn').style.display = 'inline-block';
+            
+            miniGamePoints = 0;
+            document.getElementById('miniPoints').textContent = miniGamePoints;
+            document.getElementById('marqueeStatus').textContent = "BLOQUEADO";
+        }
+
+        function cerrarModal() {
+            document.getElementById('gameModal').style.display = 'none';
+            document.getElementById('igloosChoices').style.display = 'flex';
+            document.getElementById('closeModalBtn').style.display = 'none';
+            document.getElementById('modalText').textContent = "Elige un iglú ártico para descubrir tu premio oculto en forfaits.";
+        }
+    </script>
+</body>
+</html>
