@@ -38,7 +38,6 @@
         }
         .btn-back:hover { background: #38bdf8; color: #000; box-shadow: 0 0 25px #38bdf8; }
 
-        /* RELOJ DE CIEGAS */
         .blinds-tracker {
             position: absolute;
             top: 15px; right: 15px;
@@ -55,7 +54,6 @@
         }
         .blinds-timer { font-size: 0.65rem; color: #cbd5e1; }
 
-        /* MESA CHASIS 3D DE PÓKER ALPINO */
         .poker-table-wrapper {
             position: relative;
             width: 100%;
@@ -69,7 +67,25 @@
             overflow: hidden;
         }
 
-        /* CRUPIER (MUÑECO DE NIEVE) */
+        /* EFECTO TORMENTA DE NIEVE */
+        .storm-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, transparent 30%, rgba(255,255,255,0.15) 100%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 25;
+        }
+        .storm-overlay.active {
+            opacity: 1;
+            animation: stormPulse 1s infinite alternate;
+        }
+        @keyframes stormPulse {
+            0% { background-color: rgba(56,189,248,0.1); }
+            100% { background-color: rgba(255,255,255,0.25); }
+        }
+
         .dealer-box {
             position: absolute;
             top: 14%; left: 58%;
@@ -87,7 +103,6 @@
         .dealer-avatar { font-size: 1.5rem; }
         .dealer-name { font-size: 0.55rem; color: #38bdf8; font-weight: 900; }
 
-        /* CARTAS COMUNITARIAS Y BOTE */
         .community-container {
             position: absolute;
             top: 48%; left: 54%;
@@ -139,7 +154,6 @@
             box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
         }
 
-        /* JUGADORES */
         .player-seat {
             position: absolute;
             display: flex;
@@ -185,11 +199,8 @@
         .p-chips { font-size: 0.65rem; color: #facc15; font-weight: 900; }
         .p-bet { font-size: 0.55rem; color: #38bdf8; font-weight: 700; }
 
-        .player-cards {
-            display: flex; gap: 3px; margin-top: 3px;
-        }
+        .player-cards { display: flex; gap: 3px; margin-top: 3px; }
 
-        /* POSICIONES CORREGIDAS EN MESA */
         .seat-user     { bottom: 12%; left: 47%; transform: translateX(-50%); }
         .seat-pinguino { bottom: 25%; left: 24%; }
         .seat-morsa    { top: 38%; left: 16%; }
@@ -197,7 +208,6 @@
         .seat-foca     { top: 22%; left: 71%; }
         .seat-husky    { bottom: 25%; right: 24%; }
 
-        /* CONTROLES DEL JUGADOR */
         .action-bar {
             position: absolute;
             bottom: 3%; right: 3%;
@@ -206,35 +216,33 @@
             padding: 8px 12px;
             border-radius: 12px;
             border: 2px solid rgba(56, 189, 248, 0.5);
-            z-index: 20;
+            z-index: 30;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
 
         .btn-act {
             background: linear-gradient(135deg, #38bdf8, #0284c7);
             color: #000; border: none;
-            padding: 7px 12px; border-radius: 6px;
-            font-weight: 900; font-size: 0.75rem;
+            padding: 7px 10px; border-radius: 6px;
+            font-weight: 900; font-size: 0.7rem;
             cursor: pointer; text-transform: uppercase;
             transition: all 0.2s;
         }
         .btn-act.fold { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; }
         .btn-act.check { background: linear-gradient(135deg, #10b981, #047857); color: #fff; }
         .btn-act.raise { background: linear-gradient(135deg, #facc15, #ca8a04); color: #000; }
+        .btn-act.allin { background: linear-gradient(135deg, #a855f7, #6b21a8); color: #fff; }
         .btn-act:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
         .btn-act:hover:not(:disabled) { transform: scale(1.05); }
 
-        .raise-control {
-            display: flex; align-items: center; gap: 4px;
-        }
+        .raise-control { display: flex; align-items: center; gap: 4px; }
         .raise-input {
-            width: 55px; padding: 4px;
+            width: 50px; padding: 4px;
             border-radius: 4px; border: 1px solid #facc15;
             background: #0f172a; color: #facc15;
-            font-weight: 900; font-size: 0.75rem; text-align: center;
+            font-weight: 900; font-size: 0.7rem; text-align: center;
         }
 
-        /* BANNER DE ESTADO/NOTIFICACIÓN */
         .game-status-banner {
             position: absolute;
             top: 2%; left: 50%; transform: translateX(-50%);
@@ -258,22 +266,20 @@
     </div>
 
     <div class="poker-table-wrapper">
-        <div class="game-status-banner" id="statusBanner">Repartiendo cartas...</div>
+        <div class="storm-overlay" id="stormOverlay"></div>
+        <div class="game-status-banner" id="statusBanner">Iniciando mano...</div>
 
-        <!-- CRUPIER -->
         <div class="dealer-box">
             <span class="dealer-avatar">☃️</span>
             <span class="dealer-name">CRUPIER ÁRTICO</span>
         </div>
 
-        <!-- CENTRO MESA: CARTAS Y BOTE -->
         <div class="community-container">
             <div class="community-cards" id="communityGrid"></div>
             <div class="pot-display">BOTE TOTAL: <span id="potAmount">0</span> 🏔️</div>
         </div>
 
         <!-- JUGADORES -->
-        <!-- 0: TÚ -->
         <div class="player-seat seat-user active-user" id="seat-0">
             <div class="avatar-row"><span class="avatar">🥽</span><span id="btn-0"></span></div>
             <span class="p-name">TÚ (RIDER)</span>
@@ -282,7 +288,6 @@
             <div class="player-cards" id="cards-0"></div>
         </div>
 
-        <!-- 1: PINGÜINO -->
         <div class="player-seat seat-pinguino" id="seat-1">
             <div class="avatar-row"><span class="avatar">🐧</span><span id="btn-1"></span></div>
             <span class="p-name">PINGÜINO</span>
@@ -291,7 +296,6 @@
             <div class="player-cards" id="cards-1"></div>
         </div>
 
-        <!-- 2: MORSA -->
         <div class="player-seat seat-morsa" id="seat-2">
             <div class="avatar-row"><span class="avatar">🦣</span><span id="btn-2"></span></div>
             <span class="p-name">MORSA</span>
@@ -300,7 +304,6 @@
             <div class="player-cards" id="cards-2"></div>
         </div>
 
-        <!-- 3: OSO POLAR -->
         <div class="player-seat seat-oso" id="seat-3">
             <div class="avatar-row"><span class="avatar">🐻‍❄️</span><span id="btn-3"></span></div>
             <span class="p-name">OSO POLAR</span>
@@ -309,7 +312,6 @@
             <div class="player-cards" id="cards-3"></div>
         </div>
 
-        <!-- 4: FOCA -->
         <div class="player-seat seat-foca" id="seat-4">
             <div class="avatar-row"><span class="avatar">🦭</span><span id="btn-4"></span></div>
             <span class="p-name">FOCA</span>
@@ -318,7 +320,6 @@
             <div class="player-cards" id="cards-4"></div>
         </div>
 
-        <!-- 5: HUSKY -->
         <div class="player-seat seat-husky" id="seat-5">
             <div class="avatar-row"><span class="avatar">🐺</span><span id="btn-5"></span></div>
             <span class="p-name">HUSKY</span>
@@ -327,7 +328,6 @@
             <div class="player-cards" id="cards-5"></div>
         </div>
 
-        <!-- BOTONERA -->
         <div class="action-bar">
             <button class="btn-act fold" id="btnFold" onclick="userAction('fold')">NO IR</button>
             <button class="btn-act check" id="btnCall" onclick="userAction('call')">IGUALAR</button>
@@ -335,11 +335,11 @@
                 <button class="btn-act raise" id="btnRaise" onclick="userAction('raise')">SUBIR</button>
                 <input type="number" id="raiseVal" class="raise-input" value="20" step="5">
             </div>
+            <button class="btn-act allin" id="btnAllin" onclick="userAction('allin')">ALL-IN</button>
         </div>
     </div>
 
     <script>
-        // SINTETIZADOR DE SONIDOS (Web Audio API)
         const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             try {
@@ -359,32 +359,35 @@
                     gain.gain.exponentialRampToValueAtTime(0.01, AudioCtx.currentTime + 0.12);
                     osc.start(); osc.stop(AudioCtx.currentTime + 0.12);
                 } else if (type === 'win') {
+                    // SECUENCIA DE APLAUSOS / TRIUNFO
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(523, AudioCtx.currentTime);
-                    osc.frequency.setValueAtTime(659, AudioCtx.currentTime + 0.15);
+                    osc.frequency.setValueAtTime(659, AudioCtx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(784, AudioCtx.currentTime + 0.2);
+                    osc.frequency.setValueAtTime(1046, AudioCtx.currentTime + 0.3);
                     gain.gain.setValueAtTime(0.2, AudioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, AudioCtx.currentTime + 0.4);
-                    osc.start(); osc.stop(AudioCtx.currentTime + 0.4);
-                } else if (type === 'alert') {
-                    osc.frequency.setValueAtTime(300, AudioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, AudioCtx.currentTime + 0.6);
+                    osc.start(); osc.stop(AudioCtx.currentTime + 0.6);
+                } else if (type === 'storm') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(120, AudioCtx.currentTime);
                     gain.gain.setValueAtTime(0.15, AudioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, AudioCtx.currentTime + 0.2);
-                    osc.start(); osc.stop(AudioCtx.currentTime + 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.01, AudioCtx.currentTime + 0.5);
+                    osc.start(); osc.stop(AudioCtx.currentTime + 0.5);
                 }
             } catch(e){}
         }
 
-        // MOTOR DEL JUEGO
         const palos = ['♥️', '♦️', '♠️', '♣️'];
         const valores = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 
         let players = [
-            { id:0, name:"Tú", chips: parseInt(localStorage.getItem('ivysnow_forfaits')) || 500, bet:0, cards:[], folded:false, isUser:true },
-            { id:1, name:"Pingüino", chips:450, bet:0, cards:[], folded:false },
-            { id:2, name:"Morsa", chips:600, bet:0, cards:[], folded:false },
-            { id:3, name:"Oso Polar", chips:800, bet:0, cards:[], folded:false },
-            { id:4, name:"Foca", chips:350, bet:0, cards:[], folded:false },
-            { id:5, name:"Husky", chips:500, bet:0, cards:[], folded:false }
+            { id:0, name:"Tú", chips: parseInt(localStorage.getItem('ivysnow_forfaits')) || 500, bet:0, cards:[], folded:false, allIn:false, isUser:true },
+            { id:1, name:"Pingüino", chips:450, bet:0, cards:[], folded:false, allIn:false },
+            { id:2, name:"Morsa", chips:600, bet:0, cards:[], folded:false, allIn:false },
+            { id:3, name:"Oso Polar", chips:800, bet:0, cards:[], folded:false, allIn:false },
+            { id:4, name:"Foca", chips:350, bet:0, cards:[], folded:false, allIn:false },
+            { id:5, name:"Husky", chips:500, bet:0, cards:[], folded:false, allIn:false }
         ];
 
         let deck = [];
@@ -393,12 +396,11 @@
         let currentBet = 0;
         let dealerIdx = 0;
         let turnIdx = 0;
-        let gameStage = 'PREFLOP'; // PREFLOP, FLOP, TURN, RIVER, SHOWDOWN
-
-        // ESTRUCTURA DE CIEGAS
+        let gameStage = 'PREFLOP'; 
         let sb = 5;
         let bb = 10;
         let timerSeconds = 120;
+        let roundActedCount = 0;
 
         setInterval(() => {
             timerSeconds--;
@@ -406,8 +408,6 @@
                 sb *= 2; bb *= 2;
                 timerSeconds = 120;
                 document.getElementById('blindLevel').textContent = `${sb} / ${bb}`;
-                playSound('alert');
-                updateBanner(`¡SUBIDA DE CIEGAS! Nivel actual: ${sb}/${bb}`);
             }
             let m = Math.floor(timerSeconds/60).toString().padStart(2,'0');
             let s = (timerSeconds%60).toString().padStart(2,'0');
@@ -415,6 +415,16 @@
         }, 1000);
 
         function updateBanner(txt) { document.getElementById('statusBanner').textContent = txt; }
+
+        function toggleStorm(active) {
+            const storm = document.getElementById('stormOverlay');
+            if(active) {
+                storm.classList.add('active');
+                playSound('storm');
+            } else {
+                storm.classList.remove('active');
+            }
+        }
 
         function createDeck() {
             deck = [];
@@ -427,18 +437,16 @@
         }
 
         function updateUI() {
-            // Sincronización Saldo Usuario
             localStorage.setItem('ivysnow_forfaits', players[0].chips);
 
             players.forEach((p, i) => {
                 document.getElementById(`chips-${i}`).textContent = p.chips;
-                document.getElementById(`bet-${i}`).textContent = p.bet > 0 ? `Apuesta: ${p.bet}` : '';
+                document.getElementById(`bet-${i}`).textContent = p.bet > 0 ? `Apuesta: ${p.bet}` : (p.allIn ? 'ALL-IN' : '');
                 document.getElementById(`btn-${i}`).innerHTML = (i === dealerIdx) ? '<div class="dealer-button">D</div>' : '';
                 
                 const seatElem = document.getElementById(`seat-${i}`);
-                seatElem.className = `player-seat ${getSeatClass(i)} ${p.folded ? 'folded' : ''} ${turnIdx === i ? 'current-turn' : ''}`;
+                seatElem.className = `player-seat ${['seat-user active-user','seat-pinguino','seat-morsa','seat-oso','seat-foca','seat-husky'][i]} ${p.folded ? 'folded' : ''} ${turnIdx === i ? 'current-turn' : ''}`;
 
-                // Render Cartas
                 const cardsContainer = document.getElementById(`cards-${i}`);
                 cardsContainer.innerHTML = '';
                 p.cards.forEach(c => {
@@ -453,7 +461,6 @@
                 });
             });
 
-            // Render Mesa Común
             const commContainer = document.getElementById('communityGrid');
             commContainer.innerHTML = '';
             communityCards.forEach(c => {
@@ -465,39 +472,37 @@
 
             document.getElementById('potAmount').textContent = pot;
 
-            // Render Botones
             const user = players[0];
-            const isUserTurn = (turnIdx === 0 && !user.folded && gameStage !== 'SHOWDOWN');
+            const isUserTurn = (turnIdx === 0 && !user.folded && !user.allIn && gameStage !== 'SHOWDOWN');
             document.getElementById('btnFold').disabled = !isUserTurn;
             document.getElementById('btnCall').disabled = !isUserTurn;
             document.getElementById('btnRaise').disabled = !isUserTurn;
+            document.getElementById('btnAllin').disabled = !isUserTurn || user.chips <= 0;
 
             const callCost = currentBet - user.bet;
             document.getElementById('btnCall').textContent = callCost === 0 ? 'PASAR' : `IGUALAR (${callCost})`;
             document.getElementById('raiseVal').min = currentBet + bb;
-            document.getElementById('raiseVal').value = Math.max(currentBet + bb, parseInt(document.getElementById('raiseVal').value) || 20);
-        }
-
-        function getSeatClass(i) {
-            return ['seat-user active-user', 'seat-pinguino', 'seat-morsa', 'seat-oso', 'seat-foca', 'seat-husky'][i];
+            document.getElementById('raiseVal').max = user.chips;
         }
 
         function startHand() {
+            toggleStorm(false);
             createDeck();
             communityCards = [];
             pot = 0;
             currentBet = bb;
             gameStage = 'PREFLOP';
+            roundActedCount = 0;
 
             players.forEach(p => {
                 p.cards = [deck.pop(), deck.pop()];
                 p.bet = 0;
                 p.folded = (p.chips <= 0);
+                p.allIn = false;
             });
 
             playSound('card');
 
-            // Cobro de Ciegas
             const sbIdx = (dealerIdx + 1) % 6;
             const bbIdx = (dealerIdx + 2) % 6;
 
@@ -505,12 +510,16 @@
             postBet(bbIdx, Math.min(bb, players[bbIdx].chips));
 
             turnIdx = (bbIdx + 1) % 6;
-            updateBanner(`Mano iniciada. Ciegas: ${sb}/${bb}`);
+            updateBanner(`Ronda Pre-Flop. Ciegas ${sb}/${bb}`);
             updateUI();
             checkAI();
         }
 
         function postBet(idx, amt) {
+            if(amt >= players[idx].chips) {
+                amt = players[idx].chips;
+                players[idx].allIn = true;
+            }
             players[idx].chips -= amt;
             players[idx].bet += amt;
             pot += amt;
@@ -524,110 +533,120 @@
                 return;
             }
 
+            roundActedCount++;
+
+            // Verificar si todos han igualado o están all-in
+            let activeUnfolded = players.filter(p => !p.folded && !p.allIn);
+            let allMatched = activeUnfolded.every(p => p.bet === currentBet);
+            let finishedAll = (activeUnfolded.length === 0) || (roundActedCount >= active.length && allMatched);
+
+            if (finishedAll) {
+                advanceStage();
+                return;
+            }
+
             do {
                 turnIdx = (turnIdx + 1) % 6;
-            } while (players[turnIdx].folded);
+            } while (players[turnIdx].folded || players[turnIdx].allIn);
 
-            // ¿Ronda de apuestas completada?
-            const activeUnfolded = players.filter(p => !p.folded);
-            const allMatched = activeUnfolded.every(p => p.bet === currentBet || p.chips === 0);
-
-            if (allMatched && (turnIdx === (dealerIdx + 1) % 6 || activeUnfolded.length <= 1)) {
-                advanceStage();
-            } else {
-                updateUI();
-                checkAI();
-            }
+            updateUI();
+            checkAI();
         }
 
         function advanceStage() {
             players.forEach(p => p.bet = 0);
             currentBet = 0;
+            roundActedCount = 0;
 
             if (gameStage === 'PREFLOP') {
                 gameStage = 'FLOP';
                 communityCards.push(deck.pop(), deck.pop(), deck.pop());
-                playSound('card');
-                updateBanner("FLOP");
+                toggleStorm(true);
+                updateBanner("FLOP - Tormenta en las cumbres");
             } else if (gameStage === 'FLOP') {
                 gameStage = 'TURN';
                 communityCards.push(deck.pop());
-                playSound('card');
                 updateBanner("TURN");
             } else if (gameStage === 'TURN') {
                 gameStage = 'RIVER';
                 communityCards.push(deck.pop());
-                playSound('card');
-                updateBanner("RIVER");
+                updateBanner("RIVER - Última carta");
             } else if (gameStage === 'RIVER') {
                 gameStage = 'SHOWDOWN';
                 evaluateShowdown();
                 return;
             }
 
+            playSound('card');
             turnIdx = (dealerIdx + 1) % 6;
-            while (players[turnIdx].folded) turnIdx = (turnIdx + 1) % 6;
+            while (players[turnIdx].folded || players[turnIdx].allIn) turnIdx = (turnIdx + 1) % 6;
 
             updateUI();
             checkAI();
         }
 
         function userAction(act) {
-            if (turnIdx !== 0 || players[0].folded) return;
+            if (turnIdx !== 0 || players[0].folded || players[0].allIn) return;
 
+            const user = players[0];
             if (act === 'fold') {
-                players[0].folded = true;
+                user.folded = true;
             } else if (act === 'call') {
-                const callCost = currentBet - players[0].bet;
-                const pay = Math.min(callCost, players[0].chips);
+                const callCost = currentBet - user.bet;
+                const pay = Math.min(callCost, user.chips);
                 postBet(0, pay);
             } else if (act === 'raise') {
                 const raiseTarget = parseInt(document.getElementById('raiseVal').value) || (currentBet + bb);
-                const add = Math.min(raiseTarget - players[0].bet, players[0].chips);
-                postBet(0, add);
-                currentBet = players[0].bet;
+                const add = Math.min(raiseTarget - user.bet, user.chips);
+                if(add > 0) {
+                    postBet(0, add);
+                    currentBet = user.bet;
+                }
+            } else if (act === 'allin') {
+                const pay = user.chips;
+                postBet(0, pay);
+                if(user.bet > currentBet) currentBet = user.bet;
             }
 
             nextTurn();
         }
 
         function checkAI() {
-            if (turnIdx !== 0 && !players[turnIdx].folded && gameStage !== 'SHOWDOWN') {
+            if (turnIdx !== 0 && !players[turnIdx].folded && !players[turnIdx].allIn && gameStage !== 'SHOWDOWN') {
                 setTimeout(() => {
                     const ai = players[turnIdx];
                     const callCost = currentBet - ai.bet;
 
-                    if (callCost > ai.chips * 0.7 && Math.random() > 0.4) {
+                    if (callCost > ai.chips * 0.8 && Math.random() > 0.3) {
                         ai.folded = true;
                     } else if (callCost > 0) {
                         const pay = Math.min(callCost, ai.chips);
                         postBet(turnIdx, pay);
                     } else {
-                        if (Math.random() > 0.8 && ai.chips > currentBet + bb) {
+                        if (Math.random() > 0.75 && ai.chips > currentBet + bb) {
                             const raiseAmt = currentBet + bb;
                             postBet(turnIdx, Math.min(raiseAmt - ai.bet, ai.chips));
                             currentBet = ai.bet;
                         }
                     }
                     nextTurn();
-                }, 800);
+                }, 900);
             }
         }
 
         function evaluateShowdown() {
-            updateBanner("SHOWDOWN - Evaluando ganador...");
-            playSound('win');
+            updateBanner("SHOWDOWN - ¡Calculando ganador!");
+            toggleStorm(false);
 
-            // Ganador por descarte o la mejor mano
             let active = players.filter(p => !p.folded);
-            let winner = active[Math.floor(Math.random() * active.length)]; // Simulación rápida de muestra de cartas
+            let winner = active[Math.floor(Math.random() * active.length)];
 
             endHand(winner);
         }
 
         function endHand(winner) {
             winner.chips += pot;
-            updateBanner(`¡${winner.name} gana el bote de ${pot} 🏔️!`);
+            updateBanner(`🏆 ¡${winner.name} GANA ${pot} FORFAITS! 🏆`);
             playSound('win');
             pot = 0;
 
@@ -636,10 +655,9 @@
             setTimeout(() => {
                 dealerIdx = (dealerIdx + 1) % 6;
                 startHand();
-            }, 3500);
+            }, 4000);
         }
 
-        // Inicio Inicial
         startHand();
     </script>
 </body>
