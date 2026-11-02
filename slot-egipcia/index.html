@@ -1,4 +1,3 @@
-HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -30,127 +29,127 @@ HTML
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 12px;
             overflow-x: hidden;
         }
 
         .btn-back {
             position: absolute;
-            top: 20px; left: 20px;
+            top: 15px; left: 15px;
             background: rgba(0,0,0,0.8);
             border: 2px solid var(--gold-mid);
             color: var(--gold-bright);
-            padding: 10px 20px; border-radius: 12px;
+            padding: 8px 16px; border-radius: 10px;
+            font-size: 0.85rem;
             font-weight: 700; text-decoration: none;
             display: flex; align-items: center; gap: 8px;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
             transition: all 0.3s;
+            z-index: 10;
         }
-        .btn-back:hover { background: var(--gold-mid); color: #000; box-shadow: 0 0 25px var(--gold-bright); }
+        .btn-back:hover { background: var(--gold-mid); color: #000; box-shadow: 0 0 20px var(--gold-bright); }
 
-        /* MÁQUINA PRINCIPAL EGIPCIA CON DISEÑO 3D METALIZADO */
+        /* MÁQUINA PRINCIPAL CON TAMAÑO AJUSTADO (-1.5 cm) */
         .pharaoh-cabinet {
             background: linear-gradient(180deg, #1c150d 0%, #0a0805 100%);
-            border: 4px solid var(--gold-mid);
-            border-radius: 28px;
-            width: 100%; max-width: 950px;
-            padding: 35px;
+            border: 3px solid var(--gold-mid);
+            border-radius: 22px;
+            width: 100%; max-width: 800px;
+            padding: 20px 24px;
             box-shadow: 
-                0 0 60px rgba(212, 175, 55, 0.3),
-                inset 0 0 40px rgba(0, 0, 0, 0.9),
-                0 0 20px rgba(0, 242, 255, 0.2);
+                0 0 45px rgba(212, 175, 55, 0.3),
+                inset 0 0 30px rgba(0, 0, 0, 0.9),
+                0 0 15px rgba(0, 242, 255, 0.2);
             position: relative;
         }
 
-        /* Detalle lateral del Skate Faraónico */
         .pharaoh-cabinet::before {
             content: "🛹 👁️ 🪲";
             position: absolute;
-            left: -25px; top: 30%;
+            left: -20px; top: 35%;
             transform: rotate(-90deg);
             background: linear-gradient(90deg, var(--gold-dark), var(--gold-mid));
-            padding: 8px 25px; border-radius: 20px;
-            border: 2px solid var(--cyan-glow);
-            font-size: 1.2rem;
-            box-shadow: 0 0 20px var(--cyan-glow);
+            padding: 5px 18px; border-radius: 15px;
+            border: 1px solid var(--cyan-glow);
+            font-size: 0.95rem;
+            box-shadow: 0 0 12px var(--cyan-glow);
         }
 
         .cabinet-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 16px;
             border-bottom: 2px solid var(--gold-dark);
-            padding-bottom: 15px;
+            padding-bottom: 10px;
             position: relative;
         }
 
         .cabinet-title {
             font-family: 'Cinzel', serif;
-            font-size: 3rem;
+            font-size: 2.3rem;
             font-weight: 900;
             background: linear-gradient(180deg, #fff 0%, var(--gold-bright) 50%, var(--gold-dark) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
-            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+            letter-spacing: 2px;
         }
 
         .subtitle-motto {
             font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: var(--cyan-glow);
-            letter-spacing: 5px;
-            margin-top: 5px;
+            letter-spacing: 4px;
+            margin-top: 3px;
             text-transform: uppercase;
         }
 
-        /* FRAME DE LOS RODILLOS TIPO PANTALLA EGIPCIA */
+        /* FRAME DE RODILLOS COMPACTO */
         .reels-vault {
             background: #020305;
-            border: 3px solid var(--gold-mid);
-            border-radius: 20px;
-            padding: 20px;
+            border: 2px solid var(--gold-mid);
+            border-radius: 16px;
+            padding: 14px;
             position: relative;
-            box-shadow: inset 0 0 50px rgba(0,0,0,1), 0 0 15px rgba(0, 242, 255, 0.3);
-            margin-bottom: 25px;
+            box-shadow: inset 0 0 40px rgba(0,0,0,1), 0 0 12px rgba(0, 242, 255, 0.25);
+            margin-bottom: 18px;
         }
 
         .reels-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
+            gap: 10px;
         }
 
         .reel-column {
             background: linear-gradient(180deg, #090d14 0%, #111827 50%, #090d14 100%);
             border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            padding: 10px 0;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+            gap: 8px;
+            padding: 8px 0;
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
         }
 
         .symbol-cell {
-            height: 65px;
+            height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
-            filter: drop-shadow(0 0 8px rgba(255, 229, 127, 0.4));
-            transition: transform 0.1s;
+            font-size: 2rem;
+            filter: drop-shadow(0 0 6px rgba(255, 229, 127, 0.4));
         }
 
-        /* PANEL DE APUESTAS Y NEONES */
+        /* PANEL DE CONTROLES COMPACTO */
         .control-deck {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: linear-gradient(180deg, #0d1117 0%, #05070a 100%);
-            border: 2px solid var(--gold-dark);
-            border-radius: 18px;
-            padding: 20px;
-            gap: 15px;
+            border: 1px solid var(--gold-dark);
+            border-radius: 14px;
+            padding: 12px 20px;
+            gap: 12px;
         }
 
         .stat-card {
@@ -158,40 +157,39 @@ HTML
             flex-direction: column;
             align-items: center;
         }
-        .stat-title { font-size: 0.7rem; color: var(--gold-bright); font-weight: 900; letter-spacing: 1px; }
-        .stat-value { font-size: 1.4rem; font-weight: 900; color: #fff; text-shadow: 0 0 10px var(--gold-bright); }
+        .stat-title { font-size: 0.65rem; color: var(--gold-bright); font-weight: 900; letter-spacing: 1px; }
+        .stat-value { font-size: 1.2rem; font-weight: 900; color: #fff; text-shadow: 0 0 8px var(--gold-bright); }
 
         .btn-spin-egypt {
             background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold-dark) 100%);
             color: #000;
             border: 2px solid #fff;
-            padding: 18px 45px;
-            border-radius: 16px;
+            padding: 12px 36px;
+            border-radius: 12px;
             font-family: 'Cinzel', serif;
             font-weight: 900;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             cursor: pointer;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 0 15px var(--cyan-glow);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.5), 0 0 10px var(--cyan-glow);
             transition: all 0.2s;
         }
-        .btn-spin-egypt:hover { transform: scale(1.06); box-shadow: 0 0 45px var(--gold-bright); }
+        .btn-spin-egypt:hover { transform: scale(1.05); box-shadow: 0 0 35px var(--gold-bright); }
 
-        /* RUEDAS CIBERNÉTICAS EN LA BASE DE LA MÁQUINA */
         .wheels-base {
             display: flex;
             justify-content: space-around;
-            margin-top: 25px;
-            padding-top: 10px;
+            margin-top: 16px;
+            padding-top: 5px;
         }
         .cyber-wheel {
-            width: 55px; height: 55px;
+            width: 42px; height: 42px;
             border-radius: 50%;
-            border: 3px solid var(--cyan-glow);
+            border: 2px solid var(--cyan-glow);
             background: #000;
             display: flex; align-items: center; justify-content: center;
             color: var(--gold-bright);
-            font-size: 1.2rem;
-            box-shadow: 0 0 15px var(--cyan-glow);
+            font-size: 1rem;
+            box-shadow: 0 0 10px var(--cyan-glow);
             animation: spinWheel 6s linear infinite;
         }
         @keyframes spinWheel { 100% { transform: rotate(360deg); } }
@@ -241,7 +239,6 @@ HTML
             </div>
         </div>
 
-        <!-- Ruedas neón en la base inspiradas en la imagen -->
         <div class="wheels-base">
             <div class="cyber-wheel">☥</div>
             <div class="cyber-wheel">👁️</div>
