@@ -38,13 +38,13 @@
         }
         .btn-back:hover { background: #38bdf8; color: #000; box-shadow: 0 0 25px #38bdf8; }
 
-        /* CONTENEDOR DE LA MÁQUINA CON LA FOTO REAL DE FONDO */
+        /* CONTENEDOR PRINCIPAL CON LA FOTO CORRECTA slot-iglu.jpg */
         .igloo-machine-wrapper {
             position: relative;
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             aspect-ratio: 16 / 10;
-            background-image: url('../images/slot-iglu.jpeg');
+            background-image: url('../images/slot-iglu.jpg');
             background-size: cover;
             background-position: center;
             border-radius: 20px;
@@ -55,44 +55,46 @@
         /* PANTALLA SUPERIOR DE MINIJUEGOS */
         .marquee-screen {
             position: absolute;
-            top: 8%;
-            left: 41%;
-            width: 25%;
-            height: 18%;
+            top: 10.5%;
+            left: 45.5%;
+            width: 22%;
+            height: 17%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 15, 30, 0.85);
+            background: rgba(0, 15, 30, 0.9);
             border: 2px solid #38bdf8;
-            border-radius: 8px;
-            padding: 8px;
+            border-radius: 6px;
+            padding: 6px;
             text-align: center;
-            box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.4), 0 0 10px rgba(56, 189, 248, 0.5);
+            box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.5), 0 0 12px rgba(56, 189, 248, 0.6);
             cursor: pointer;
             transition: transform 0.2s;
         }
         .marquee-screen:hover { transform: scale(1.03); }
-        .marquee-title { font-size: 0.65rem; color: #38bdf8; font-weight: 900; text-transform: uppercase; }
-        .marquee-sub { font-size: 0.75rem; color: #facc15; font-weight: 700; margin-top: 2px; }
-        .marquee-pts { font-size: 0.55rem; color: #94a3b8; margin-top: 2px; }
+        .marquee-title { font-size: 0.6rem; color: #38bdf8; font-weight: 900; text-transform: uppercase; }
+        .marquee-sub { font-size: 0.7rem; color: #facc15; font-weight: 700; margin-top: 2px; }
+        .marquee-pts { font-size: 0.5rem; color: #94a3b8; margin-top: 2px; }
 
         /* REJILLA DE RODILLOS */
         .reels-overlay {
             position: absolute;
-            top: 31%;
-            left: 36.5%;
-            width: 32%;
-            height: 38%;
+            top: 31.5%;
+            left: 41.5%;
+            width: 26.5%;
+            height: 35.5%;
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 4px;
-            padding: 4px;
+            gap: 3px;
+            padding: 3px;
+            background: rgba(2, 6, 23, 0.7);
+            border-radius: 4px;
         }
 
         .reel-col {
-            background: rgba(2, 6, 23, 0.9);
-            border-radius: 6px;
+            background: rgba(2, 6, 23, 0.95);
+            border-radius: 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -102,49 +104,50 @@
         }
 
         .symbol-box {
-            font-size: 1.6rem;
-            height: 28%;
+            font-size: 1.5rem;
+            height: 30%;
             display: flex;
             align-items: center;
             justify-content: center;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.6));
         }
 
-        /* BOTONERA TÁCTIL INFERIOR */
+        /* BOTONERA INFERIOR */
         .controls-overlay {
             position: absolute;
-            bottom: 12%;
-            left: 34%;
-            width: 38%;
-            height: 12%;
+            bottom: 12.5%;
+            left: 38.5%;
+            width: 33%;
+            height: 11%;
             display: flex;
             align-items: center;
-            justify-content: space-around;
-            padding: 0 10px;
+            justify-content: space-between;
+            padding: 0 8px;
         }
 
         .mini-stat {
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: rgba(0,0,0,0.6);
-            padding: 4px 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(250, 204, 21, 0.4);
+            background: rgba(0,0,0,0.75);
+            padding: 3px 6px;
+            border-radius: 5px;
+            border: 1px solid rgba(250, 204, 21, 0.5);
+            min-width: 60px;
         }
-        .mini-label { font-size: 0.45rem; color: #94a3b8; font-weight: 900; }
-        .mini-val { font-size: 0.75rem; color: #facc15; font-weight: 900; }
+        .mini-label { font-size: 0.4rem; color: #94a3b8; font-weight: 900; }
+        .mini-val { font-size: 0.65rem; color: #facc15; font-weight: 900; }
 
         .btn-spin-igloo {
             background: linear-gradient(135deg, #38bdf8, #0284c7);
             color: #000;
             border: none;
-            padding: 8px 18px;
-            border-radius: 8px;
+            padding: 6px 14px;
+            border-radius: 6px;
             font-weight: 900;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
             transition: transform 0.2s;
             text-transform: uppercase;
         }
@@ -192,7 +195,8 @@
 </head>
 <body>
 
-    <a href="../index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> VOLVER AL LOBBY</a>
+    <!-- BOTÓN DE RETORNO AL LOBBY CON RUTA ABSOLUTA -->
+    <a href="/ivysnow-casino/index.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> LOBBY</a>
 
     <div class="igloo-machine-wrapper">
         <div class="marquee-screen" onclick="abrirMinijuego()">
