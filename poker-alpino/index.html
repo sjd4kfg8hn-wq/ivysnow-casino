@@ -42,50 +42,50 @@
         .poker-table-wrapper {
             position: relative;
             width: 100%;
-            max-width: 1000px;
+            max-width: 950px;
             aspect-ratio: 16 / 9;
             background-image: url('../images/poker-alpino.jpg');
             background-size: cover;
             background-position: center;
             border-radius: 20px;
-            box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.3);
             overflow: hidden;
         }
 
-        /* CRUPIER (MUÑECO DE NIEVE) */
+        /* CRUPIER (MUÑECO DE NIEVE) - EXACTAMENTE EN SU BANDEJA SUPERIOR */
         .dealer-box {
             position: absolute;
-            top: 18%;
-            left: 45%;
+            top: 14%;
+            left: 58%;
             transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.9);
             border: 2px solid #38bdf8;
-            border-radius: 12px;
-            padding: 6px 14px;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+            border-radius: 10px;
+            padding: 4px 10px;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
         }
-        .dealer-avatar { font-size: 2rem; }
-        .dealer-name { font-size: 0.65rem; color: #38bdf8; font-weight: 900; }
+        .dealer-avatar { font-size: 1.5rem; }
+        .dealer-name { font-size: 0.55rem; color: #38bdf8; font-weight: 900; }
 
         /* CARTAS COMUNITARIAS EN EL CENTRO DEL TAPETE */
         .community-cards {
             position: absolute;
-            top: 42%;
-            left: 50%;
+            top: 48%;
+            left: 54%;
             transform: translate(-50%, -50%);
             display: flex;
-            gap: 6px;
+            gap: 5px;
             background: rgba(0, 0, 0, 0.6);
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .card {
-            width: 32px;
-            height: 46px;
+            width: 28px;
+            height: 40px;
             background: #fff;
             color: #000;
             border-radius: 4px;
@@ -93,7 +93,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
         .card.red { color: #e11d48; }
@@ -101,57 +101,57 @@
         /* BOTE CENTRAL */
         .pot-display {
             position: absolute;
-            top: 55%;
-            left: 50%;
+            top: 60%;
+            left: 54%;
             transform: translateX(-50%);
             background: rgba(250, 204, 21, 0.2);
             border: 1px solid #facc15;
             color: #facc15;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
             font-weight: 900;
         }
 
-        /* JUGADORES ALREDEDOR DE LA MESA */
+        /* JUGADORES ALINEADOS EXACTAMENTE SOBRE LOS ASIENTOS DEL TAPETE */
         .player-seat {
             position: absolute;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.92);
             border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            padding: 6px;
-            min-width: 80px;
+            border-radius: 10px;
+            padding: 4px 8px;
+            min-width: 75px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.6);
         }
         .player-seat.active-user {
             border-color: #38bdf8;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
         }
-        .avatar { font-size: 1.6rem; }
-        .p-name { font-size: 0.6rem; font-weight: 800; color: #cbd5e1; }
-        .p-chips { font-size: 0.65rem; color: #facc15; font-weight: 900; }
+        .avatar { font-size: 1.4rem; }
+        .p-name { font-size: 0.55rem; font-weight: 800; color: #cbd5e1; }
+        .p-chips { font-size: 0.6rem; color: #facc15; font-weight: 900; }
 
-        /* POSICIONES DE LOS 6 JUGADORES */
-        .seat-1 { bottom: 8%; left: 45%; transform: translateX(-50%); } /* TÚ (GAFAS/CASCO) */
-        .seat-2 { bottom: 18%; left: 22%; } /* PINGÜINO */
-        .seat-3 { top: 30%; left: 16%; }    /* MORSA */
-        .seat-4 { top: 25%; left: 30%; }    /* OSO POLAR */
-        .seat-5 { top: 25%; right: 30%; }   /* FOCA */
-        .seat-6 { bottom: 18%; right: 22%; } /* HUSKY */
+        /* POSICIONES CORREGIDAS Y CENTRADAS EN LOS MARCOS DE LA MESA */
+        .seat-user { bottom: 12%; left: 47%; transform: translateX(-50%); } /* TÚ (GAFAS/CASCO) */
+        .seat-pinguino { bottom: 25%; left: 24%; }                          /* PINGÜINO */
+        .seat-morsa { top: 38%; left: 16%; }                                 /* MORSA */
+        .seat-oso { top: 22%; left: 35%; }                                   /* OSO POLAR */
+        .seat-foca { top: 22%; left: 71%; }                                  /* FOCA */
+        .seat-husky { bottom: 25%; right: 24%; }                             /* HUSKY */
 
-        /* CONTROLES DEL JUGADOR EN LA PARTE INFERIOR */
+        /* CONTROLES DEL JUGADOR */
         .action-bar {
             position: absolute;
-            bottom: 2%;
-            right: 2%;
+            bottom: 3%;
+            right: 3%;
             display: flex;
-            gap: 8px;
+            gap: 6px;
             background: rgba(3, 7, 18, 0.9);
-            padding: 8px 12px;
-            border-radius: 10px;
+            padding: 6px 10px;
+            border-radius: 8px;
             border: 1px solid rgba(56, 189, 248, 0.4);
         }
 
@@ -159,10 +159,10 @@
             background: linear-gradient(135deg, #38bdf8, #0284c7);
             color: #000;
             border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 5px 10px;
+            border-radius: 5px;
             font-weight: 900;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             cursor: pointer;
             text-transform: uppercase;
         }
@@ -180,7 +180,7 @@
         <!-- CRUPIER MUÑECO DE NIEVE -->
         <div class="dealer-box">
             <span class="dealer-avatar">☃️</span>
-            <span class="dealer-name">CRUPIER ÁRTICO</span>
+            <span class="dealer-name">CRUPIER</span>
         </div>
 
         <!-- CARTAS COMUNITARIAS Y BOTE -->
@@ -194,42 +194,42 @@
         <div class="pot-display">BOTE: <span id="potAmount">300</span> 🏔️</div>
 
         <!-- JUGADOR 1: TÚ (CASCO Y GAFAS DE SNOWBOARD) -->
-        <div class="player-seat seat-1 active-user">
+        <div class="player-seat seat-user active-user">
             <span class="avatar">🥽</span>
             <span class="p-name">TÚ (RIDER)</span>
             <span class="p-chips" id="userChips">500</span>
         </div>
 
         <!-- JUGADOR 2: PINGÜINO -->
-        <div class="player-seat seat-2">
+        <div class="player-seat seat-pinguino">
             <span class="avatar">🐧</span>
             <span class="p-name">PINGÜINO</span>
             <span class="p-chips">420</span>
         </div>
 
         <!-- JUGADOR 3: MORSA -->
-        <div class="player-seat seat-3">
+        <div class="player-seat seat-morsa">
             <span class="avatar">🦣</span>
             <span class="p-name">MORSA</span>
             <span class="p-chips">650</span>
         </div>
 
         <!-- JUGADOR 4: OSO POLAR -->
-        <div class="player-seat seat-4">
+        <div class="player-seat seat-oso">
             <span class="avatar">🐻‍❄️</span>
             <span class="p-name">OSO POLAR</span>
             <span class="p-chips">800</span>
         </div>
 
         <!-- JUGADOR 5: FOCA -->
-        <div class="player-seat seat-5">
+        <div class="player-seat seat-foca">
             <span class="avatar">🦭</span>
             <span class="p-name">FOCA</span>
             <span class="p-chips">310</span>
         </div>
 
         <!-- JUGADOR 6: HUSKY -->
-        <div class="player-seat seat-6">
+        <div class="player-seat seat-husky">
             <span class="avatar">🐺</span>
             <span class="p-name">HUSKY</span>
             <span class="p-chips">550</span>
