@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Póker Alpino - IVYSNOWCASINO</title>
+    <title>Póker Alpino - IVYSNOWCASINO (Shader Edition)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     
@@ -32,11 +32,11 @@
             font-size: 0.85rem; font-weight: 700;
             text-decoration: none;
             display: flex; align-items: center; gap: 8px;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
             z-index: 100;
             transition: all 0.3s;
         }
-        .btn-back:hover { background: #38bdf8; color: #000; box-shadow: 0 0 25px #38bdf8; }
+        .btn-back:hover { background: #38bdf8; color: #000; box-shadow: 0 0 30px #38bdf8; }
 
         .blinds-tracker {
             position: absolute;
@@ -49,7 +49,7 @@
             font-weight: 800;
             color: #facc15;
             z-index: 100;
-            box-shadow: 0 0 15px rgba(250, 204, 21, 0.3);
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
             text-align: right;
         }
         .blinds-timer { font-size: 0.65rem; color: #cbd5e1; }
@@ -63,26 +63,17 @@
             background-size: cover;
             background-position: center;
             border-radius: 20px;
-            box-shadow: 0 0 50px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 60px rgba(56, 189, 248, 0.4), inset 0 0 40px rgba(16, 185, 129, 0.2);
             overflow: hidden;
         }
 
-        .storm-overlay {
+        /* SHADER CANVAS DE VENTISCA Y ESCARCHA GPU */
+        #frostCanvas {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle, transparent 30%, rgba(255,255,255,0.15) 100%);
             pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            z-index: 25;
-        }
-        .storm-overlay.active {
-            opacity: 1;
-            animation: stormPulse 1s infinite alternate;
-        }
-        @keyframes stormPulse {
-            0% { background-color: rgba(56,189,248,0.1); }
-            100% { background-color: rgba(255,255,255,0.25); }
+            z-index: 2;
+            opacity: 0.85;
         }
 
         .dealer-box {
@@ -96,7 +87,7 @@
             border: 2px solid #38bdf8;
             border-radius: 10px;
             padding: 4px 10px;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
             z-index: 5;
         }
         .dealer-avatar { font-size: 1.5rem; }
@@ -116,10 +107,11 @@
         .community-cards {
             display: flex;
             gap: 5px;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.8);
             padding: 6px 10px;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
             min-width: 170px;
             min-height: 48px;
             justify-content: center;
@@ -132,8 +124,13 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             font-weight: 900; font-size: 0.75rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
             border: 1px solid #cbd5e1;
+            animation: cardDissolve 0.4s ease-out;
+        }
+        @keyframes cardDissolve {
+            0% { opacity: 0; transform: scale(0.7) translateY(10px); filter: blur(4px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
         }
         .card.red { color: #e11d48; }
         .card.hidden-card {
@@ -150,13 +147,14 @@
             border-radius: 14px;
             font-size: 0.9rem;
             font-weight: 900;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.8);
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
         .pot-display span {
             color: #facc15;
             font-size: 1.05rem;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
         }
 
         .player-seat {
@@ -169,14 +167,14 @@
             border-radius: 10px;
             padding: 4px 8px;
             min-width: 80px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.7);
             transition: all 0.3s ease;
             z-index: 10;
         }
 
         .player-seat.current-turn {
             border-color: #facc15;
-            box-shadow: 0 0 18px #facc15;
+            box-shadow: 0 0 25px #facc15;
             transform: scale(1.05);
         }
 
@@ -187,7 +185,7 @@
 
         .player-seat.active-user {
             border-color: #38bdf8;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
         }
 
         .avatar-row { display: flex; align-items: center; gap: 4px; }
@@ -197,7 +195,7 @@
             border-radius: 50%; width: 14px; height: 14px;
             font-size: 0.55rem; font-weight: 900;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 5px #fff;
+            box-shadow: 0 0 8px #fff;
         }
 
         .p-name { font-size: 0.55rem; font-weight: 800; color: #cbd5e1; }
@@ -220,9 +218,9 @@
             background: rgba(3, 7, 18, 0.95);
             padding: 8px 12px;
             border-radius: 12px;
-            border: 2px solid rgba(56, 189, 248, 0.5);
+            border: 2px solid rgba(56, 189, 248, 0.6);
             z-index: 30;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: 0 0 25px rgba(0,0,0,0.9);
         }
 
         .btn-act {
@@ -258,6 +256,7 @@
             font-size: 0.7rem; font-weight: 800;
             z-index: 30; text-transform: uppercase;
             letter-spacing: 0.5px;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
         }
     </style>
 </head>
@@ -271,7 +270,9 @@
     </div>
 
     <div class="poker-table-wrapper">
-        <div class="storm-overlay" id="stormOverlay"></div>
+        <!-- CANVAS PARA EL SHADER DE VENTISCA Y ESCARCHA -->
+        <canvas id="frostCanvas"></canvas>
+
         <div class="game-status-banner" id="statusBanner">Iniciando mano...</div>
 
         <div class="dealer-box">
@@ -345,6 +346,63 @@
     </div>
 
     <script>
+        // MOTOR DE SHADER EN CANVAS (VENTISCA Y CRISTALES DE HIELO GPU SIMULADOS)
+        const frostCanvas = document.getElementById('frostCanvas');
+        const fCtx = frostCanvas.getContext('2d');
+        let flakes = [];
+
+        function resizeFrostCanvas() {
+            frostCanvas.width = frostCanvas.parentElement.clientWidth;
+            frostCanvas.height = frostCanvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeFrostCanvas);
+        resizeFrostCanvas();
+
+        for (let i = 0; i < 70; i++) {
+            flakes.push({
+                x: Math.random() * frostCanvas.width,
+                y: Math.random() * frostCanvas.height,
+                radius: Math.random() * 2.2 + 0.5,
+                speedY: Math.random() * 1.5 + 0.5,
+                speedX: (Math.random() - 0.5) * 1.2,
+                opacity: Math.random() * 0.7 + 0.3
+            });
+        }
+
+        function renderFrostShader() {
+            fCtx.clearRect(0, 0, frostCanvas.width, frostCanvas.height);
+            
+            // Patrón procedural de escarcha perimetral (Shader overlay)
+            let grad = fCtx.createRadialGradient(
+                frostCanvas.width/2, frostCanvas.height/2, frostCanvas.width/4,
+                frostCanvas.width/2, frostCanvas.height/2, frostCanvas.width/1.2
+            );
+            grad.addColorStop(0, 'rgba(56, 189, 248, 0)');
+            grad.addColorStop(1, 'rgba(56, 189, 248, 0.12)');
+            fCtx.fillStyle = grad;
+            fCtx.fillRect(0, 0, frostCanvas.width, frostCanvas.height);
+
+            // Partículas de ventisca
+            fCtx.fillStyle = '#ffffff';
+            flakes.forEach(f => {
+                fCtx.globalAlpha = f.opacity;
+                fCtx.beginPath();
+                fCtx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
+                fCtx.fill();
+                
+                f.x += f.speedX;
+                f.y += f.speedY;
+
+                if (f.y > frostCanvas.height) { f.y = 0; f.x = Math.random() * frostCanvas.width; }
+                if (f.x > frostCanvas.width) f.x = 0;
+                if (f.x < 0) f.x = frostCanvas.width;
+            });
+            fCtx.globalAlpha = 1.0;
+            requestAnimationFrame(renderFrostShader);
+        }
+        renderFrostShader();
+
+        // AUDIO SYNTHESIZER
         const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             try {
@@ -372,12 +430,6 @@
                     gain.gain.setValueAtTime(0.2, AudioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, AudioCtx.currentTime + 0.6);
                     osc.start(); osc.stop(AudioCtx.currentTime + 0.6);
-                } else if (type === 'storm') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(120, AudioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.15, AudioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, AudioCtx.currentTime + 0.5);
-                    osc.start(); osc.stop(AudioCtx.currentTime + 0.5);
                 }
             } catch(e){}
         }
@@ -419,16 +471,6 @@
         }, 1000);
 
         function updateBanner(txt) { document.getElementById('statusBanner').textContent = txt; }
-
-        function toggleStorm(active) {
-            const storm = document.getElementById('stormOverlay');
-            if(active) {
-                storm.classList.add('active');
-                playSound('storm');
-            } else {
-                storm.classList.remove('active');
-            }
-        }
 
         function createDeck() {
             deck = [];
@@ -490,7 +532,6 @@
         }
 
         function startHand() {
-            toggleStorm(false);
             createDeck();
             communityCards = [];
             pot = 0;
@@ -537,7 +578,6 @@
                 return;
             }
 
-            // Comprobar si la ronda de apuestas ha terminado
             let activeUnfolded = players.filter(p => !p.folded && !p.allIn);
             let allMatched = activeUnfolded.every(p => p.bet === currentBet);
             let everyoneActed = activeUnfolded.every(p => actedThisRound.has(p.id));
@@ -563,7 +603,6 @@
             if (gameStage === 'PREFLOP') {
                 gameStage = 'FLOP';
                 communityCards.push(deck.pop(), deck.pop(), deck.pop());
-                toggleStorm(true);
                 updateBanner("FLOP - Ronda de apuestas");
             } else if (gameStage === 'FLOP') {
                 gameStage = 'TURN';
@@ -605,7 +644,7 @@
                 if(add > 0) {
                     postBet(0, add);
                     currentBet = user.bet;
-                    actedThisRound.clear(); // Si alguien sube, los demás deben volver a hablar
+                    actedThisRound.clear();
                     actedThisRound.add(user.id);
                 }
             } else if (act === 'allin') {
@@ -649,11 +688,8 @@
 
         function evaluateShowdown() {
             updateBanner("SHOWDOWN - ¡Calculando ganador!");
-            toggleStorm(false);
-
             let active = players.filter(p => !p.folded);
             let winner = active[Math.floor(Math.random() * active.length)];
-
             endHand(winner);
         }
 
@@ -662,7 +698,6 @@
             updateBanner(`🏆 ¡${winner.name} GANA ${pot} FORFAITS! 🏆`);
             playSound('win');
             pot = 0;
-
             updateUI();
 
             setTimeout(() => {
