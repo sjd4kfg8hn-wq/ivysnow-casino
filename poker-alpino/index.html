@@ -142,7 +142,6 @@
             color: transparent;
         }
 
-        /* NUEVO DISEÑO DEL BOTE ALTAMENTE VISIBLE */
         .pot-display {
             background: rgba(3, 7, 18, 0.95);
             border: 2px solid #10b981;
@@ -465,6 +464,7 @@
                 });
             });
 
+            // RENDERIZADO PERSISTENTE SEGURO DE CARTAS COMUNITARIAS
             const commContainer = document.getElementById('communityGrid');
             commContainer.innerHTML = '';
             communityCards.forEach(c => {
@@ -536,7 +536,6 @@
                 return;
             }
 
-            // Comprobar si todos han igualado o están all-in
             let activeUnfolded = players.filter(p => !p.folded && !p.allIn);
             let allMatched = activeUnfolded.every(p => p.bet === currentBet);
 
