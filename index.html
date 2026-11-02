@@ -474,6 +474,20 @@
         }
 
         .footer-links a:hover { text-decoration: underline; }
+        .card-image-container {
+    width: 100%;
+    height: 140px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.game-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
     </style>
 </head>
 <body>
@@ -526,14 +540,19 @@
         <div class="section-title"><i class="fa-solid fa-gamepad"></i> Slots de Nieve</div>
         <div class="games-grid">
             <div class="game-card">
-                <span class="card-tag tag-slot">Slot 1</span>
-                <div>
-                    <i class="fa-solid fa-mountain-sun game-icon"></i>
-                    <div class="game-title">Slot Alpina</div>
-                    <div class="game-desc">Tragaperras temática de freeride y líneas de alta montaña.</div>
-                </div>
-                <button class="btn-play" onclick="location.href='slot-alpina/index.html'">Entrar</button>
-            </div>
+    <span class="card-tag tag-slot">Slot 1</span>
+    
+    <!-- Contenedor de la imagen de la tarjeta -->
+    <div class="card-image-container">
+        <img src="images/slot-alpina.jpg" alt="Slot Alpina" class="game-card-img">
+    </div>
+
+    <div>
+        <div class="game-title">Slot Alpina</div>
+        <div class="game-desc">Tragaperras temática de freeride y líneas de alta montaña.</div>
+    </div>
+    <button class="btn-play" onclick="location.href='slot-alpina/index.html'">Entrar</button>
+</div>
 
             <div class="game-card">
                 <span class="card-tag tag-slot">Slot 2</span>
