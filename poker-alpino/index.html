@@ -67,7 +67,6 @@
             overflow: hidden;
         }
 
-        /* EFECTO TORMENTA DE NIEVE */
         .storm-overlay {
             position: absolute;
             inset: 0;
@@ -110,17 +109,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             z-index: 5;
         }
 
         .community-cards {
             display: flex;
             gap: 5px;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0, 0, 0, 0.75);
             padding: 6px 10px;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             min-width: 170px;
             min-height: 48px;
             justify-content: center;
@@ -143,15 +142,22 @@
             color: transparent;
         }
 
+        /* NUEVO DISEÑO DEL BOTE ALTAMENTE VISIBLE */
         .pot-display {
-            background: rgba(250, 204, 21, 0.25);
-            border: 1px solid #facc15;
-            color: #facc15;
-            padding: 3px 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
+            background: rgba(3, 7, 18, 0.95);
+            border: 2px solid #10b981;
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 14px;
+            font-size: 0.9rem;
             font-weight: 900;
-            box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .pot-display span {
+            color: #facc15;
+            font-size: 1.05rem;
         }
 
         .player-seat {
@@ -359,7 +365,6 @@
                     gain.gain.exponentialRampToValueAtTime(0.01, AudioCtx.currentTime + 0.12);
                     osc.start(); osc.stop(AudioCtx.currentTime + 0.12);
                 } else if (type === 'win') {
-                    // SECUENCIA DE APLAUSOS / TRIUNFO
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(523, AudioCtx.currentTime);
                     osc.frequency.setValueAtTime(659, AudioCtx.currentTime + 0.1);
@@ -400,7 +405,6 @@
         let sb = 5;
         let bb = 10;
         let timerSeconds = 120;
-        let roundActedCount = 0;
 
         setInterval(() => {
             timerSeconds--;
@@ -492,7 +496,6 @@
             pot = 0;
             currentBet = bb;
             gameStage = 'PREFLOP';
-            roundActedCount = 0;
 
             players.forEach(p => {
                 p.cards = [deck.pop(), deck.pop()];
@@ -510,7 +513,7 @@
             postBet(bbIdx, Math.min(bb, players[bbIdx].chips));
 
             turnIdx = (bbIdx + 1) % 6;
-            updateBanner(`Ronda Pre-Flop. Ciegas ${sb}/${bb}`);
+            updateBanner(`Pre-Flop | Ciegas ${sb}/${bb}`);
             updateUI();
             checkAI();
         }
@@ -533,14 +536,11 @@
                 return;
             }
 
-            roundActedCount++;
-
-            // Verificar si todos han igualado o están all-in
+            // Comprobar si todos han igualado o están all-in
             let activeUnfolded = players.filter(p => !p.folded && !p.allIn);
             let allMatched = activeUnfolded.every(p => p.bet === currentBet);
-            let finishedAll = (activeUnfolded.length === 0) || (roundActedCount >= active.length && allMatched);
 
-            if (finishedAll) {
+            if (activeUnfolded.length === 0 || (allMatched && players[turnIdx]?.bet === currentBet)) {
                 advanceStage();
                 return;
             }
@@ -556,7 +556,6 @@
         function advanceStage() {
             players.forEach(p => p.bet = 0);
             currentBet = 0;
-            roundActedCount = 0;
 
             if (gameStage === 'PREFLOP') {
                 gameStage = 'FLOP';
@@ -630,7 +629,7 @@
                         }
                     }
                     nextTurn();
-                }, 900);
+                }, 800);
             }
         }
 
