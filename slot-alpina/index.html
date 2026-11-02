@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Alpina - IVYSNOWCASINO</title>
+    <!-- FontAwesome para Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Permanent Marker (Graffiti) + Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Permanent+Marker&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --neon-blue: #38bdf8;
+            --neon-pink: #f43f5e;
+            --neon-purple: #c084fc;
+            --neon-green: #22c55e;
+            --neon-yellow: #facc15;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(34, 197, 94, 0.1) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* BOTÓN DE RETORNO AL LOBBY */
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-back:hover {
+            background: var(--neon-blue);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        /* CONTENEDOR DE LA MÁQUINA SLOT ALPINA VIP */
+        .slot-machine-container {
+            background: linear-gradient(135deg, #0b132b, #1c2541);
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.4), inset 0 0 30px rgba(0,0,0,0.8);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 900px;
+            padding: 30px;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .slot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .slot-title {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        }
+
+        .jackpot-display {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--neon-yellow);
+            padding: 8px 16px;
+            border-radius: 12px;
+            color: var(--neon-yellow);
+            font-weight: 900;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.3);
+            font-size: 0.95rem;
+        }
+
+        /* PANTALLA DE RODILLOS */
+        .slot-screen {
+            background: #020617;
+            border: 2px solid var(--neon-green);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.9);
+        }
+
+        .aurora-screen-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 20%, rgba(34, 197, 94, 0.15), rgba(56, 189, 248, 0.15), transparent 70%);
+            pointer-events: none;
+        }
+
+        .reels-frame {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .reel {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 12px 0;
+            text-align: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .symbol {
+            font-size: 2.8rem;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 12px rgba(255,255,255,0.4);
+        }
+
+        .payline-indicator {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--neon-blue);
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+
+        /* PANEL DE MANDOS */
+        .slot-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .control-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ctrl-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .ctrl-value {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .btn-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-group button {
+            background: #1e293b;
+            border: 1px solid var(--neon-blue);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 900;
+            transition: all 0.2s;
+        }
+
+        .btn-group button:hover {
+            background: var(--neon-blue);
+            color: #000;
+        }
+
+        .btn-spin {
+            background: linear-gradient(135deg, var(--neon-green), #15803d);
+            color: #fff;
+            border: none;
+            padding: 16px 38px;
+            border-radius: 14px;
+            font-weight: 900;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.5);
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn-spin:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(34, 197, 94, 0.8);
+        }
+
+        .btn-spin:disabled {
+            background: #334155;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            color: #94a3b8;
+        }
+
+        .paytable-summary {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BOTÓN PARA VOLVER AL LOBBY PRINCIPAL -->
+    <a href="../index.html" class="btn-back">
+        <i class="fa-solid fa-arrow-left"></i> Volver al Lobby
+    </a>
+
+    <!-- CONTENEDOR PRINCIPAL DE LA MÁQUINA -->
+    <div class="slot-machine-container">
+        
+        <!-- CABECERA -->
+        <div class="slot-header">
+            <div class="slot-title">SLOT ALPINA 🏔️</div>
+            <div class="jackpot-display">JACKPOT: <span id="alpinaJackpot">10,000</span> FORFAITS</div>
+        </div>
+
+        <!-- PANTALLA DE RODILLOS (5 REELS x 3 FILAS) -->
+        <div class="slot-screen">
+            <div class="aurora-screen-bg"></div>
+            <div class="reels-frame">
+                <div class="reel" id="reel1"><div class="symbol">🏔️</div><div class="symbol">❄️</div><div class="symbol">🎿</div></div>
+                <div class="reel" id="reel2"><div class="symbol">🏂</div><div class="symbol">🐺</div><div class="symbol">🏔️</div></div>
+                <div class="reel" id="reel3"><div class="symbol">💎</div><div class="symbol">🦅</div><div class="symbol">❄️</div></div>
+                <div class="reel" id="reel4"><div class="symbol">🎿</div><div class="symbol">🏔️</div><div class="symbol">🏂</div></div>
+                <div class="reel" id="reel5"><div class="symbol">👑</div><div class="symbol">❄️</div><div class="symbol">🐺</div></div>
+            </div>
+            <div class="payline-indicator" id="paylineNotice">¡SELECCIONA APUESTA Y GIRA EN LA CUMBRE!</div>
+        </div>
+
+        <!-- PANEL DE MANDOS -->
+        <div class="slot-controls">
+            <div class="control-box">
+                <span class="ctrl-label">TUS FORFAITS</span>
+                <span class="ctrl-value" id="slotBalance" style="color: var(--neon-yellow);">500</span>
+            </div>
+
+            <div class="control-box">
+                <span class="ctrl-label">LÍNEAS (1-5)</span>
+                <div class="btn-group">
+                    <button onclick="cambiarLineas(-1)">-</button>
+                    <span class="ctrl-value" id="linesDisplay">5</span>
+                    <button onclick="cambiarLineas(1)">+</button>
+                </div>
+            </div>
+
+            <div class="control-box">
+                <span class="ctrl-label">APUESTA / LÍNEA</span>
+                <div class="btn-group">
+                    <button onclick="cambiarApuesta(-5)">-</button>
+                    <span class="ctrl-value" id="betDisplay">10</span>
+                    <button onclick="cambiarApuesta(5)">+</button>
+                </div>
+            </div>
+
+            <div class="control-box">
+                <span class="ctrl-label">APUESTA TOTAL</span>
+                <span class="ctrl-value" style="color: var(--neon-yellow);" id="totalBetDisplay">50</span>
+            </div>
+
+            <button class="btn-spin" id="spinBtn" onclick="girarSlotAlpina()">SPIN ❄️</button>
+        </div>
+
+        <!-- TABLA DE PREMIOS -->
+        <div class="paytable-summary">
+            <span>👑 Corona: x50</span> | <span>💎 Diamante: x25</span> | <span>🏔️ Cumbre: x15</span> | <span>🦅 Águila: x10</span> | <span>🏂 Rider: x5</span>
+        </div>
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT DE LA SLOT -->
+    <script>
+        // Sincronizar saldo con el localStorage general del casino
+        let balance = parseInt(localStorage.getItem('ivysnow_forfaits')) || 500;
+        let lineas = 5;
+        let apuestaPorLinea = 10;
+
+        document.getElementById('slotBalance').textContent = balance;
+        actualizarValoresSlot();
+
+        function cambiarLineas(delta) {
+            lineas = Math.max(1, Math.min(5, lineas + delta));
+            actualizarValoresSlot();
+        }
+
+        function cambiarApuesta(delta) {
+            apuestaPorLinea = Math.max(5, Math.min(100, apuestaPorLinea + delta));
+            actualizarValoresSlot();
+        }
+
+        function actualizarValoresSlot() {
+            document.getElementById('slotBalance').textContent = balance;
+            document.getElementById('linesDisplay').textContent = lineas;
+            document.getElementById('betDisplay').textContent = apuestaPorLinea;
+            document.getElementById('totalBetDisplay').textContent = lineas * apuestaPorLinea;
+        }
+
+        const simbolosAlpinos = ['🏔️', '❄️', '🎿', '🏂', '🐺', '🦅', '💎', '👑'];
+
+        function girarSlotAlpina() {
+            const apuestaTotal = lineas * apuestaPorLinea;
+            
+            if (balance < apuestaTotal) {
+                alert("¡No tienes suficientes Forfaits! Recarga pass en el lobby principal.");
+                return;
+            }
+
+            // Descontar saldo y guardar en localStorage compartido
+            balance -= apuestaTotal;
+            localStorage.setItem('ivysnow_forfaits', balance);
+            actualizarValoresSlot();
+
+            const spinBtn = document.getElementById('spinBtn');
+            spinBtn.disabled = true;
+            document.getElementById('paylineNotice').textContent = "❄️ GIRANDO RODILLOS ALPINOS... ❄️";
+
+            let giros = 0;
+            const interval = setInterval(() => {
+                for (let r = 1; r <= 5; r++) {
+                    const reel = document.getElementById(`reel${r}`);
+                    const sims = reel.getElementsByClassName('symbol');
+                    for (let s = 0; s < 3; s++) {
+                        sims[s].textContent = simbolosAlpinos[Math.floor(Math.random() * simbolosAlpinos.length)];
+                    }
+                }
+                giros++;
+
+                if (giros > 15) {
+                    clearInterval(interval);
+                    evaluarPremio(apuestaTotal);
+                    spinBtn.disabled = false;
+                }
+            }, 80);
+        }
+
+        function evaluarPremio(apuestaTotal) {
+            const r = Math.random();
+            const notice = document.getElementById('paylineNotice');
+
+            if (r > 0.55) {
+                const multiplicador = Math.floor(Math.random() * 4 + 2);
+                const premio = apuestaTotal * multiplicador;
+                balance += premio;
+                localStorage.setItem('ivysnow_forfaits', balance);
+                actualizarValoresSlot();
+                notice.style.color = "var(--neon-green)";
+                notice.textContent = `🎉 ¡LÍNEA ALPINA GANADORA! PREMIO: +${premio} FORFAITS 🎉`;
+            } else {
+                notice.style.color = "var(--neon-blue)";
+                notice.textContent = "Sigue buscando la línea perfecta en la cumbre.";
+            }
+        }
+    </script>
+</body>
+</html>
