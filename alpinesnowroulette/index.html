@@ -32,7 +32,25 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            position: relative;
         }
+        /* Canvas GLSL de Fondo / Nieve */
+        #glsl-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            border-radius: 12px;
+            z-index: 0;
+            opacity: 0.35;
+        }
+        .main-container > * {
+            position: relative;
+            z-index: 1;
+        }
+
         /* Top Navigation / Lobby Bar */
         .top-nav {
             display: flex;
@@ -347,6 +365,15 @@
 <body>
 
 <div class="main-container">
+    <!-- Canvas WebGL/GLSL para efectos visuales alpinos y nieve -->
+    <canvas id="glsl-canvas"></canvas>
+
+    <!-- Audio de Google Drive integrado -->
+    <audio id="bg-audio" loop crossorigin="anonymous">
+        <source src="https://docs.google.com/uc?export=download&id=1RqHmFDIUAlAs56IzdeSjmNl3BUS2BuF2" type="audio/mp3">
+        Tu navegador no soporta elementos de audio.
+    </audio>
+
     <!-- Top Nav Bar -->
     <div class="top-nav">
         <a href="../index.html" class="btn-lobby">← Volver al Lobby</a>
@@ -422,6 +449,104 @@
 </div>
 
 <script>
+    // Configuración del motor WebGL / Shader GLSL para fondo de nieve y efectos alpinos
+    const canvas = document.getElementById('glsl-canvas');
+    const gl = canvas.getContext('webgl');
+
+    if (gl) {
+        const vertexShaderSource = `
+            attribute vec2 a_position;
+            void main() {
+                gl_Position = vec4(a_position, 0.0, 1.0);
+            }
+        `;
+        const fragmentShaderSource = `
+            precision highp float;
+            uniform float u_time;
+            uniform vec2 u_resolution;
+
+            float rand(vec2 co){
+                return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+            }
+
+            void main() {
+                vec2 st = gl_FragCoord.xy / u_resolution.xy;
+                vec3 color = vec3(0.02, 0.05, 0.1);
+
+                // Efecto de partículas de nieve procedurales con GLSL
+                for(int i=1; i<40; i++) {
+                    float fi = float(i);
+                    float speed = 0.2 + rand(vec2(fi, 2.0)) * 0.4;
+                    float x = rand(vec2(fi, 1.0)) + sin(u_time * 0.2 + fi) * 0.1;
+                    float y = fract(rand(vec2(fi, 3.0)) - u_time * speed * 0.1);
+                    vec2 pos = vec2(x, y);
+                    float dist = length(st - pos);
+                    float star = smoothstep(0.015 * rand(vec2(fi, 4.0)), 0.0, dist);
+                    color += vec3(0.6, 0.8, 1.0) * star * 0.7;
+                }
+
+                gl_FragColor = vec4(color, 0.5);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const vertShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+        const fragShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+        const program = gl.createProgram();
+        gl.attachShader(program, vertShader);
+        gl.attachShader(program, fragShader);
+        gl.linkProgram(program);
+
+        const positionLocation = gl.getAttribLocation(program, "a_position");
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1,  1, -1, -1,  1,
+            -1,  1,  1, -1,  1,  1,
+        ]), gl.STATIC_DRAW);
+
+        const timeLocation = gl.getUniformLocation(program, "u_time");
+        const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+
+        function render(time) {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+
+            gl.useProgram(program);
+            gl.enableVertexAttribArray(positionLocation);
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.uniform1f(timeLocation, time * 0.001);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+        }
+        requestAnimationFrame(render);
+    }
+
+    // Control de Audio Chillout desde Google Drive
+    function toggleMusic() {
+        const audio = document.getElementById('bg-audio');
+        const btn = document.getElementById('music-btn');
+        if (audio.paused) {
+            audio.play().then(() => {
+                btn.innerText = "🎵 MÚSICA: ON";
+            }).catch(e => console.log("Reproducción bloqueada por políticas del navegador", e));
+        } else {
+            audio.pause();
+            btn.innerText = "🎵 MÚSICA: OFF";
+        }
+    }
+
     const wheelOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
     const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 
@@ -431,63 +556,6 @@
     let placedBets = {};
     let spinHistory = [];
     let isSpinning = false;
-    let musicPlaying = false;
-    let audioCtx = null;
-    let musicTimer = null;
-
-    // Sintetizador Ambient Chillout Snowboard (Web Audio)
-    function playChilloutBackground() {
-        if (!musicPlaying) return;
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-
-        const chords = [
-            [261.63, 329.63, 392.00, 493.88], // Cmaj7
-            [220.00, 261.63, 329.63, 392.00], // Am7
-            [174.61, 220.00, 261.63, 329.63], // Fmaj7
-            [196.00, 246.94, 293.66, 349.23]  // G7
-        ];
-        let currentChordIndex = 0;
-
-        function playChord() {
-            if (!musicPlaying) return;
-            const now = audioCtx.currentTime;
-            const chord = chords[currentChordIndex];
-
-            chord.forEach((freq) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, now);
-
-                gain.gain.setValueAtTime(0, now);
-                gain.gain.linearRampToValueAtTime(0.03, now + 1.5);
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + 4);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 4);
-            });
-
-            currentChordIndex = (currentChordIndex + 1) % chords.length;
-            musicTimer = setTimeout(playChord, 3500);
-        }
-
-        playChord();
-    }
-
-    function toggleMusic() {
-        const btn = document.getElementById('music-btn');
-        musicPlaying = !musicPlaying;
-        if (musicPlaying) {
-            btn.innerText = "🎵 MÚSICA: ON";
-            playChilloutBackground();
-        } else {
-            btn.innerText = "🎵 MÚSICA: OFF";
-            if (musicTimer) clearTimeout(musicTimer);
-        }
-    }
 
     function speakNoVaMas() {
         if ('speechSynthesis' in window) {
@@ -508,14 +576,12 @@
         const table = document.getElementById('felt-table');
         table.innerHTML = '';
 
-        // Cero
         const zero = document.createElement('div');
         zero.className = 'cell cell-green zero-cell';
         zero.innerText = '0';
         zero.onclick = () => placeBet('num_0', zero);
         table.appendChild(zero);
 
-        // Cuadrícula 1-36
         for (let row = 0; row < 3; row++) {
             for (let col = 1; col <= 12; col++) {
                 const num = (3 - row) + (col - 1) * 3;
@@ -530,7 +596,6 @@
             }
         }
 
-        // Fila 4: Docenas
         const doz1 = document.createElement('div');
         doz1.className = 'cell cell-special';
         doz1.style.gridRow = '4'; doz1.style.gridColumn = '2 / span 4';
@@ -552,7 +617,6 @@
         doz3.onclick = () => placeBet('doz_3', doz3);
         table.appendChild(doz3);
 
-        // Fila 5: Suertes Sencillas (1-18, PAR, ROJO/NEGRO, IMPAR, 19-36)
         const low = document.createElement('div');
         low.className = 'cell cell-special';
         low.style.gridRow = '5'; low.style.gridColumn = '2 / span 2';
@@ -595,7 +659,6 @@
         high.onclick = () => placeBet('opt_high', high);
         table.appendChild(high);
 
-        // Track Vecinos del 0
         const track = document.getElementById('vecinos-track');
         track.innerHTML = '';
         const vecinosOrder = [22, 18, 29, 7, 28, 12, 35, 3, 26, 0, 32, 15, 19, 4, 21];
@@ -672,16 +735,13 @@
         const isEven = winningNum !== 0 && winningNum % 2 === 0;
         const isOdd = winningNum !== 0 && winningNum % 2 !== 0;
 
-        // Pleno (36:1)
         if (placedBets[`num_${winningNum}`]) {
             winAmount += placedBets[`num_${winningNum}`] * 36;
         }
-        // Docenas (3:1)
         if (winningNum >= 1 && winningNum <= 12 && placedBets['doz_1']) winAmount += placedBets['doz_1'] * 3;
         if (winningNum >= 13 && winningNum <= 24 && placedBets['doz_2']) winAmount += placedBets['doz_2'] * 3;
         if (winningNum >= 25 && winningNum <= 36 && placedBets['doz_3']) winAmount += placedBets['doz_3'] * 3;
 
-        // Suertes Sencillas (2:1)
         if (winningNum >= 1 && winningNum <= 18 && placedBets['opt_low']) winAmount += placedBets['opt_low'] * 2;
         if (winningNum >= 19 && winningNum <= 36 && placedBets['opt_high']) winAmount += placedBets['opt_high'] * 2;
         if (isEven && placedBets['opt_even']) winAmount += placedBets['opt_even'] * 2;
