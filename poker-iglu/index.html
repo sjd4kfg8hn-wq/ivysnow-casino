@@ -24,7 +24,6 @@
     backdrop-filter: blur(15px); transition: opacity 0.5s ease;
   }
   
-  /* BOTÓN VOLVER A IVYSNOWCASINO EN LA PORTADA */
   .btn-top-back {
     position: absolute; top: 20px; left: 20px;
     background: rgba(5, 24, 41, 0.8); border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
@@ -32,9 +31,7 @@
     transition: all 0.2s ease; text-decoration: none; display: flex; align-items: center; gap: 6px;
     box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
   }
-  .btn-top-back:hover {
-    background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan);
-  }
+  .btn-top-back:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
 
   .intro-logo {
     width: 220px; height: 220px; border-radius: 50%; object-fit: cover;
@@ -142,7 +139,7 @@
   }
   .card .suit { font-size: 1.3rem; align-self: flex-end; line-height: 1; }
 
-  /* SEATS & PENGUINS */
+  /* SEATS & PENGUINS CON RESPIRACIÓN VIVA */
   .seat { position: absolute; width: 115px; display: flex; flex-direction: column; align-items: center; transition: all 0.4s ease; }
   .seat-0 { bottom: -52px; left: 50%; transform: translateX(-50%); }
   .seat-1 { bottom: 35px; left: -35px; }
@@ -157,8 +154,23 @@
     border: 3px solid rgba(255,255,255,0.3); position: relative;
     display: flex; justify-content: center; align-items: center; font-size: 1.8rem;
     box-shadow: 0 0 15px rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    animation: idleBreath 4s ease-in-out infinite;
   }
-  .seat.active .penguin-avatar { border-color: var(--neon-cyan); box-shadow: 0 0 25px var(--neon-cyan); transform: scale(1.1); }
+  @keyframes idleBreath {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
+
+  .seat.active .penguin-avatar {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 25px var(--neon-cyan);
+    animation: activePulseBreath 1.8s ease-in-out infinite;
+  }
+  @keyframes activePulseBreath {
+    0%, 100% { transform: scale(1.08); box-shadow: 0 0 20px var(--neon-cyan); }
+    50% { transform: scale(1.15); box-shadow: 0 0 35px var(--neon-cyan); }
+  }
+
   .seat.folded { opacity: 0.4; filter: grayscale(0.8); }
 
   .emote-bubble {
@@ -312,7 +324,7 @@
       <div class="info-item">BUY-IN: <span>1.000€</span></div>
       <div class="info-item">BOLSA: <span class="prize-pool-tag">5.400€</span></div>
       <div class="info-item">CIEGAS: <span id="blindLevel">10 / 20</span></div>
-      <div class="info-item">IGLÚ: <span id="igluEnergyDisplay">0°C</span></div>
+      <div class="info-item">ENERGÍA IGLÚ: <span id="igluEnergyDisplay">0%</span></div>
     </div>
     <button class="btn-lobby" onclick="returnToLobby()">ABANDONAR LOBBY</button>
   </header>
@@ -613,9 +625,29 @@ function evaluateHand(cards7) {
   let groups = Object.keys(counts).map(r => ({ rank: Number(r), count: counts[r] })).sort((a,b) => b.count - a.count || b.rank - a.rank);
 
   let isFlush = false;
+  let flushSuit = null;
   let suitCounts = {};
-  cards7.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit] || 0) + 1);
-  for(let s in suitCounts) { if(suitCounts[s] >= 5) isFlush = true; }
+  cards7.cards = cards7.forEach ? cards7.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit] || 0) + 1) : null;
+  for(let s in suitCounts) { 
+    if(suitCounts[s] >= 5) { 
+      isFlush = true; 
+      flushSuit = s; 
+    } 
+  }
+
+  // Comprobación estricta de escalera de color (las 5 cartas de la escalera deben ser del mismo palo)
+  let isStraightFlush = false;
+  let straightFlushHigh = -1;
+  if (isFlush) {
+    let flushCards = cards7.filter(c => c.suit === flushSuit).sort((a,b) => b.rank - a.rank);
+    let uniqueFlushRanks = [...new Set(flushCards.map(c => c.rank))];
+    for(let i=0; i<=uniqueFlushRanks.length - 5; i++) {
+      if(uniqueFlushRanks[i] - uniqueFlushRanks[i+4] === 4) {
+        isStraightFlush = true;
+        straightHigh = uniqueFlushRanks[i];
+      }
+    }
+  }
 
   let isStraight = false;
   let uniqueRanks = [...new Set(ranked.map(c => c.rank))];
@@ -631,7 +663,7 @@ function evaluateHand(cards7) {
     straightHigh = 3;
   }
 
-  if(isFlush && isStraight) return 8000 + straightHigh;
+  if(isStraightFlush) return 8000 + straightHigh; // Escalera de color real
   if(groups[0].count === 4) return 7000 + groups[0].rank;
   if(groups[0].count === 3 && groups[1].count >= 2) return 6000 + groups[0].rank;
   if(isFlush) return 5000 + ranked[0].rank;
@@ -681,7 +713,14 @@ function returnToLobby() {
   document.getElementById('jackpotBanner').style.display = 'none';
   document.getElementById('introScreen').style.display = 'flex';
   document.getElementById('introScreen').style.opacity = '1';
-  players.forEach(p => { p.stack = 1500; p.eliminated = false; p.folded = false; });
+  
+  players.forEach(p => {
+    p.stack = 1500;
+    p.eliminated = false;
+    p.folded = false;
+    const seat = document.getElementById(`seat-${p.id}`);
+    if(seat) seat.classList.remove("eliminating");
+  });
 }
 
 /* ================= TORNEO SIT & GO (1.500 STACK) ================= */
@@ -774,6 +813,7 @@ function startNewHand() {
   highestBet = Math.max(...players.map(p => p.currentBet));
   minRaise = highestBet * 2;
   currentTurnIdx = getNextActivePlayerIdx(bbIdx);
+  roundStartPlayerIdx = currentTurnIdx; // CORRECCIÓN ERROR 1: Asignar roundStartPlayerIdx tras ciegas
   
   updateUI();
   processTurn();
@@ -794,7 +834,7 @@ function postBet(player, amount) {
   
   igluEnergy += amount;
   auroraIntensity = Math.min(1, pot / 3000);
-  document.getElementById('igluEnergyDisplay').innerText = Math.min(100, Math.floor(igluEnergy / 40)) + '°C';
+  document.getElementById('igluEnergyDisplay').innerText = Math.min(100, Math.floor(igluEnergy / 40)) + '%';
   
   playSound('chip');
 }
@@ -806,6 +846,7 @@ function processTurn() {
   if(activeUnfolded.length === 1) {
     let winner = activeUnfolded[0];
     winner.stack += pot;
+    pot = 0; // CORRECCIÓN ERROR 4: Vaciar bote al ganar por folds
     document.getElementById(`action-${winner.id}`).innerText = '¡GANA EL BOTE!';
     showEmote(winner.id, '😂');
     playSound('win');
@@ -924,7 +965,11 @@ function humanAction(type) {
     document.getElementById(`action-0`).innerText = 'IR';
   } else if(type === 'raise') {
     let raiseVal = parseInt(document.getElementById('raiseSlider').value);
-    let bet = Math.min(p.stack, raiseVal - p.currentBet);
+    
+    // CORRECCIÓN ERROR 2: Evitar raise negativo y cálculo seguro de diferencia
+    let diff = Math.max(0, raiseVal - p.currentBet);
+    let bet = Math.min(p.stack, diff);
+    
     postBet(p, bet);
     highestBet = p.currentBet;
     minRaise = highestBet * 2;
@@ -982,6 +1027,8 @@ function evaluateShowdown() {
   let winner = scored[0].player;
 
   winner.stack += pot;
+  pot = 0; // CORRECCIÓN ERROR 4: Vaciar bote al repartir en showdown
+  
   document.getElementById(`action-${winner.id}`).innerText = '¡GANA EL BOTE!';
   showEmote(winner.id, '😂');
   playSound('win');
