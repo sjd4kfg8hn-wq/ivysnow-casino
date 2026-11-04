@@ -660,10 +660,9 @@ function evaluateHand(cards7) {
         break;
       }
     }
-    // SOPORTE ESCALERA DE COLOR A-2-3-4-5
     if(!isStraightFlush && uniqueFlushRanks.includes(12) && uniqueFlushRanks.includes(3) && uniqueFlushRanks.includes(2) && uniqueFlushRanks.includes(1) && uniqueFlushRanks.includes(0)) {
       isStraightFlush = true;
-      straightFlushHigh = 3; // El 5 es la carta alta
+      straightFlushHigh = 3;
     }
   }
 
@@ -720,6 +719,26 @@ function compareScores(s1, s2) {
     }
   }
   return 0;
+}
+
+/* ================= DETECCIÓN DE PROYECTOS PARA LA IA ================= */
+function hasFlushDraw(cards) {
+  let suits = {};
+  cards.forEach(c => {
+    suits[c.suit] = (suits[c.suit] || 0) + 1;
+  });
+  return Object.values(suits).some(v => v === 4);
+}
+
+function hasOpenEndedStraightDraw(cards) {
+  let ranks = [...new Set(cards.map(c => c.rank))];
+  ranks.sort((a,b) => a - b);
+  for(let i = 0; i < ranks.length - 3; i++) {
+    if(ranks[i+3] - ranks[i] === 3) {
+      return true;
+    }
+  }
+  return false;
 }
 
 /* ================= VARIABLES DE JACKPOT ================= */
@@ -969,29 +988,73 @@ function advanceStage() {
   processTurn();
 }
 
+/* ================= INTELIGENCIA ARTIFICIAL TÁCTICA AVANZADA ================= */
 function executeAITurn(player) {
   let callAmt = highestBet - player.currentBet;
   let action = 'check';
-  let c1 = player.cards[0].rank;
-  let c2 = player.cards[1].rank;
-  let isPair = (c1 === c2);
-  let highCard = Math.max(c1, c2);
 
-  if(player.style === 'MANIAC') {
-    if(Math.random() < 0.4 && player.stack > callAmt * 2) { action = 'raise'; showEmote(player.id, '😏'); }
-    else if(callAmt <= player.stack) action = callAmt === 0 ? 'check' : 'call';
-    else action = 'fold';
-  } else if(player.style === 'TIGHT') {
-    if(isPair || highCard >= 10) action = callAmt === 0 ? 'check' : 'call';
-    else { action = callAmt === 0 ? 'check' : 'fold'; if(Math.random()<0.3) showEmote(player.id, '🧊'); }
-  } else if(player.style === 'BLUFFER') {
-    if(Math.random() < 0.35 && player.stack > callAmt) { action = 'raise'; showEmote(player.id, '😎'); }
-    else action = callAmt === 0 ? 'check' : (callAmt < player.stack * 0.2 ? 'call' : 'fold');
+  let allCards = player.cards.concat(communityCards);
+  let handEval = evaluateHand(allCards);
+  let handStrength = handEval.score[0];
+
+  let flushDraw = hasFlushDraw(allCards);
+  let straightDraw = hasOpenEndedStraightDraw(allCards);
+  let potOdds = callAmt / Math.max(pot, 1);
+
+  if(player.style === "TIGHT") {
+    if(handStrength >= 5) {
+      action = "raise";
+      showEmote(player.id, '🧊');
+    } else if(handStrength >= 2) {
+      action = "call";
+    } else if(flushDraw && potOdds < 0.10) {
+      action = "call";
+    } else {
+      action = callAmt === 0 ? "check" : "fold";
+    }
+  } else if(player.style === "TAG") {
+    if(handStrength >= 4) {
+      action = Math.random() < 0.7 ? "raise" : "call";
+      showEmote(player.id, '😼');
+    } else if(handStrength >= 1) {
+      action = "call";
+    } else if(flushDraw || straightDraw) {
+      action = potOdds < 0.15 ? "call" : "fold";
+    } else {
+      action = callAmt === 0 ? "check" : "fold";
+    }
+  } else if(player.style === "BLUFFER") {
+    if(Math.random() < 0.25) {
+      action = "raise";
+      showEmote(player.id, '😎');
+    } else if(handStrength >= 2) {
+      action = "call";
+    } else if(flushDraw || straightDraw) {
+      action = "call";
+    } else {
+      action = callAmt === 0 ? "check" : "fold";
+    }
+  } else if(player.style === "MANIAC") {
+    if(handStrength >= 1 || Math.random() < 0.55) {
+      action = "raise";
+      showEmote(player.id, '🔥');
+    } else {
+      action = callAmt <= player.stack ? "call" : "fold";
+    }
+  } else if(player.style === "GTO") {
+    if(handStrength >= 5) {
+      action = "raise";
+      showEmote(player.id, '👑');
+    } else if(handStrength >= 2) {
+      action = "call";
+    } else if(flushDraw || straightDraw) {
+      action = potOdds < 0.18 ? "call" : "fold";
+    } else {
+      action = callAmt === 0 ? "check" : "fold";
+    }
   } else {
-    if(isPair || highCard >= 8) {
-      if(highCard >= 11 && Math.random() < 0.5) action = 'raise';
-      else action = callAmt === 0 ? 'check' : 'call';
-    } else { action = callAmt === 0 ? 'check' : 'fold'; }
+    // Fallback genérico por seguridad
+    action = callAmt === 0 ? "check" : "call";
   }
 
   if(action === 'fold') {
@@ -1112,7 +1175,7 @@ function calculatePots() {
 function evaluateShowdown() {
   let active = players.filter(p => !p.eliminated && !p.folded);
   
-  scored = active.map(p => {
+  let scored = active.map(p => {
     let evalRes = evaluateHand(p.cards.concat(communityCards));
     document.getElementById(`action-${p.id}`).innerText = evalRes.name;
     return { player: p, eval: evalRes };
