@@ -120,7 +120,6 @@
     border: 1px solid rgba(0,243,255,0.3); backdrop-filter: blur(5px);
   }
   
-  /* BANNER DE RESULTADO DE MANO */
   #handResult {
     color: var(--neon-gold);
     font-weight: bold;
@@ -678,7 +677,6 @@ function evaluateHand(cards7) {
     straightHigh = 3;
   }
 
-  // CONSTRUCCIÓN DE KICKERS PRECISOS PARA DESEMPATES EXACTOS
   if(isStraightFlush) return { score: [8, straightFlushHigh], name: 'ESCALERA DE COLOR' };
   if(groups[0].count === 4) {
     let kicker = ranked.find(c => c.rank !== groups[0].rank).rank;
@@ -708,12 +706,14 @@ function evaluateHand(cards7) {
   return { score: [0, ...kickers], name: 'CARTA ALTA' };
 }
 
-// Función auxiliar para comparar arrays de puntuación/kickers con precisión milimétrica
-fn compareScores(s1, s2) {
-  for(let i=0; i<Math.max(s1.length, s2.length); i++) {
+// CORRECCIÓN BUG 1: Sintaxis correcta de compareScores con function
+function compareScores(s1, s2) {
+  for(let i = 0; i < Math.max(s1.length, s2.length); i++){
     let v1 = s1[i] || 0;
     let v2 = s2[i] || 0;
-    if(v1 !== v2) return v1 - v2;
+    if(v1 !== v2){
+      return v1 - v2;
+    }
   }
   return 0;
 }
@@ -841,7 +841,9 @@ function startNewHand() {
   auroraIntensity = 0.3;
   gameStage = 'PREFLOP';
   document.getElementById('handResult').innerText = '';
-  document.getElementById('pokerTable').style.boxShadow = '';
+  
+  // CORRECCIÓN BUG 2: Restaurar sombra original de la mesa sin perder estilos de diseño
+  document.getElementById('pokerTable').style.boxShadow = "0 0 50px rgba(0,243,255,.35), inset 0 0 35px rgba(0,243,255,.2), inset 0 0 80px rgba(0,0,0,.6)";
   
   players.forEach(p => {
     p.cards = [];
@@ -1080,10 +1082,8 @@ function evaluateShowdown() {
     return { player: p, eval: evalRes };
   });
 
-  // Ordenar usando comparación de kickers múltiples exacta
   scored.sort((a,b) => compareScores(b.eval.score, a.eval.score));
 
-  // Detectar ganadores múltiples en caso de EMPATE REAL (Split Pot)
   let bestScore = scored[0].eval.score;
   let winners = scored.filter(s => compareScores(s.eval.score, bestScore) === 0);
 
@@ -1100,16 +1100,13 @@ function evaluateShowdown() {
   pot = 0;
   playSound('win');
 
-  // EFECTO VISUAL PREMIUM PARA MANOS MÁS ALTAS (Full, Póker, Escalera de Color)
   let topHandName = scored[0].eval.name;
   if(['FULL HOUSE', 'PÓKER', 'ESCALERA DE COLOR'].includes(topHandName)) {
     auroraIntensity = 1;
     let tableEl = document.getElementById('pokerTable');
     tableEl.style.boxShadow = "0 0 120px cyan, 0 0 180px purple";
-    setTimeout(() => { tableEl.style.boxShadow = ""; }, 5000);
   }
 
-  // Actualizar banner central de resultado
   let resultText = "";
   if(winners.length > 1) {
     let names = winners.map(w => w.player.name).join(' y ');
