@@ -765,6 +765,17 @@ function triggerJackpotRain() {
 
 function enterCasino() {
   initAudio();
+  
+  // Activar reproducción de SoundCloud de forma invisible
+  let iframe = document.getElementById('soundCloudPlayer');
+  if(iframe) {
+    // Forzar recarga o interacción con el widget si es necesario
+    let currentSrc = iframe.src;
+    if(!currentSrc.includes('auto_play=true')) {
+      iframe.src = currentSrc + "&auto_play=true";
+    }
+  }
+
   if(Math.random() < 0.3) { triggerJackpotRain(); }
   document.getElementById('introScreen').style.opacity = '0';
   setTimeout(() => {
@@ -776,6 +787,15 @@ function enterCasino() {
 }
 
 function returnToLobby() {
+  // Pausar o resetear el iframe de SoundCloud al salir
+  let iframe = document.getElementById('soundCloudPlayer');
+  if(iframe) {
+    let src = iframe.src;
+    iframe.src = ""; // Apaga el reproductor
+    iframe.src = src; // Restaura la ruta original para la próxima vez
+  }
+  
+  document.getElementById('winOverlay').classList.remove('active');
   document.getElementById('winOverlay').classList.remove('active');
   document.getElementById('app').classList.remove('active');
   document.getElementById('jackpotBanner').style.display = 'none';
@@ -1301,5 +1321,12 @@ function updateUI() {
   });
 }
 </script>
+  
+ <!-- Reproductor oculto de SoundCloud -->
+<div style="display:none;">
+  <iframe id="soundCloudPlayer" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
+    src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sobre-filo/sets/huevos-a-la-vida-eurobloke&color=%2300f3ff&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+  </iframe>
+</div>
 </body>
 </html>
