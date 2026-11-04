@@ -17,165 +17,173 @@
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
   body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); color: #fff; }
 
-  /* CANVAS DE FONDO */
-  #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+  /* PORTADA DE INICIO */
+  #introScreen {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 8, 20, 0.95);
+    z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    backdrop-filter: blur(15px); transition: opacity 0.5s ease;
+  }
+  .intro-logo {
+    width: 220px; height: 220px; border-radius: 50%; object-fit: cover;
+    border: 4px solid var(--neon-cyan); box-shadow: 0 0 30px var(--neon-cyan); margin-bottom: 25px;
+    animation: pulseLogo 2s infinite alternate;
+  }
+  @keyframes pulseLogo { from { transform: scale(1); box-shadow: 0 0 20px var(--neon-cyan); } to { transform: scale(1.05); box-shadow: 0 0 40px var(--neon-green); } }
+
+  .intro-title {
+    font-size: 3rem; font-weight: 900; font-family: 'Impact', sans-serif;
+    letter-spacing: 4px; background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; text-align: center;
+  }
+  .intro-sub { font-size: 0.9rem; letter-spacing: 5px; color: var(--neon-cyan); margin-bottom: 30px; }
+
+  /* FONDO DE FOTO PERSONALIZADA */
+  #bgContainer {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+    background: url('images/poker_iglu.jpg') no-repeat center center/cover;
+  }
+  #bgContainer::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(3, 8, 20, 0.65); backdrop-filter: blur(3px);
+  }
+
+  /* CANVAS DE PARTÍCULAS */
+  #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
 
   /* APP CONTAINER */
-  #app { position: relative; z-index: 2; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 10px; }
+  #app { position: relative; z-index: 3; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 10px; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
+  #app.active { opacity: 1; pointer-events: auto; }
 
   /* HEADER & GRAFFITI */
   header { text-align: center; margin-top: 5px; }
   .logo-graffiti {
-    font-size: 2.8rem;
-    font-weight: 900;
-    font-family: 'Impact', sans-serif;
-    letter-spacing: 3px;
+    font-size: 2.6rem; font-weight: 900; font-family: 'Impact', sans-serif; letter-spacing: 3px;
     background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 15px rgba(0,243,255,0.6), 0 0 30px rgba(157,0,255,0.4);
-    transform: rotate(-2deg);
-    display: inline-block;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(0,243,255,0.6); transform: rotate(-2deg); display: inline-block;
   }
-  .sub-title { font-size: 0.8rem; letter-spacing: 4px; color: var(--neon-cyan); opacity: 0.8; margin-top: -5px; }
+  .sub-title { font-size: 0.75rem; letter-spacing: 4px; color: var(--neon-cyan); opacity: 0.9; margin-top: -5px; }
 
-  /* INFO BAR (CIEGAS & TEMPORIZADOR) */
+  /* INFO BAR */
   .info-bar {
-    display: flex; gap: 20px; background: rgba(5, 24, 41, 0.75); border: 1px solid rgba(0,243,255,0.3);
-    padding: 6px 18px; border-radius: 20px; backdrop-filter: blur(8px); box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    font-size: 0.9rem; margin-top: 5px;
+    display: flex; gap: 20px; background: rgba(5, 24, 41, 0.85); border: 1px solid rgba(0,243,255,0.3);
+    padding: 5px 16px; border-radius: 20px; backdrop-filter: blur(8px); font-size: 0.85rem; margin-top: 5px;
   }
   .info-item span { color: var(--neon-cyan); font-weight: bold; }
 
   /* POKER TABLE CONTAINER */
   .table-container {
-    position: relative; width: 900px; height: 480px; max-width: 95vw; max-height: 58vh;
+    position: relative; width: 900px; height: 480px; max-width: 95vw; max-height: 56vh;
     margin: auto; border-radius: 240px; background: var(--felt-color);
     border: 12px solid #112233;
     box-shadow: 0 0 40px rgba(0, 243, 255, 0.25), inset 0 0 50px rgba(0,0,0,0.8), inset 0 0 15px var(--neon-blue);
     display: flex; flex-direction: column; justify-content: center; align-items: center;
   }
-
   .table-logo {
     position: absolute; font-size: 1.2rem; font-weight: 800; letter-spacing: 6px; opacity: 0.15;
     color: var(--neon-cyan); pointer-events: none; text-align: center;
   }
 
-  /* COMMUNITY CARDS & POT */
   .pot-display {
-    font-size: 1.2rem; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--neon-cyan);
-    margin-bottom: 10px; background: rgba(0,0,0,0.4); padding: 4px 15px; border-radius: 12px;
+    font-size: 1.1rem; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--neon-cyan);
+    margin-bottom: 8px; background: rgba(0,0,0,0.5); padding: 3px 14px; border-radius: 10px;
     border: 1px solid rgba(0,243,255,0.2);
   }
-  .community-cards { display: flex; gap: 8px; height: 80px; align-items: center; }
+  .community-cards { display: flex; gap: 8px; height: 75px; align-items: center; }
 
-  /* CARDS STYLING */
+  /* CARDS */
   .card {
-    width: 52px; height: 75px; background: #fff; border-radius: 6px; color: #111;
+    width: 48px; height: 70px; background: #fff; border-radius: 5px; color: #111;
     display: flex; flex-direction: column; justify-content: space-between; padding: 4px;
-    font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-    position: relative; transition: transform 0.3s ease;
+    font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 8px rgba(0,0,0,0.5); position: relative;
   }
   .card.red { color: #d00; }
   .card.back {
     background: linear-gradient(135deg, #051829, #0a3d62); border: 2px solid var(--neon-cyan);
-    box-shadow: 0 0 8px var(--neon-blue);
   }
   .card.back::after {
     content: '❄'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    color: var(--neon-cyan); font-size: 1.4rem; opacity: 0.6;
+    color: var(--neon-cyan); font-size: 1.2rem; opacity: 0.6;
   }
-  .card .suit { font-size: 1.1rem; align-self: flex-end; }
+  .card .suit { font-size: 1rem; align-self: flex-end; }
 
-  /* SEATS & SEATED PENGUINS */
-  .seat {
-    position: absolute; width: 110px; display: flex; flex-direction: column; align-items: center;
-    transition: all 0.5s ease;
-  }
-  /* 6 Seats positioning around oval */
-  .seat-0 { bottom: -45px; left: 50%; transform: translateX(-50%); } /* Humano */
-  .seat-1 { bottom: 40px; left: -30px; }
-  .seat-2 { top: 40px; left: -30px; }
-  .seat-3 { top: -45px; left: 50%; transform: translateX(-50%); }
-  .seat-4 { top: 40px; right: -30px; }
-  .seat-5 { bottom: 40px; right: -30px; }
+  /* SEATS */
+  .seat { position: absolute; width: 110px; display: flex; flex-direction: column; align-items: center; transition: all 0.4s ease; }
+  .seat-0 { bottom: -42px; left: 50%; transform: translateX(-50%); }
+  .seat-1 { bottom: 35px; left: -30px; }
+  .seat-2 { top: 35px; left: -30px; }
+  .seat-3 { top: -42px; left: 50%; transform: translateX(-50%); }
+  .seat-4 { top: 35px; right: -30px; }
+  .seat-5 { bottom: 35px; right: -30px; }
 
   .penguin-avatar {
-    width: 65px; height: 65px; border-radius: 50%; background: #081a2b;
+    width: 60px; height: 60px; border-radius: 50%; background: #081a2b;
     border: 3px solid rgba(255,255,255,0.2); position: relative;
-    display: flex; justify-content: center; align-items: center; font-size: 2rem;
-    box-shadow: 0 0 15px rgba(0,0,0,0.6); transition: all 0.3s;
+    display: flex; justify-content: center; align-items: center; font-size: 1.8rem;
+    box-shadow: 0 0 12px rgba(0,0,0,0.6);
   }
   .seat.active .penguin-avatar { border-color: var(--neon-cyan); box-shadow: 0 0 20px var(--neon-cyan); transform: scale(1.08); }
   .seat.folded { opacity: 0.4; filter: grayscale(0.8); }
   .seat.eliminated { display: none; }
 
   .dealer-chip {
-    position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; background: #fff;
-    color: #000; font-weight: bold; font-size: 0.7rem; border-radius: 50%; display: flex;
-    justify-content: center; align-items: center; border: 2px solid #000; box-shadow: 0 0 5px #fff;
+    position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; background: #fff;
+    color: #000; font-weight: bold; font-size: 0.65rem; border-radius: 50%; display: flex;
+    justify-content: center; align-items: center; border: 2px solid #000;
   }
 
   .player-info {
-    background: rgba(3, 8, 20, 0.85); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px;
-    padding: 3px 8px; text-align: center; width: 100%; margin-top: 4px; backdrop-filter: blur(4px);
+    background: rgba(3, 8, 20, 0.85); border: 1px solid rgba(0,243,255,0.3); border-radius: 6px;
+    padding: 2px 6px; text-align: center; width: 100%; margin-top: 3px; backdrop-filter: blur(4px);
   }
-  .player-name { font-size: 0.75rem; font-weight: bold; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .player-stack { font-size: 0.8rem; font-weight: 800; color: var(--neon-green); }
-  .player-action { font-size: 0.65rem; color: var(--neon-cyan); height: 12px; font-style: italic; }
+  .player-name { font-size: 0.7rem; font-weight: bold; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .player-stack { font-size: 0.75rem; font-weight: 800; color: var(--neon-green); }
+  .player-action { font-size: 0.6rem; color: var(--neon-cyan); height: 11px; font-style: italic; }
 
-  .player-cards { display: flex; gap: -15px; margin-top: -15px; z-index: 3; }
-  .player-cards .card { transform: scale(0.75); margin: 0 -8px; }
+  .player-cards { display: flex; margin-top: -12px; z-index: 3; }
+  .player-cards .card { transform: scale(0.7); margin: 0 -7px; }
 
-  /* CONTROLES DE JUGADOR */
+  /* CONTROLES */
   .controls-bar {
     width: 100%; max-width: 800px; background: rgba(5, 24, 41, 0.9); border: 1px solid rgba(0,243,255,0.4);
-    border-radius: 16px; padding: 12px 20px; display: flex; gap: 15px; align-items: center;
-    justify-content: space-between; backdrop-filter: blur(10px); box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
-    margin-bottom: 10px;
+    border-radius: 14px; padding: 10px 18px; display: flex; gap: 12px; align-items: center;
+    justify-content: space-between; backdrop-filter: blur(10px); box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+    margin-bottom: 5px;
   }
-  .action-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
   
   .btn {
     background: linear-gradient(135deg, #0a2b4c, #051829); border: 1px solid var(--neon-cyan);
-    color: #fff; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer;
-    transition: all 0.2s ease; font-size: 0.85rem; letter-spacing: 1px; text-shadow: 0 0 5px var(--neon-cyan);
+    color: #fff; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer;
+    transition: all 0.2s ease; font-size: 0.8rem; letter-spacing: 1px; text-shadow: 0 0 5px var(--neon-cyan);
   }
   .btn:hover:not(:disabled) { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
   .btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; text-shadow: none; }
   .btn-allin { border-color: var(--neon-purple); text-shadow: 0 0 5px var(--neon-purple); }
   .btn-allin:hover:not(:disabled) { background: var(--neon-purple); color: #fff; box-shadow: 0 0 20px var(--neon-purple); }
 
-  /* LEVER / SLIDER SECTION */
-  .raise-container { display: flex; align-items: center; gap: 10px; flex-grow: 1; max-width: 280px; }
+  .raise-container { display: flex; align-items: center; gap: 8px; flex-grow: 1; max-width: 250px; }
   .raise-slider { flex-grow: 1; accent-color: var(--neon-cyan); cursor: pointer; }
-  .raise-val { font-weight: bold; color: var(--neon-green); min-width: 50px; text-align: right; }
+  .raise-val { font-weight: bold; color: var(--neon-green); min-width: 45px; text-align: right; }
 
   /* OVERLAY DE VICTORIA */
   #winOverlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 8, 20, 0.92);
-    z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center;
+    z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center;
     backdrop-filter: blur(12px); text-align: center;
   }
-  #winOverlay.active { display: flex; animation: fadeIn 0.8s ease; }
-  .win-title {
-    font-size: 3rem; font-weight: 900; color: var(--neon-green); text-shadow: 0 0 30px var(--neon-green);
-    margin-bottom: 10px; font-family: 'Impact', sans-serif;
-  }
-  .win-name { font-size: 2rem; color: var(--neon-cyan); margin-bottom: 20px; }
-  .win-penguin { font-size: 6rem; margin-bottom: 20px; animation: bounce 1s infinite alternate; }
+  #winOverlay.active { display: flex; }
+  .win-title { font-size: 2.8rem; font-weight: 900; color: var(--neon-green); text-shadow: 0 0 30px var(--neon-green); margin-bottom: 10px; font-family: 'Impact', sans-serif; }
+  .win-name { font-size: 1.8rem; color: var(--neon-cyan); margin-bottom: 20px; }
+  .win-penguin { font-size: 5rem; margin-bottom: 20px; }
 
-  @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-20px); } }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-  /* RESPONSIVE */
   @media (max-width: 768px) {
-    .logo-graffiti { font-size: 2rem; }
-    .table-container { height: 380px; }
-    .seat { width: 85px; }
-    .penguin-avatar { width: 45px; height: 45px; font-size: 1.4rem; }
-    .card { width: 38px; height: 55px; font-size: 0.75rem; }
-    .controls-bar { flex-direction: column; gap: 8px; padding: 8px; }
+    .logo-graffiti { font-size: 1.8rem; }
+    .table-container { height: 360px; }
+    .seat { width: 80px; }
+    .penguin-avatar { width: 42px; height: 42px; font-size: 1.2rem; }
+    .card { width: 35px; height: 50px; font-size: 0.65rem; }
+    .controls-bar { flex-direction: column; gap: 6px; padding: 6px; }
     .action-btns { justify-content: center; width: 100%; }
     .raise-container { width: 100%; max-width: 100%; }
   }
@@ -183,6 +191,16 @@
 </head>
 <body>
 
+<!-- PANTALLA DE PORTADA CON LOGO -->
+<div id="introScreen">
+  <img src="images/logo_iglu.jpg" alt="Logo Pokeriglu" class="intro-logo">
+  <div class="intro-title">POKERIGLÚ</div>
+  <div class="intro-sub">IVYSNOWCASINO • ARCTIC SIT & GO</div>
+  <button class="btn" onclick="enterCasino()" style="font-size: 1.1rem; padding: 12px 35px; border-color: var(--neon-green); color: var(--neon-green);">ENTRAR AL TORNEO</button>
+</div>
+
+<!-- FONDO PERSONALIZADO -->
+<div id="bgContainer"></div>
 <canvas id="bgCanvas"></canvas>
 
 <div id="app">
@@ -197,12 +215,12 @@
   </header>
 
   <div class="table-container" id="pokerTable">
-    <div class="table-logo">POKERIGLÚ<br><span style="font-size:0.6rem; letter-spacing:2px;">NO LIMIT HOLD'EM</span></div>
+    <div class="table-logo">POKERIGLÚ<br><span style="font-size:0.55rem; letter-spacing:2px;">NO LIMIT HOLD'EM</span></div>
 
     <div class="pot-display" id="potDisplay">BOTE: 0</div>
     <div class="community-cards" id="communityCards"></div>
 
-    <!-- 6 SEATS -->
+    <!-- SEATS -->
     <div class="seat seat-0" id="seat-0">
       <div class="player-cards" id="cards-0"></div>
       <div class="penguin-avatar" id="avatar-0">🐧<div class="dealer-chip" id="dealer-0" style="display:none;">D</div></div>
@@ -283,13 +301,11 @@
   <div class="win-title">🏆 CAMPEÓN DEL POKERIGLÚ 🏆</div>
   <div class="win-penguin" id="winPenguin">🐧</div>
   <div class="win-name" id="winName">JUGADORES</div>
-  <button class="btn" onclick="location.reload()" style="font-size: 1.2rem; padding: 12px 30px;">NUEVA PARTIDA</button>
+  <button class="btn" onclick="location.reload()" style="font-size: 1.1rem; padding: 10px 25px;">NUEVA PARTIDA</button>
 </div>
 
 <script>
-/* ==========================================================================
-   AUDIO ENGINE (SINTETIZADOR WEB AUDIO PARA EFECTOS DE CASINO E HIELO)
-   ========================================================================== */
+/* ================= AUDIO ENGINE ================= */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 
@@ -345,9 +361,7 @@ function playSound(type) {
   }
 }
 
-/* ==========================================================================
-   CANVAS DE FONDO: AURORAS BOREALES & PARTÍCULAS ÁRTICAS
-   ========================================================================== */
+/* ================= CANVAS DE NIEVE ================= */
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 let width, height;
@@ -360,7 +374,7 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-for(let i=0; i<70; i++) {
+for(let i=0; i<60; i++) {
   particles.push({
     x: Math.random() * width,
     y: Math.random() * height,
@@ -369,59 +383,40 @@ for(let i=0; i<70; i++) {
   });
 }
 
-let auroraTime = 0;
-function drawBackground() {
-  auroraTime += 0.005;
+let time = 0;
+function drawSnow() {
+  time += 0.005;
   ctx.clearRect(0,0,width,height);
-
-  // Gradient de fondo Ártico
-  let bgGrad = ctx.createLinearGradient(0,0,0,height);
-  bgGrad.addColorStop(0, '#02050e');
-  bgGrad.addColorStop(1, '#081a2b');
-  ctx.fillStyle = bgGrad;
-  ctx.fillRect(0,0,width,height);
-
-  // Simulación de Aurora Boreal con curvas de neón
-  for(let i=0; i<3; i++) {
-    ctx.beginPath();
-    ctx.moveTo(0, height * 0.3);
-    for(let x=0; x<width; x+=20) {
-      let y = Math.sin(x * 0.003 + auroraTime + i) * 60 + Math.cos(x * 0.001 + auroraTime) * 40 + height * 0.25;
-      ctx.lineTo(x, y);
-    }
-    ctx.lineTo(width, height);
-    ctx.lineTo(0, height);
-    
-    let auroraGrad = ctx.createLinearGradient(0,0,width,0);
-    auroraGrad.addColorStop(0, 'rgba(0, 255, 102, 0.15)');
-    auroraGrad.addColorStop(0.5, 'rgba(0, 243, 255, 0.2)');
-    auroraGrad.addColorStop(1, 'rgba(157, 0, 255, 0.15)');
-    ctx.fillStyle = auroraGrad;
-    ctx.fill();
-  }
-
-  // Partículas de Nieve / Hielo
-  ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
   ctx.beginPath();
   for(let i=0; i<particles.length; i++) {
     let p = particles[i];
     ctx.moveTo(p.x, p.y);
     ctx.arc(p.x, p.y, p.r, 0, Math.PI*2, true);
-    p.y += Math.cos(auroraTime + p.d) + 0.5 + p.r/2;
-    p.x += Math.sin(auroraTime) * 0.5;
+    p.y += Math.cos(time + p.d) + 0.4 + p.r/2;
+    p.x += Math.sin(time) * 0.4;
     if(p.x > width || p.x < 0 || p.y > height) {
       particles[i] = {x: Math.random()*width, y: -10, r: p.r, d: p.d};
     }
   }
   ctx.fill();
-
-  requestAnimationFrame(drawBackground);
+  requestAnimationFrame(drawSnow);
 }
-drawBackground();
+drawSnow();
 
-/* ==========================================================================
-   LÓGICA DEL TORNEO DE POKER HOLD'EM
-   ========================================================================== */
+/* ================= ENTRAR AL CASINO ================= */
+function enterCasino() {
+  initAudio();
+  document.getElementById('introScreen').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('introScreen').style.display = 'none';
+    document.getElementById('app').classList.add('active');
+    startBlindTimer();
+    startNewHand();
+  }, 500);
+}
+
+/* ================= LÓGICA DEL JUEGO POKER HOLD'EM ================= */
 const SUITS = ['♠', '♥', '♦', '♣'];
 const VALUES = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 
@@ -448,7 +443,7 @@ let dealerIdx = 0;
 let currentTurnIdx = 0;
 let highestBet = 0;
 let minRaise = 0;
-let gameStage = 'PREFLOP'; // PREFLOP, FLOP, TURN, RIVER, SHOWDOWN
+let gameStage = 'PREFLOP';
 let blindTimerSeconds = 180;
 let timerInterval = null;
 
@@ -459,7 +454,6 @@ function createDeck() {
       deck.push({ suit: s, value: v, rank: VALUES.indexOf(v) });
     }
   }
-  // Shuffle
   for(let i = deck.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -484,15 +478,12 @@ function startBlindTimer() {
 }
 
 function startNewHand() {
-  initAudio();
-  // Check active players count
   let activePlayers = players.filter(p => !p.eliminated);
   if(activePlayers.length <= 1) {
     declareWinner(activePlayers[0]);
     return;
   }
 
-  // Reset hand states
   createDeck();
   communityCards = [];
   pot = 0;
@@ -507,12 +498,10 @@ function startNewHand() {
     document.getElementById(`cards-${p.id}`).innerHTML = '';
   });
 
-  // Advance Dealer
   do {
     dealerIdx = (dealerIdx + 1) % players.length;
   } while(players[dealerIdx].eliminated);
 
-  // Deal cards
   for(let i=0; i<2; i++) {
     players.forEach(p => {
       if(!p.eliminated) {
@@ -522,7 +511,6 @@ function startNewHand() {
     });
   }
 
-  // Post Blinds
   let sbIdx = getNextActivePlayerIdx(dealerIdx);
   let bbIdx = getNextActivePlayerIdx(sbIdx);
 
@@ -532,7 +520,6 @@ function startNewHand() {
 
   highestBet = Math.max(...players.map(p => p.currentBet));
   minRaise = highestBet * 2;
-
   currentTurnIdx = getNextActivePlayerIdx(bbIdx);
   
   updateUI();
@@ -557,8 +544,6 @@ function postBet(player, amount) {
 
 function processTurn() {
   updateUI();
-
-  // Check if betting round is complete
   let activeUnfolded = players.filter(p => !p.eliminated && !p.folded);
   let playersCanAct = activeUnfolded.filter(p => !p.isAllIn);
 
@@ -567,7 +552,6 @@ function processTurn() {
     return;
   }
 
-  // Check if round complete by all matching bet
   let allMatched = activeUnfolded.every(p => p.currentBet === highestBet || p.isAllIn);
   if(allMatched && currentTurnIdx === getFirstToActThisRound()) {
     advanceStage();
@@ -590,12 +574,9 @@ function processTurn() {
 }
 
 let roundStartPlayerIdx = -1;
-function getFirstToActThisRound() {
-  return roundStartPlayerIdx;
-}
+function getFirstToActThisRound() { return roundStartPlayerIdx; }
 
 function advanceStage() {
-  // Reset current bets for next round
   players.forEach(p => p.currentBet = 0);
   highestBet = 0;
 
@@ -620,14 +601,9 @@ function advanceStage() {
   processTurn();
 }
 
-/* ==========================================================================
-   IA PINGÜINO INTELIGENTE
-   ========================================================================== */
 function executeAITurn(player) {
   let callAmt = highestBet - player.currentBet;
   let action = 'check';
-
-  // Fuerza básica simulada
   let c1 = player.cards[0].rank;
   let c2 = player.cards[1].rank;
   let isPair = (c1 === c2);
@@ -643,7 +619,7 @@ function executeAITurn(player) {
   } else if(player.style === 'BLUFFER') {
     if(Math.random() < 0.35 && player.stack > callAmt) action = 'raise';
     else action = callAmt === 0 ? 'check' : (callAmt < player.stack * 0.2 ? 'call' : 'fold');
-  } else { // TAG & GTO
+  } else {
     if(isPair || highCard >= 8) {
       if(highCard >= 11 && Math.random() < 0.5) action = 'raise';
       else action = callAmt === 0 ? 'check' : 'call';
@@ -652,7 +628,6 @@ function executeAITurn(player) {
     }
   }
 
-  // Execute AI action
   if(action === 'fold') {
     player.folded = true;
     document.getElementById(`action-${player.id}`).innerText = 'RETIRADO';
@@ -674,9 +649,6 @@ function executeAITurn(player) {
   processTurn();
 }
 
-/* ==========================================================================
-   ACCIONES HUMANO Y CONTROLES
-   ========================================================================== */
 function humanAction(type) {
   let p = players[0];
   let callAmt = highestBet - p.currentBet;
@@ -713,8 +685,8 @@ function updateRaiseVal() {
 }
 
 function enableControls(enable) {
-  const p = players[0];
-  const callAmt = highestBet - p.currentBet;
+  let p = players[0];
+  let callAmt = highestBet - p.currentBet;
 
   document.getElementById('btnFold').disabled = !enable;
   document.getElementById('btnCheck').disabled = !enable || callAmt > 0;
@@ -722,7 +694,7 @@ function enableControls(enable) {
   document.getElementById('btnRaise').disabled = !enable || p.stack <= callAmt;
   document.getElementById('btnAllIn').disabled = !enable || p.stack === 0;
 
-  const slider = document.getElementById('raiseSlider');
+  let slider = document.getElementById('raiseSlider');
   slider.disabled = !enable;
   slider.min = highestBet + BLIND_LEVELS[currentBlindIdx].bb;
   slider.max = p.stack + p.currentBet;
@@ -730,20 +702,14 @@ function enableControls(enable) {
   updateRaiseVal();
 }
 
-/* ==========================================================================
-   EVALUACIÓN DE GANADOR Y ELIMINACIONES
-   ========================================================================== */
 function evaluateShowdown() {
   let active = players.filter(p => !p.eliminated && !p.folded);
-  
-  // Asignar el bote al primer jugador activo restante (simulación rápida de evaluación)
   let winner = active[Math.floor(Math.random() * active.length)];
   winner.stack += pot;
   
   document.getElementById(`action-${winner.id}`).innerText = '¡GANA EL BOTE!';
   playSound('win');
 
-  // Procesar eliminaciones
   setTimeout(() => {
     players.forEach(p => {
       if(!p.eliminated && p.stack <= 0) {
@@ -770,14 +736,10 @@ function declareWinner(winner) {
   document.getElementById('winOverlay').classList.add('active');
 }
 
-/* ==========================================================================
-   ACTUALIZACIÓN DE INTERFAZ GRÁFICA (UI)
-   ========================================================================== */
 function updateUI() {
   document.getElementById('blindLevel').innerText = `${BLIND_LEVELS[currentBlindIdx].sb} / ${BLIND_LEVELS[currentBlindIdx].bb}`;
   document.getElementById('potDisplay').innerText = `BOTE: ${pot}`;
 
-  // Render Community Cards
   let commContainer = document.getElementById('communityCards');
   commContainer.innerHTML = '';
   communityCards.forEach(c => {
@@ -787,7 +749,6 @@ function updateUI() {
     commContainer.appendChild(cardEl);
   });
 
-  // Render Players
   players.forEach(p => {
     document.getElementById(`stack-${p.id}`).innerText = p.stack;
     let seatEl = document.getElementById(`seat-${p.id}`);
@@ -798,10 +759,8 @@ function updateUI() {
     if(currentTurnIdx === p.id && !p.folded && !p.eliminated) seatEl.classList.add('active');
     else seatEl.classList.remove('active');
 
-    // Dealer Chip
     document.getElementById(`dealer-${p.id}`).style.display = (dealerIdx === p.id) ? 'flex' : 'none';
 
-    // Cards
     let cardsContainer = document.getElementById(`cards-${p.id}`);
     cardsContainer.innerHTML = '';
     if(p.cards.length > 0 && !p.eliminated) {
@@ -818,10 +777,6 @@ function updateUI() {
     }
   });
 }
-
-// Iniciar Partida y Temporizador
-startBlindTimer();
-startNewHand();
 </script>
 </body>
 </html>
