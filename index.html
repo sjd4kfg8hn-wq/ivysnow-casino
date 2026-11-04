@@ -201,7 +201,7 @@
                 <span class="wallet-label">SALDO DISPONIBLE</span>
                 <span class="wallet-value" id="lobbyBal">500</span>
             </div>
-            <button class="btn-refill" onclick="recargarForfaits()">+100 Forfaits</button>
+            <button class="btn-refill" onclick="recargarForfaits()">+500 Forfaits</button>
         </div>
     </header>
 
@@ -267,18 +267,18 @@
             <div class="games-grid">
                 
                 <div class="game-card">
-    <span class="card-tag" style="background: #ec4899; color: #fff;">PÓKER 1</span>
-    <div class="card-image-container">
-        <img src="images/poker-alpino.jpg" alt="Póker Alpino" class="game-card-img">
-    </div>
-    <div class="card-content">
-        <div>
-            <div class="game-title">Póker Alpino</div>
-            <div class="game-desc">Partidas de Texas Hold'em en la cima del dominio esquiable.</div>
-        </div>
-        <button class="btn-play" onclick="location.href='poker-alpino/index.html'">ENTRAR</button>
-    </div>
-</div>
+                    <span class="card-tag" style="background: #ec4899; color: #fff;">PÓKER 1</span>
+                    <div class="card-image-container">
+                        <img src="images/poker-alpino.jpg" alt="Póker Alpino" class="game-card-img">
+                    </div>
+                    <div class="card-content">
+                        <div>
+                            <div class="game-title">Póker Alpino</div>
+                            <div class="game-desc">Partidas de Texas Hold'em en la cima del dominio esquiable.</div>
+                        </div>
+                        <button class="btn-play" onclick="location.href='poker-alpino/index.html'">ENTRAR</button>
+                    </div>
+                </div>
 
                 <div class="game-card">
                     <span class="card-tag" style="background: #ec4899; color: #fff;">PÓKER 2</span>
@@ -296,7 +296,7 @@
 
                 <div class="game-card">
                     <span class="card-tag" style="background: #ec4899; color: #fff;">PÓKER 3</span>
-                    <div class="card-image-container" >
+                    <div class="card-image-container">
                         <img src="poker-iglu/images/logo_iglu.jpg" alt="Póker Iglú" class="game-card-img">
                         <i class="fa-solid fa-igloo" style="font-size: 3rem; color: #38bdf8;"></i>
                     </div>
@@ -317,20 +317,19 @@
             <div class="category-title"><i class="fa-solid fa-circle-notch"></i> Ruleta & Salas VIP</div>
             <div class="games-grid">
                 
-                <!-- Tarjeta Ruleta Alpina -->
-<div class="game-card" style="background: #111c2e; border: 1px solid #1e3a5f; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative;">
-    <div style="position: relative; width: 100%; height: 140px; overflow: hidden;">
-        <span style="position: absolute; top: 10px; left: 10px; background: #e63946; color: #fff; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 4px; z-index: 2;">RULETA</span>
-        <img src="alpinesnowroulette/images/logo_banner.jpg" alt="Alpine Snow Roulette" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
-    </div>
-    <div style="padding: 15px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
-        <div>
-            <h3 style="color: #ffffff; font-size: 16px; font-weight: bold; margin-bottom: 6px;">Alpine Snow Roulette</h3>
-            <p style="color: #94a3b8; font-size: 12px; line-height: 1.4; margin-bottom: 12px;">Ruleta europea temática de alta montaña con edición Alpine y premios de avalancha.</p>
-        </div>
-        <a href="alpinesnowroulette/index.html" style="display: block; text-align: center; background: #00a8ff; color: #ffffff; font-weight: bold; text-decoration: none; padding: 10px; border-radius: 6px; font-size: 13px;">ENTRAR</a>
-    </div>
-</div>
+                <div class="game-card" style="background: #111c2e; border: 1px solid #1e3a5f; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative;">
+                    <div style="position: relative; width: 100%; height: 140px; overflow: hidden;">
+                        <span style="position: absolute; top: 10px; left: 10px; background: #e63946; color: #fff; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 4px; z-index: 2;">RULETA</span>
+                        <img src="alpinesnowroulette/images/logo_banner.jpg" alt="Alpine Snow Roulette" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
+                    </div>
+                    <div style="padding: 15px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
+                        <div>
+                            <h3 style="color: #ffffff; font-size: 16px; font-weight: bold; margin-bottom: 6px;">Alpine Snow Roulette</h3>
+                            <p style="color: #94a3b8; font-size: 12px; line-height: 1.4; margin-bottom: 12px;">Ruleta europea temática de alta montaña con edición Alpine y premios de avalancha.</p>
+                        </div>
+                        <a href="alpinesnowroulette/index.html" style="display: block; text-align: center; background: #00a8ff; color: #ffffff; font-weight: bold; text-decoration: none; padding: 10px; border-radius: 6px; font-size: 13px;">ENTRAR</a>
+                    </div>
+                </div>
 
                 <div class="game-card">
                     <span class="card-tag" style="background: #10b981; color: #fff;">VIP</span>
@@ -352,16 +351,35 @@
     </div>
 
     <script>
-        // Sincronización de saldo con localStorage
+        // Sincronización de saldo y estadísticas con localStorage
         let lobbyBal = parseInt(localStorage.getItem('ivysnow_forfaits')) || 500;
         document.getElementById('lobbyBal').textContent = lobbyBal;
 
-        function recargarForfaits() {
-            lobbyBal += 100;
-            localStorage.setItem('ivysnow_forfaits', lobbyBal);
+        // Estadísticas globales del Rider guardadas en localStorage
+        let ivysnowStats = JSON.parse(localStorage.getItem('ivysnow_stats')) || {
+            tournamentsWon: 0,
+            slotsPlayed: 0,
+            roulettesPlayed: 0,
+            maxPrize: 0,
+            playerLevel: 1
+        };
+
+        function updateBalance() {
             document.getElementById('lobbyBal').textContent = lobbyBal;
+            localStorage.setItem('ivysnow_forfaits', lobbyBal);
+            localStorage.setItem('ivysnow_stats', JSON.stringify(ivysnowStats));
+        }
+
+        function recargarForfaits() {
+            if (lobbyBal < 100) {
+                lobbyBal += 500;
+                updateBalance();
+            } else {
+                alert("¡Todavía tienes suficientes forfaits en la cartera, Rider! Guárdalos para la bajada.");
+            }
         }
     </script>
+
     <!-- FOOTER PROFESIONAL IVYSNOWCASINO -->
     <footer class="casino-footer">
         <div class="footer-badges">
