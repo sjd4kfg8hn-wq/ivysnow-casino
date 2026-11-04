@@ -17,7 +17,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
   body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); color: #fff; }
 
-  /* PORTADA DE INICIO */
+  /* PORTADA DE INICIO / LOBBY */
   #introScreen {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 8, 20, 0.95);
     z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -57,39 +57,44 @@
   }
 
   #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
-  
-  #auroraCanvas {
-    position: fixed; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: screen;
-  }
+  #auroraCanvas { position: fixed; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: screen; }
 
   /* APP CONTAINER */
   #app { position: relative; z-index: 3; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 10px; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
   #app.active { opacity: 1; pointer-events: auto; }
 
-  header { text-align: center; margin-top: 5px; }
+  header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-top: 5px; }
+  .header-left { display: flex; flex-direction: column; align-items: flex-start; }
   .logo-graffiti {
-    font-size: 2.4rem; font-weight: 900; font-family: 'Impact', sans-serif; letter-spacing: 3px;
+    font-size: 2.2rem; font-weight: 900; font-family: 'Impact', sans-serif; letter-spacing: 3px;
     background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     text-shadow: 0 0 15px rgba(0,243,255,0.6); transform: rotate(-2deg); display: inline-block;
   }
-  .sub-title { font-size: 0.7rem; letter-spacing: 3px; color: var(--neon-cyan); opacity: 0.9; margin-top: -5px; }
+  .sub-title { font-size: 0.65rem; letter-spacing: 3px; color: var(--neon-cyan); opacity: 0.9; margin-top: -5px; }
 
   .info-bar {
-    display: flex; gap: 15px; background: rgba(5, 24, 41, 0.85); border: 1px solid rgba(0,243,255,0.3);
-    padding: 4px 14px; border-radius: 16px; backdrop-filter: blur(8px); font-size: 0.8rem; margin-top: 4px;
-    align-items: center; justify-content: center; flex-wrap: wrap;
+    display: flex; gap: 12px; background: rgba(5, 24, 41, 0.85); border: 1px solid rgba(0,243,255,0.3);
+    padding: 6px 14px; border-radius: 16px; backdrop-filter: blur(8px); font-size: 0.75rem;
+    align-items: center; justify-content: center;
   }
   .info-item span { color: var(--neon-cyan); font-weight: bold; }
   .prize-pool-tag { color: var(--neon-gold) !important; font-weight: bold; }
 
-  /* MESA CON TAPETE DE CRISTAL / VIDRIO */
+  /* BOTÓN DE ABANDONAR LOBBY */
+  .btn-lobby {
+    background: rgba(255, 0, 85, 0.2); border: 1px solid #ff0055; color: #ff0055;
+    padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.8rem;
+    transition: all 0.2s ease; text-shadow: 0 0 5px #ff0055;
+  }
+  .btn-lobby:hover { background: #ff0055; color: #fff; box-shadow: 0 0 15px #ff0055; }
+
+  /* MESA DE CRISTAL / VIDRIO */
   .table-container {
     position: relative; width: 920px; height: 490px; max-width: 95vw; max-height: 56vh;
     margin: auto; border-radius: 240px; 
     background: linear-gradient(135deg, rgba(12, 38, 64, 0.45), rgba(5, 18, 32, 0.6));
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border: 8px solid rgba(0, 243, 255, 0.4);
     box-shadow: 0 0 50px rgba(0, 243, 255, 0.35), inset 0 0 35px rgba(0, 243, 255, 0.2), inset 0 0 80px rgba(0,0,0,0.6);
     display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -267,7 +272,7 @@
 
 <div id="jackpotBanner">🌟 ¡JACKPOT ÁRTICO ACTIVADO (+5.000€ EXTRA)! 🌟</div>
 
-<!-- PANTALLA DE PORTADA -->
+<!-- PANTALLA DE PORTADA / LOBBY -->
 <div id="introScreen">
   <img src="images/logo_iglu.jpg" alt="Logo Pokeriglu" class="intro-logo">
   <div class="intro-title">POKERIGLÚ</div>
@@ -292,14 +297,17 @@
 
 <div id="app">
   <header>
-    <div class="logo-graffiti">POKERIGLÚ</div>
-    <div class="sub-title">IVYSNOWCASINO • ARCTIC SIT & GO</div>
+    <div class="header-left">
+      <div class="logo-graffiti">POKERIGLÚ</div>
+      <div class="sub-title">IVYSNOWCASINO • ARCTIC SIT & GO</div>
+    </div>
     <div class="info-bar">
       <div class="info-item">BUY-IN: <span>1.000€</span></div>
       <div class="info-item">BOLSA: <span class="prize-pool-tag">5.400€</span></div>
       <div class="info-item">CIEGAS: <span id="blindLevel">10 / 20</span></div>
-      <div class="info-item">TEMPERATURA IGLÚ: <span id="igluEnergyDisplay">0°C</span></div>
+      <div class="info-item">IGLÚ: <span id="igluEnergyDisplay">0°C</span></div>
     </div>
+    <button class="btn-lobby" onclick="returnToLobby()">ABANDONAR LOBBY</button>
   </header>
 
   <div class="table-container" id="pokerTable">
@@ -415,7 +423,7 @@
   <div class="win-prize" id="winPrizeText">PREMIO: 3.400€</div>
   <div id="iceThrone">🐧👑</div>
   <div class="win-name" id="winName">JUGADOR</div>
-  <button class="btn" onclick="location.reload()" style="font-size: 1.1rem; padding: 10px 25px;">NUEVA PARTIDA</button>
+  <button class="btn" onclick="returnToLobby()" style="font-size: 1.1rem; padding: 10px 25px;">VOLVER AL LOBBY</button>
 </div>
 
 <script>
@@ -511,7 +519,6 @@ let time = 0;
 function renderLoop() {
   time += 0.005;
   
-  // Render Nieve
   snowCtx.clearRect(0,0,width,height);
   snowCtx.fillStyle = "rgba(255, 255, 255, 0.5)";
   snowCtx.beginPath();
@@ -527,7 +534,6 @@ function renderLoop() {
   }
   snowCtx.fill();
 
-  // Render Auroras Boreales Dinámicas
   auroraCtx.clearRect(0,0,width,height);
   for(let i=0; i<3; i++) {
     auroraCtx.beginPath();
@@ -594,10 +600,8 @@ const SUITS = ['♠', '♥', '♦', '♣'];
 const VALUES = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 
 function evaluateHand(cards7) {
-  // Conversión y ordenación para evaluar mejor jugada de 5 cartas entre 7
   let ranked = cards7.map(c => ({ rank: c.rank, suit: c.suit })).sort((a,b) => b.rank - a.rank);
   
-  // Lógica simplificada de puntuación exacta Hold'em
   let counts = {};
   ranked.forEach(c => counts[c.rank] = (counts[c.rank] || 0) + 1);
   let groups = Object.keys(counts).map(r => ({ rank: Number(r), count: counts[r] })).sort((a,b) => b.count - a.count || b.rank - a.rank);
@@ -616,21 +620,20 @@ function evaluateHand(cards7) {
       straightHigh = uniqueRanks[i];
     }
   }
-  // Escalera al As (A-2-3-4-5)
   if(!isStraight && uniqueRanks.includes(12) && uniqueRanks.includes(3) && uniqueRanks.includes(2) && uniqueRanks.includes(1) && uniqueRanks.includes(0)) {
     isStraight = true;
     straightHigh = 3;
   }
 
-  if(isFlush && isStraight) return 8000 + straightHigh; // Escalera de color
-  if(groups[0].count === 4) return 7000 + groups[0].rank; // Póker
-  if(groups[0].count === 3 && groups[1].count >= 2) return 6000 + groups[0].rank; // Full
-  if(isFlush) return 5000 + ranked[0].rank; // Color
-  if(isStraight) return 4000 + straightHigh; // Escalera
-  if(groups[0].count === 3) return 3000 + groups[0].rank; // Trío
-  if(groups[0].count === 2 && groups[1].count === 2) return 2000 + groups[0].rank * 15 + groups[1].rank; // Doble Pareja
-  if(groups[0].count === 2) return 1000 + groups[0].rank; // Pareja
-  return ranked[0].rank; // Carta alta
+  if(isFlush && isStraight) return 8000 + straightHigh;
+  if(groups[0].count === 4) return 7000 + groups[0].rank;
+  if(groups[0].count === 3 && groups[1].count >= 2) return 6000 + groups[0].rank;
+  if(isFlush) return 5000 + ranked[0].rank;
+  if(isStraight) return 4000 + straightHigh;
+  if(groups[0].count === 3) return 3000 + groups[0].rank;
+  if(groups[0].count === 2 && groups[1].count === 2) return 2000 + groups[0].rank * 15 + groups[1].rank;
+  if(groups[0].count === 2) return 1000 + groups[0].rank;
+  return ranked[0].rank;
 }
 
 /* ================= VARIABLES DE JACKPOT ================= */
@@ -666,6 +669,16 @@ function enterCasino() {
   }, 500);
 }
 
+function returnToLobby() {
+  document.getElementById('winOverlay').classList.remove('active');
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('jackpotBanner').style.display = 'none';
+  document.getElementById('introScreen').style.display = 'flex';
+  document.getElementById('introScreen').style.opacity = '1';
+  // Reiniciar stacks y estado
+  players.forEach(p => { p.stack = 1500; p.eliminated = false; p.folded = false; });
+}
+
 /* ================= TORNEO SIT & GO (1.500 STACK) ================= */
 const BLIND_LEVELS = [
   {sb: 10, bb: 20}, {sb: 15, bb: 30}, {sb: 25, bb: 50},
@@ -690,7 +703,7 @@ let dealerIdx = 0;
 let currentTurnIdx = 0;
 let highestBet = 0;
 let minRaise = 0;
-let gameStage = 'PREFLOP';
+let gameStage = 'PREFLOP'; // PREFLOP, FLOP, TURN, RIVER, SHOWDOWN
 let blindTimerSeconds = 180;
 let timerInterval = null;
 
@@ -774,7 +787,6 @@ function postBet(player, amount) {
   animateChipsToPot(player.id, amount);
   if(player.stack === 0) player.isAllIn = true;
   
-  // Actualizar temperatura del iglú & auroras
   igluEnergy += amount;
   auroraIntensity = Math.min(1, pot / 3000);
   document.getElementById('igluEnergyDisplay').innerText = Math.min(100, Math.floor(igluEnergy / 40)) + '°C';
@@ -785,15 +797,22 @@ function postBet(player, amount) {
 function processTurn() {
   updateUI();
   let activeUnfolded = players.filter(p => !p.eliminated && !p.folded);
-  let playersCanAct = activeUnfolded.filter(p => !p.isAllIn);
-
-  if(activeUnfolded.length <= 1 || (playersCanAct.length <= 1 && playersCanAct.every(p => p.currentBet === highestBet))) {
-    advanceStage();
+  
+  // Si solo queda 1 jugador activo (los demás se retiraron Fold), gana directamente el bote
+  if(activeUnfolded.length === 1) {
+    let winner = activeUnfolded[0];
+    winner.stack += pot;
+    document.getElementById(`action-${winner.id}`).innerText = '¡GANA EL BOTE!';
+    showEmote(winner.id, '😂');
+    playSound('win');
+    setTimeout(() => { startNewHand(); }, 2500);
     return;
   }
 
+  let playersCanAct = activeUnfolded.filter(p => !p.isAllIn);
   let allMatched = activeUnfolded.every(p => p.currentBet === highestBet || p.isAllIn);
-  if(allMatched && currentTurnIdx === getFirstToActThisRound()) {
+
+  if(playersCanAct.length === 0 || (allMatched && currentTurnIdx === getFirstToActThisRound())) {
     advanceStage();
     return;
   }
@@ -923,7 +942,6 @@ function humanAction(type) {
 function updateRaiseVal() {
   let val = document.getElementById('raiseSlider').value;
   document.getElementById('raiseVal').innerText = val;
-  // Mover la palanca física de apuesta
   let sliderMax = document.getElementById('raiseSlider').max || 1500;
   let percent = val / sliderMax;
   document.getElementById('leverKnob').style.top = (percent * 25) + 'px';
@@ -951,7 +969,6 @@ function enableControls(enable) {
 function evaluateShowdown() {
   let active = players.filter(p => !p.eliminated && !p.folded);
   
-  // Evaluar puntuación real con evaluateHand
   let scored = active.map(p => {
     let score = evaluateHand(p.cards.concat(communityCards));
     return { player: p, score: score };
