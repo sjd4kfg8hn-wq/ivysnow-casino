@@ -635,11 +635,9 @@ function evaluateHand(cards7) {
     } 
   }
 
-  // Filtrar cartas exactamente del palo del color (CORRECCIÓN MEJORA Nº1)
   let flushCards = isFlush ? cards7.filter(c => c.suit === flushSuit).sort((a,b) => b.rank - a.rank) : [];
   let flushHighRank = isFlush ? flushCards[0].rank : -1;
 
-  // Comprobación estricta de escalera de color
   let isStraightFlush = false;
   let straightFlushHigh = -1;
   if (isFlush) {
@@ -719,7 +717,6 @@ function returnToLobby() {
   document.getElementById('introScreen').style.display = 'flex';
   document.getElementById('introScreen').style.opacity = '1';
   
-  // CORRECCIÓN MEJORA Nº2: Reset de variables de estado
   pot = 0;
   dealerIdx = 0;
   currentBlindIdx = 0;
@@ -732,7 +729,6 @@ function returnToLobby() {
     p.folded = false;
     const seat = document.getElementById(`seat-${p.id}`);
     if(seat) {
-      // CORRECCIÓN MEJORA Nº3: Limpieza total de clases de estado CSS
       seat.classList.remove("folded");
       seat.classList.remove("active");
       seat.classList.remove("eliminating");
@@ -764,7 +760,7 @@ let dealerIdx = 0;
 let currentTurnIdx = 0;
 let highestBet = 0;
 let minRaise = 0;
-let gameStage = 'PREFLOP';
+let gameStage = 'PREFLOP'; // PREFLOP -> FLOP -> TURN -> RIVER -> SHOWDOWN
 let blindTimerSeconds = 180;
 let timerInterval = null;
 
@@ -901,6 +897,7 @@ function advanceStage() {
   players.forEach(p => p.currentBet = 0);
   highestBet = 0;
 
+  // CORRECCIÓN DE CALLES ESTRICTAS: Secuencia sin saltos
   if(gameStage === 'PREFLOP') {
     gameStage = 'FLOP';
     communityCards.push(deck.pop(), deck.pop(), deck.pop());
@@ -1035,7 +1032,6 @@ function evaluateShowdown() {
   
   let scored = active.map(p => {
     let evalRes = evaluateHand(p.cards.concat(communityCards));
-    // Mostrar la jugada exacta en la etiqueta de acción del jugador
     document.getElementById(`action-${p.id}`).innerText = evalRes.name;
     return { player: p, score: evalRes.score, handName: evalRes.name };
   });
