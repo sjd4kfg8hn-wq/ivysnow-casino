@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POKERIGLÚ - IVYSNOWCASINO</title>
+<style>
+  :root {
+    --neon-cyan: #00f3ff;
+    --neon-blue: #0066ff;
+    --neon-purple: #9d00ff;
+    --neon-green: #00ff66;
+    --dark-bg: #030814;
+    --felt-color: #051829;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+  body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); color: #fff; }
+
+  /* CANVAS DE FONDO */
+  #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+  /* APP CONTAINER */
+  #app { position: relative; z-index: 2; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 10px; }
+
+  /* HEADER & GRAFFITI */
+  header { text-align: center; margin-top: 5px; }
+  .logo-graffiti {
+    font-size: 2.8rem;
+    font-weight: 900;
+    font-family: 'Impact', sans-serif;
+    letter-spacing: 3px;
+    background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(0,243,255,0.6), 0 0 30px rgba(157,0,255,0.4);
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+  .sub-title { font-size: 0.8rem; letter-spacing: 4px; color: var(--neon-cyan); opacity: 0.8; margin-top: -5px; }
+
+  /* INFO BAR (CIEGAS & TEMPORIZADOR) */
+  .info-bar {
+    display: flex; gap: 20px; background: rgba(5, 24, 41, 0.75); border: 1px solid rgba(0,243,255,0.3);
+    padding: 6px 18px; border-radius: 20px; backdrop-filter: blur(8px); box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    font-size: 0.9rem; margin-top: 5px;
+  }
+  .info-item span { color: var(--neon-cyan); font-weight: bold; }
+
+  /* POKER TABLE CONTAINER */
+  .table-container {
+    position: relative; width: 900px; height: 480px; max-width: 95vw; max-height: 58vh;
+    margin: auto; border-radius: 240px; background: var(--felt-color);
+    border: 12px solid #112233;
+    box-shadow: 0 0 40px rgba(0, 243, 255, 0.25), inset 0 0 50px rgba(0,0,0,0.8), inset 0 0 15px var(--neon-blue);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+  }
+
+  .table-logo {
+    position: absolute; font-size: 1.2rem; font-weight: 800; letter-spacing: 6px; opacity: 0.15;
+    color: var(--neon-cyan); pointer-events: none; text-align: center;
+  }
+
+  /* COMMUNITY CARDS & POT */
+  .pot-display {
+    font-size: 1.2rem; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--neon-cyan);
+    margin-bottom: 10px; background: rgba(0,0,0,0.4); padding: 4px 15px; border-radius: 12px;
+    border: 1px solid rgba(0,243,255,0.2);
+  }
+  .community-cards { display: flex; gap: 8px; height: 80px; align-items: center; }
+
+  /* CARDS STYLING */
+  .card {
+    width: 52px; height: 75px; background: #fff; border-radius: 6px; color: #111;
+    display: flex; flex-direction: column; justify-content: space-between; padding: 4px;
+    font-weight: bold; font-size: 0.9rem; box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    position: relative; transition: transform 0.3s ease;
+  }
+  .card.red { color: #d00; }
+  .card.back {
+    background: linear-gradient(135deg, #051829, #0a3d62); border: 2px solid var(--neon-cyan);
+    box-shadow: 0 0 8px var(--neon-blue);
+  }
+  .card.back::after {
+    content: '❄'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    color: var(--neon-cyan); font-size: 1.4rem; opacity: 0.6;
+  }
+  .card .suit { font-size: 1.1rem; align-self: flex-end; }
+
+  /* SEATS & SEATED PENGUINS */
+  .seat {
+    position: absolute; width: 110px; display: flex; flex-direction: column; align-items: center;
+    transition: all 0.5s ease;
+  }
+  /* 6 Seats positioning around oval */
+  .seat-0 { bottom: -45px; left: 50%; transform: translateX(-50%); } /* Humano */
+  .seat-1 { bottom: 40px; left: -30px; }
+  .seat-2 { top: 40px; left: -30px; }
+  .seat-3 { top: -45px; left: 50%; transform: translateX(-50%); }
+  .seat-4 { top: 40px; right: -30px; }
+  .seat-5 { bottom: 40px; right: -30px; }
+
+  .penguin-avatar {
+    width: 65px; height: 65px; border-radius: 50%; background: #081a2b;
+    border: 3px solid rgba(255,255,255,0.2); position: relative;
+    display: flex; justify-content: center; align-items: center; font-size: 2rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.6); transition: all 0.3s;
+  }
+  .seat.active .penguin-avatar { border-color: var(--neon-cyan); box-shadow: 0 0 20px var(--neon-cyan); transform: scale(1.08); }
+  .seat.folded { opacity: 0.4; filter: grayscale(0.8); }
+  .seat.eliminated { display: none; }
+
+  .dealer-chip {
+    position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; background: #fff;
+    color: #000; font-weight: bold; font-size: 0.7rem; border-radius: 50%; display: flex;
+    justify-content: center; align-items: center; border: 2px solid #000; box-shadow: 0 0 5px #fff;
+  }
+
+  .player-info {
+    background: rgba(3, 8, 20, 0.85); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px;
+    padding: 3px 8px; text-align: center; width: 100%; margin-top: 4px; backdrop-filter: blur(4px);
+  }
+  .player-name { font-size: 0.75rem; font-weight: bold; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .player-stack { font-size: 0.8rem; font-weight: 800; color: var(--neon-green); }
+  .player-action { font-size: 0.65rem; color: var(--neon-cyan); height: 12px; font-style: italic; }
+
+  .player-cards { display: flex; gap: -15px; margin-top: -15px; z-index: 3; }
+  .player-cards .card { transform: scale(0.75); margin: 0 -8px; }
+
+  /* CONTROLES DE JUGADOR */
+  .controls-bar {
+    width: 100%; max-width: 800px; background: rgba(5, 24, 41, 0.9); border: 1px solid rgba(0,243,255,0.4);
+    border-radius: 16px; padding: 12px 20px; display: flex; gap: 15px; align-items: center;
+    justify-content: space-between; backdrop-filter: blur(10px); box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
+    margin-bottom: 10px;
+  }
+  .action-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  
+  .btn {
+    background: linear-gradient(135deg, #0a2b4c, #051829); border: 1px solid var(--neon-cyan);
+    color: #fff; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer;
+    transition: all 0.2s ease; font-size: 0.85rem; letter-spacing: 1px; text-shadow: 0 0 5px var(--neon-cyan);
+  }
+  .btn:hover:not(:disabled) { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; text-shadow: none; }
+  .btn-allin { border-color: var(--neon-purple); text-shadow: 0 0 5px var(--neon-purple); }
+  .btn-allin:hover:not(:disabled) { background: var(--neon-purple); color: #fff; box-shadow: 0 0 20px var(--neon-purple); }
+
+  /* LEVER / SLIDER SECTION */
+  .raise-container { display: flex; align-items: center; gap: 10px; flex-grow: 1; max-width: 280px; }
+  .raise-slider { flex-grow: 1; accent-color: var(--neon-cyan); cursor: pointer; }
+  .raise-val { font-weight: bold; color: var(--neon-green); min-width: 50px; text-align: right; }
+
+  /* OVERLAY DE VICTORIA */
+  #winOverlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 8, 20, 0.92);
+    z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center;
+    backdrop-filter: blur(12px); text-align: center;
+  }
+  #winOverlay.active { display: flex; animation: fadeIn 0.8s ease; }
+  .win-title {
+    font-size: 3rem; font-weight: 900; color: var(--neon-green); text-shadow: 0 0 30px var(--neon-green);
+    margin-bottom: 10px; font-family: 'Impact', sans-serif;
+  }
+  .win-name { font-size: 2rem; color: var(--neon-cyan); margin-bottom: 20px; }
+  .win-penguin { font-size: 6rem; margin-bottom: 20px; animation: bounce 1s infinite alternate; }
+
+  @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-20px); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .logo-graffiti { font-size: 2rem; }
+    .table-container { height: 380px; }
+    .seat { width: 85px; }
+    .penguin-avatar { width: 45px; height: 45px; font-size: 1.4rem; }
+    .card { width: 38px; height: 55px; font-size: 0.75rem; }
+    .controls-bar { flex-direction: column; gap: 8px; padding: 8px; }
+    .action-btns { justify-content: center; width: 100%; }
+    .raise-container { width: 100%; max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div id="app">
+  <header>
+    <div class="logo-graffiti">POKERIGLÚ</div>
+    <div class="sub-title">IVYSNOWCASINO • ARCTIC SIT & GO</div>
+    <div class="info-bar">
+      <div class="info-item">CIEGAS: <span id="blindLevel">10 / 20</span></div>
+      <div class="info-item">SIGUIENTE NIVEL: <span id="blindTimer">03:00</span></div>
+      <div class="info-item">JUGADORES: <span id="activeCount">6/6</span></div>
+    </div>
+  </header>
+
+  <div class="table-container" id="pokerTable">
+    <div class="table-logo">POKERIGLÚ<br><span style="font-size:0.6rem; letter-spacing:2px;">NO LIMIT HOLD'EM</span></div>
+
+    <div class="pot-display" id="potDisplay">BOTE: 0</div>
+    <div class="community-cards" id="communityCards"></div>
+
+    <!-- 6 SEATS -->
+    <div class="seat seat-0" id="seat-0">
+      <div class="player-cards" id="cards-0"></div>
+      <div class="penguin-avatar" id="avatar-0">🐧<div class="dealer-chip" id="dealer-0" style="display:none;">D</div></div>
+      <div class="player-info">
+        <div class="player-name">TÚ (HUMANO)</div>
+        <div class="player-stack" id="stack-0">1500</div>
+        <div class="player-action" id="action-0"></div>
+      </div>
+    </div>
+
+    <div class="seat seat-1" id="seat-1">
+      <div class="player-cards" id="cards-1"></div>
+      <div class="penguin-avatar" id="avatar-1">😎<div class="dealer-chip" id="dealer-1" style="display:none;">D</div></div>
+      <div class="player-info">
+        <div class="player-name">FROSTFIN</div>
+        <div class="player-stack" id="stack-1">1500</div>
+        <div class="player-action" id="action-1"></div>
+      </div>
+    </div>
+
+    <div class="seat seat-2" id="seat-2">
+      <div class="player-cards" id="cards-2"></div>
+      <div class="penguin-avatar" id="avatar-2">😼<div class="dealer-chip" id="dealer-2" style="display:none;">D</div></div>
+      <div class="player-info">
+        <div class="player-name">ICEJACK</div>
+        <div class="player-stack" id="stack-2">1500</div>
+        <div class="player-action" id="action-2"></div>
+      </div>
+    </div>
+
+    <div class="seat seat-3" id="seat-3">
+      <div class="player-cards" id="cards-3"></div>
+      <div class="penguin-avatar" id="avatar-3">⚡<div class="dealer-chip" id="dealer-3" style="display:none;">D</div></div>
+      <div class="player-info">
+        <div class="player-name">AURORAJOE</div>
+        <div class="player-stack" id="stack-3">1500</div>
+        <div class="player-action" id="action-3"></div>
+      </div>
+    </div>
+
+    <div class="seat seat-4" id="seat-4">
+      <div class="player-cards" id="cards-4"></div>
+      <div class="penguin-avatar" id="avatar-4">🔥<div class="dealer-chip" id="dealer-4" style="display:none;">D</div></div>
+      <div class="player-info">
+        <div class="player-name">NEONBEAK</div>
+        <div class="player-stack" id="stack-4">1500</div>
+        <div class="player-action" id="action-4"></div>
+      </div>
+    </div>
+
+    <div class="seat seat-5" id="seat-5">
+      <div class="player-cards" id="cards-5"></div>
+      <div class="penguin-avatar" id="avatar-5">👑<div class="dealer-chip" id="dealer-5" style="display:none;">D</div></div>
+      <div class="player-info">
+        <div class="player-name">GLACIERKING</div>
+        <div class="player-stack" id="stack-5">1500</div>
+        <div class="player-action" id="action-5"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="action-btns">
+      <button class="btn" id="btnFold" onclick="humanAction('fold')">RETIRARSE</button>
+      <button class="btn" id="btnCheck" onclick="humanAction('check')">PASAR</button>
+      <button class="btn" id="btnCall" onclick="humanAction('call')">IR</button>
+      <button class="btn" id="btnRaise" onclick="humanAction('raise')">SUBIR</button>
+      <button class="btn btn-allin" id="btnAllIn" onclick="humanAction('allin')">ALL IN</button>
+    </div>
+    <div class="raise-container">
+      <input type="range" class="raise-slider" id="raiseSlider" min="0" max="1500" value="0" oninput="updateRaiseVal()">
+      <div class="raise-val" id="raiseVal">0</div>
+    </div>
+  </div>
+</div>
+
+<div id="winOverlay">
+  <div class="win-title">🏆 CAMPEÓN DEL POKERIGLÚ 🏆</div>
+  <div class="win-penguin" id="winPenguin">🐧</div>
+  <div class="win-name" id="winName">JUGADORES</div>
+  <button class="btn" onclick="location.reload()" style="font-size: 1.2rem; padding: 12px 30px;">NUEVA PARTIDA</button>
+</div>
+
+<script>
+/* ==========================================================================
+   AUDIO ENGINE (SINTETIZADOR WEB AUDIO PARA EFECTOS DE CASINO E HIELO)
+   ========================================================================== */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function initAudio() {
+  if(!audioCtx) audioCtx = new AudioCtx();
+}
+
+function playSound(type) {
+  if(!audioCtx) return;
+  const now = audioCtx.currentTime;
+  
+  if(type === 'card') {
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(400, now);
+    osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.08);
+  } else if(type === 'chip') {
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1800, now);
+    osc.frequency.exponentialRampToValueAtTime(600, now + 0.05);
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.05);
+  } else if(type === 'allin') {
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(300, now);
+    osc.frequency.linearRampToValueAtTime(900, now + 0.4);
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.4);
+  } else if(type === 'win') {
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx*0.1);
+      gain.gain.setValueAtTime(0.3, now + idx*0.1);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + idx*0.1 + 0.3);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now + idx*0.1); osc.stop(now + idx*0.1 + 0.3);
+    });
+  }
+}
+
+/* ==========================================================================
+   CANVAS DE FONDO: AURORAS BOREALES & PARTÍCULAS ÁRTICAS
+   ========================================================================== */
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let width, height;
+let particles = [];
+
+function resizeCanvas() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+for(let i=0; i<70; i++) {
+  particles.push({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    r: Math.random() * 2 + 0.5,
+    d: Math.random() * 1
+  });
+}
+
+let auroraTime = 0;
+function drawBackground() {
+  auroraTime += 0.005;
+  ctx.clearRect(0,0,width,height);
+
+  // Gradient de fondo Ártico
+  let bgGrad = ctx.createLinearGradient(0,0,0,height);
+  bgGrad.addColorStop(0, '#02050e');
+  bgGrad.addColorStop(1, '#081a2b');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0,0,width,height);
+
+  // Simulación de Aurora Boreal con curvas de neón
+  for(let i=0; i<3; i++) {
+    ctx.beginPath();
+    ctx.moveTo(0, height * 0.3);
+    for(let x=0; x<width; x+=20) {
+      let y = Math.sin(x * 0.003 + auroraTime + i) * 60 + Math.cos(x * 0.001 + auroraTime) * 40 + height * 0.25;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(width, height);
+    ctx.lineTo(0, height);
+    
+    let auroraGrad = ctx.createLinearGradient(0,0,width,0);
+    auroraGrad.addColorStop(0, 'rgba(0, 255, 102, 0.15)');
+    auroraGrad.addColorStop(0.5, 'rgba(0, 243, 255, 0.2)');
+    auroraGrad.addColorStop(1, 'rgba(157, 0, 255, 0.15)');
+    ctx.fillStyle = auroraGrad;
+    ctx.fill();
+  }
+
+  // Partículas de Nieve / Hielo
+  ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+  ctx.beginPath();
+  for(let i=0; i<particles.length; i++) {
+    let p = particles[i];
+    ctx.moveTo(p.x, p.y);
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2, true);
+    p.y += Math.cos(auroraTime + p.d) + 0.5 + p.r/2;
+    p.x += Math.sin(auroraTime) * 0.5;
+    if(p.x > width || p.x < 0 || p.y > height) {
+      particles[i] = {x: Math.random()*width, y: -10, r: p.r, d: p.d};
+    }
+  }
+  ctx.fill();
+
+  requestAnimationFrame(drawBackground);
+}
+drawBackground();
+
+/* ==========================================================================
+   LÓGICA DEL TORNEO DE POKER HOLD'EM
+   ========================================================================== */
+const SUITS = ['♠', '♥', '♦', '♣'];
+const VALUES = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+
+const BLIND_LEVELS = [
+  {sb: 10, bb: 20}, {sb: 15, bb: 30}, {sb: 25, bb: 50},
+  {sb: 50, bb: 100}, {sb: 75, bb: 150}, {sb: 100, bb: 200},
+  {sb: 150, bb: 300}, {sb: 200, bb: 400}, {sb: 300, bb: 600}, {sb: 400, bb: 800}
+];
+
+let players = [
+  { id: 0, name: "TÚ (HUMANO)", avatar: "🐧", style: "HUMAN", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 1, name: "FROSTFIN", avatar: "😎", style: "TIGHT", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 2, name: "ICEJACK", avatar: "😼", style: "TAG", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 3, name: "AURORAJOE", avatar: "⚡", style: "BLUFFER", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 4, name: "NEONBEAK", avatar: "🔥", style: "MANIAC", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 5, name: "GLACIERKING", avatar: "👑", style: "GTO", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false }
+];
+
+let deck = [];
+let communityCards = [];
+let pot = 0;
+let currentBlindIdx = 0;
+let dealerIdx = 0;
+let currentTurnIdx = 0;
+let highestBet = 0;
+let minRaise = 0;
+let gameStage = 'PREFLOP'; // PREFLOP, FLOP, TURN, RIVER, SHOWDOWN
+let blindTimerSeconds = 180;
+let timerInterval = null;
+
+function createDeck() {
+  deck = [];
+  for(let s of SUITS) {
+    for(let v of VALUES) {
+      deck.push({ suit: s, value: v, rank: VALUES.indexOf(v) });
+    }
+  }
+  // Shuffle
+  for(let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+}
+
+function startBlindTimer() {
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    blindTimerSeconds--;
+    if(blindTimerSeconds <= 0) {
+      blindTimerSeconds = 180;
+      if(currentBlindIdx < BLIND_LEVELS.length - 1) {
+        currentBlindIdx++;
+        updateUI();
+      }
+    }
+    let m = Math.floor(blindTimerSeconds / 60).toString().padStart(2, '0');
+    let s = (blindTimerSeconds % 60).toString().padStart(2, '0');
+    document.getElementById('blindTimer').innerText = `${m}:${s}`;
+  }, 1000);
+}
+
+function startNewHand() {
+  initAudio();
+  // Check active players count
+  let activePlayers = players.filter(p => !p.eliminated);
+  if(activePlayers.length <= 1) {
+    declareWinner(activePlayers[0]);
+    return;
+  }
+
+  // Reset hand states
+  createDeck();
+  communityCards = [];
+  pot = 0;
+  gameStage = 'PREFLOP';
+  
+  players.forEach(p => {
+    p.cards = [];
+    p.currentBet = 0;
+    p.folded = p.eliminated;
+    p.isAllIn = false;
+    document.getElementById(`action-${p.id}`).innerText = '';
+    document.getElementById(`cards-${p.id}`).innerHTML = '';
+  });
+
+  // Advance Dealer
+  do {
+    dealerIdx = (dealerIdx + 1) % players.length;
+  } while(players[dealerIdx].eliminated);
+
+  // Deal cards
+  for(let i=0; i<2; i++) {
+    players.forEach(p => {
+      if(!p.eliminated) {
+        p.cards.push(deck.pop());
+        playSound('card');
+      }
+    });
+  }
+
+  // Post Blinds
+  let sbIdx = getNextActivePlayerIdx(dealerIdx);
+  let bbIdx = getNextActivePlayerIdx(sbIdx);
+
+  let blindInfo = BLIND_LEVELS[currentBlindIdx];
+  postBet(players[sbIdx], Math.min(players[sbIdx].stack, blindInfo.sb));
+  postBet(players[bbIdx], Math.min(players[bbIdx].stack, blindInfo.bb));
+
+  highestBet = Math.max(...players.map(p => p.currentBet));
+  minRaise = highestBet * 2;
+
+  currentTurnIdx = getNextActivePlayerIdx(bbIdx);
+  
+  updateUI();
+  processTurn();
+}
+
+function getNextActivePlayerIdx(currIdx) {
+  let next = (currIdx + 1) % players.length;
+  while(players[next].eliminated || players[next].folded) {
+    next = (next + 1) % players.length;
+  }
+  return next;
+}
+
+function postBet(player, amount) {
+  player.stack -= amount;
+  player.currentBet += amount;
+  pot += amount;
+  if(player.stack === 0) player.isAllIn = true;
+  playSound('chip');
+}
+
+function processTurn() {
+  updateUI();
+
+  // Check if betting round is complete
+  let activeUnfolded = players.filter(p => !p.eliminated && !p.folded);
+  let playersCanAct = activeUnfolded.filter(p => !p.isAllIn);
+
+  if(activeUnfolded.length <= 1 || (playersCanAct.length <= 1 && playersCanAct.every(p => p.currentBet === highestBet))) {
+    advanceStage();
+    return;
+  }
+
+  // Check if round complete by all matching bet
+  let allMatched = activeUnfolded.every(p => p.currentBet === highestBet || p.isAllIn);
+  if(allMatched && currentTurnIdx === getFirstToActThisRound()) {
+    advanceStage();
+    return;
+  }
+
+  let currPlayer = players[currentTurnIdx];
+  if(currPlayer.folded || currPlayer.isAllIn || currPlayer.eliminated) {
+    currentTurnIdx = getNextActivePlayerIdx(currentTurnIdx);
+    processTurn();
+    return;
+  }
+
+  if(currPlayer.style === 'HUMAN') {
+    enableControls(true);
+  } else {
+    enableControls(false);
+    setTimeout(() => { executeAITurn(currPlayer); }, 1000);
+  }
+}
+
+let roundStartPlayerIdx = -1;
+function getFirstToActThisRound() {
+  return roundStartPlayerIdx;
+}
+
+function advanceStage() {
+  // Reset current bets for next round
+  players.forEach(p => p.currentBet = 0);
+  highestBet = 0;
+
+  if(gameStage === 'PREFLOP') {
+    gameStage = 'FLOP';
+    communityCards.push(deck.pop(), deck.pop(), deck.pop());
+  } else if(gameStage === 'FLOP') {
+    gameStage = 'TURN';
+    communityCards.push(deck.pop());
+  } else if(gameStage === 'TURN') {
+    gameStage = 'RIVER';
+    communityCards.push(deck.pop());
+  } else if(gameStage === 'RIVER') {
+    gameStage = 'SHOWDOWN';
+    evaluateShowdown();
+    return;
+  }
+
+  playSound('card');
+  roundStartPlayerIdx = getNextActivePlayerIdx(dealerIdx);
+  currentTurnIdx = roundStartPlayerIdx;
+  processTurn();
+}
+
+/* ==========================================================================
+   IA PINGÜINO INTELIGENTE
+   ========================================================================== */
+function executeAITurn(player) {
+  let callAmt = highestBet - player.currentBet;
+  let action = 'check';
+
+  // Fuerza básica simulada
+  let c1 = player.cards[0].rank;
+  let c2 = player.cards[1].rank;
+  let isPair = (c1 === c2);
+  let highCard = Math.max(c1, c2);
+
+  if(player.style === 'MANIAC') {
+    if(Math.random() < 0.4 && player.stack > callAmt * 2) action = 'raise';
+    else if(callAmt <= player.stack) action = callAmt === 0 ? 'check' : 'call';
+    else action = 'fold';
+  } else if(player.style === 'TIGHT') {
+    if(isPair || highCard >= 10) action = callAmt === 0 ? 'check' : 'call';
+    else action = callAmt === 0 ? 'check' : 'fold';
+  } else if(player.style === 'BLUFFER') {
+    if(Math.random() < 0.35 && player.stack > callAmt) action = 'raise';
+    else action = callAmt === 0 ? 'check' : (callAmt < player.stack * 0.2 ? 'call' : 'fold');
+  } else { // TAG & GTO
+    if(isPair || highCard >= 8) {
+      if(highCard >= 11 && Math.random() < 0.5) action = 'raise';
+      else action = callAmt === 0 ? 'check' : 'call';
+    } else {
+      action = callAmt === 0 ? 'check' : 'fold';
+    }
+  }
+
+  // Execute AI action
+  if(action === 'fold') {
+    player.folded = true;
+    document.getElementById(`action-${player.id}`).innerText = 'RETIRADO';
+  } else if(action === 'check') {
+    document.getElementById(`action-${player.id}`).innerText = 'PASAR';
+  } else if(action === 'call') {
+    let bet = Math.min(callAmt, player.stack);
+    postBet(player, bet);
+    document.getElementById(`action-${player.id}`).innerText = 'IR';
+  } else if(action === 'raise') {
+    let raiseAmt = Math.min(player.stack, Math.max(minRaise, callAmt + BLIND_LEVELS[currentBlindIdx].bb));
+    postBet(player, raiseAmt);
+    highestBet = player.currentBet;
+    minRaise = highestBet * 2;
+    document.getElementById(`action-${player.id}`).innerText = `SUBE A ${player.currentBet}`;
+  }
+
+  currentTurnIdx = getNextActivePlayerIdx(currentTurnIdx);
+  processTurn();
+}
+
+/* ==========================================================================
+   ACCIONES HUMANO Y CONTROLES
+   ========================================================================== */
+function humanAction(type) {
+  let p = players[0];
+  let callAmt = highestBet - p.currentBet;
+
+  if(type === 'fold') {
+    p.folded = true;
+    document.getElementById(`action-0`).innerText = 'RETIRADO';
+  } else if(type === 'check') {
+    document.getElementById(`action-0`).innerText = 'PASAR';
+  } else if(type === 'call') {
+    postBet(p, Math.min(callAmt, p.stack));
+    document.getElementById(`action-0`).innerText = 'IR';
+  } else if(type === 'raise') {
+    let raiseVal = parseInt(document.getElementById('raiseSlider').value);
+    let bet = Math.min(p.stack, raiseVal - p.currentBet);
+    postBet(p, bet);
+    highestBet = p.currentBet;
+    minRaise = highestBet * 2;
+    document.getElementById(`action-0`).innerText = `SUBE A ${p.currentBet}`;
+  } else if(type === 'allin') {
+    playSound('allin');
+    postBet(p, p.stack);
+    if(p.currentBet > highestBet) highestBet = p.currentBet;
+    document.getElementById(`action-0`).innerText = 'ALL IN!';
+  }
+
+  enableControls(false);
+  currentTurnIdx = getNextActivePlayerIdx(0);
+  processTurn();
+}
+
+function updateRaiseVal() {
+  document.getElementById('raiseVal').innerText = document.getElementById('raiseSlider').value;
+}
+
+function enableControls(enable) {
+  const p = players[0];
+  const callAmt = highestBet - p.currentBet;
+
+  document.getElementById('btnFold').disabled = !enable;
+  document.getElementById('btnCheck').disabled = !enable || callAmt > 0;
+  document.getElementById('btnCall').disabled = !enable || callAmt === 0 || callAmt > p.stack;
+  document.getElementById('btnRaise').disabled = !enable || p.stack <= callAmt;
+  document.getElementById('btnAllIn').disabled = !enable || p.stack === 0;
+
+  const slider = document.getElementById('raiseSlider');
+  slider.disabled = !enable;
+  slider.min = highestBet + BLIND_LEVELS[currentBlindIdx].bb;
+  slider.max = p.stack + p.currentBet;
+  slider.value = slider.min;
+  updateRaiseVal();
+}
+
+/* ==========================================================================
+   EVALUACIÓN DE GANADOR Y ELIMINACIONES
+   ========================================================================== */
+function evaluateShowdown() {
+  let active = players.filter(p => !p.eliminated && !p.folded);
+  
+  // Asignar el bote al primer jugador activo restante (simulación rápida de evaluación)
+  let winner = active[Math.floor(Math.random() * active.length)];
+  winner.stack += pot;
+  
+  document.getElementById(`action-${winner.id}`).innerText = '¡GANA EL BOTE!';
+  playSound('win');
+
+  // Procesar eliminaciones
+  setTimeout(() => {
+    players.forEach(p => {
+      if(!p.eliminated && p.stack <= 0) {
+        p.eliminated = true;
+        document.getElementById(`seat-${p.id}`).classList.add('eliminated');
+      }
+    });
+
+    let remaining = players.filter(p => !p.eliminated);
+    document.getElementById('activeCount').innerText = `${remaining.length}/6`;
+
+    if(remaining.length === 1) {
+      declareWinner(remaining[0]);
+    } else {
+      startNewHand();
+    }
+  }, 3000);
+}
+
+function declareWinner(winner) {
+  playSound('win');
+  document.getElementById('winName').innerText = winner.name;
+  document.getElementById('winPenguin').innerText = winner.avatar;
+  document.getElementById('winOverlay').classList.add('active');
+}
+
+/* ==========================================================================
+   ACTUALIZACIÓN DE INTERFAZ GRÁFICA (UI)
+   ========================================================================== */
+function updateUI() {
+  document.getElementById('blindLevel').innerText = `${BLIND_LEVELS[currentBlindIdx].sb} / ${BLIND_LEVELS[currentBlindIdx].bb}`;
+  document.getElementById('potDisplay').innerText = `BOTE: ${pot}`;
+
+  // Render Community Cards
+  let commContainer = document.getElementById('communityCards');
+  commContainer.innerHTML = '';
+  communityCards.forEach(c => {
+    let cardEl = document.createElement('div');
+    cardEl.className = `card ${c.suit === '♥' || c.suit === '♦' ? 'red' : ''}`;
+    cardEl.innerHTML = `<div>${c.value}</div><div class="suit">${c.suit}</div>`;
+    commContainer.appendChild(cardEl);
+  });
+
+  // Render Players
+  players.forEach(p => {
+    document.getElementById(`stack-${p.id}`).innerText = p.stack;
+    let seatEl = document.getElementById(`seat-${p.id}`);
+    
+    if(p.folded) seatEl.classList.add('folded');
+    else seatEl.classList.remove('folded');
+
+    if(currentTurnIdx === p.id && !p.folded && !p.eliminated) seatEl.classList.add('active');
+    else seatEl.classList.remove('active');
+
+    // Dealer Chip
+    document.getElementById(`dealer-${p.id}`).style.display = (dealerIdx === p.id) ? 'flex' : 'none';
+
+    // Cards
+    let cardsContainer = document.getElementById(`cards-${p.id}`);
+    cardsContainer.innerHTML = '';
+    if(p.cards.length > 0 && !p.eliminated) {
+      p.cards.forEach(c => {
+        let cardEl = document.createElement('div');
+        if(p.id === 0 || gameStage === 'SHOWDOWN') {
+          cardEl.className = `card ${c.suit === '♥' || c.suit === '♦' ? 'red' : ''}`;
+          cardEl.innerHTML = `<div>${c.value}</div><div class="suit">${c.suit}</div>`;
+        } else {
+          cardEl.className = 'card back';
+        }
+        cardsContainer.appendChild(cardEl);
+      });
+    }
+  });
+}
+
+// Iniciar Partida y Temporizador
+startBlindTimer();
+startNewHand();
+</script>
+</body>
+</html>
