@@ -12,7 +12,6 @@
     --neon-green: #00ff66;
     --neon-gold: #ffcc00;
     --dark-bg: #030814;
-    --glass-felt: rgba(5, 24, 41, 0.45);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
@@ -38,7 +37,6 @@
   }
   .intro-sub { font-size: 0.9rem; letter-spacing: 5px; color: var(--neon-cyan); margin-bottom: 20px; }
 
-  /* CAJA DE PREMIOS EN PORTADA */
   .prizes-box {
     background: rgba(5, 24, 41, 0.9); border: 1px solid var(--neon-gold); border-radius: 12px;
     padding: 15px 25px; margin-bottom: 25px; text-align: center; box-shadow: 0 0 20px rgba(255,204,0,0.2);
@@ -47,24 +45,27 @@
   .prizes-list { display: flex; gap: 20px; font-size: 0.9rem; font-weight: bold; color: #fff; }
   .prizes-list span { color: var(--neon-green); }
 
-  /* FONDO DE FOTO PERSONALIZADA */
+  /* FONDO & CANVAS AURORAS */
   #bgContainer {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
     background: url('images/poker_iglu.jpg') no-repeat center center/cover;
+    transition: filter 0.5s ease;
   }
   #bgContainer::after {
     content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(3, 8, 20, 0.4); backdrop-filter: blur(1px);
+    background: rgba(3, 8, 20, 0.35); backdrop-filter: blur(1px);
   }
 
-  /* CANVAS DE PARTÍCULAS */
   #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+  
+  #auroraCanvas {
+    position: fixed; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: screen;
+  }
 
   /* APP CONTAINER */
   #app { position: relative; z-index: 3; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 10px; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
   #app.active { opacity: 1; pointer-events: auto; }
 
-  /* HEADER & GRAFFITI */
   header { text-align: center; margin-top: 5px; }
   .logo-graffiti {
     font-size: 2.4rem; font-weight: 900; font-family: 'Impact', sans-serif; letter-spacing: 3px;
@@ -74,7 +75,6 @@
   }
   .sub-title { font-size: 0.7rem; letter-spacing: 3px; color: var(--neon-cyan); opacity: 0.9; margin-top: -5px; }
 
-  /* INFO BAR & PREMIOS ACTIVOS */
   .info-bar {
     display: flex; gap: 15px; background: rgba(5, 24, 41, 0.85); border: 1px solid rgba(0,243,255,0.3);
     padding: 4px 14px; border-radius: 16px; backdrop-filter: blur(8px); font-size: 0.8rem; margin-top: 4px;
@@ -87,18 +87,13 @@
   .table-container {
     position: relative; width: 920px; height: 490px; max-width: 95vw; max-height: 56vh;
     margin: auto; border-radius: 240px; 
-    background: linear-gradient(135deg, rgba(12, 38, 64, 0.5), rgba(5, 18, 32, 0.65));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: linear-gradient(135deg, rgba(12, 38, 64, 0.45), rgba(5, 18, 32, 0.6));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border: 8px solid rgba(0, 243, 255, 0.4);
     box-shadow: 0 0 50px rgba(0, 243, 255, 0.35), inset 0 0 35px rgba(0, 243, 255, 0.2), inset 0 0 80px rgba(0,0,0,0.6);
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    overflow: visible;
-  }
-  .table-container::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 232px;
-    background: linear-gradient(115deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.02) 40%, transparent 60%);
-    pointer-events: none;
+    overflow: visible; transition: box-shadow 0.3s ease;
   }
   .table-logo {
     position: absolute; font-size: 1.2rem; font-weight: 800; letter-spacing: 6px; opacity: 0.2;
@@ -112,7 +107,7 @@
   }
   .community-cards { display: flex; gap: 10px; height: 95px; align-items: center; }
 
-  /* CARTAS MÁS GRANDES Y VISIBLES */
+  /* CARTAS GRANDES */
   .card {
     width: 60px; height: 88px; background: #ffffff; border-radius: 7px; color: #111;
     display: flex; flex-direction: column; justify-content: space-between; padding: 6px;
@@ -130,7 +125,7 @@
   }
   .card .suit { font-size: 1.3rem; align-self: flex-end; line-height: 1; }
 
-  /* SEATS */
+  /* SEATS & PENGUINS */
   .seat { position: absolute; width: 115px; display: flex; flex-direction: column; align-items: center; transition: all 0.4s ease; }
   .seat-0 { bottom: -52px; left: 50%; transform: translateX(-50%); }
   .seat-1 { bottom: 35px; left: -35px; }
@@ -139,6 +134,7 @@
   .seat-4 { top: 35px; right: -35px; }
   .seat-5 { bottom: 35px; right: -35px; }
 
+  .penguin-avatar-container { position: relative; }
   .penguin-avatar {
     width: 60px; height: 60px; border-radius: 50%; background: rgba(8, 26, 43, 0.85);
     border: 3px solid rgba(255,255,255,0.3); position: relative;
@@ -147,12 +143,21 @@
   }
   .seat.active .penguin-avatar { border-color: var(--neon-cyan); box-shadow: 0 0 25px var(--neon-cyan); transform: scale(1.1); }
   .seat.folded { opacity: 0.4; filter: grayscale(0.8); }
-  .seat.eliminated { display: none; }
 
-  .dealer-chip {
-    position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; background: #fff;
-    color: #000; font-weight: bold; font-size: 0.7rem; border-radius: 50%; display: flex;
-    justify-content: center; align-items: center; border: 2px solid #000; box-shadow: 0 0 8px #fff;
+  /* EMOTE BUBBLE */
+  .emote-bubble {
+    position: absolute; top: -18px; right: -12px; background: rgba(0,243,255,0.9); color: #000;
+    font-size: 1.1rem; padding: 2px 6px; border-radius: 12px; box-shadow: 0 0 10px var(--neon-cyan);
+    display: none; animation: popEmote 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; z-index: 10;
+  }
+  @keyframes popEmote { from { transform: scale(0); } to { transform: scale(1); } }
+
+  /* ELIMINATION ANIMATION */
+  .eliminating { animation: iceExit 2s forwards; }
+  @keyframes iceExit {
+    0% { opacity: 1; transform: scale(1); filter: brightness(1); }
+    50% { transform: translateY(-30px) scale(1.05); filter: brightness(1.5) drop-shadow(0 0 15px var(--neon-cyan)); }
+    100% { opacity: 0; transform: translateY(-150px) scale(0.8); filter: brightness(2) blur(4px); }
   }
 
   .player-info {
@@ -166,10 +171,10 @@
   .player-cards { display: flex; margin-top: -15px; z-index: 3; }
   .player-cards .card { transform: scale(0.88); margin: 0 -8px; }
 
-  /* CONTROLES */
+  /* CONTROLES & PALANCA FÍSICA */
   .controls-bar {
     width: 100%; max-width: 820px; background: rgba(5, 24, 41, 0.92); border: 1px solid rgba(0,243,255,0.4);
-    border-radius: 14px; padding: 10px 18px; display: flex; gap: 12px; align-items: center;
+    border-radius: 14px; padding: 10px 18px; display: flex; gap: 15px; align-items: center;
     justify-content: space-between; backdrop-filter: blur(10px); box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
     margin-bottom: 5px;
   }
@@ -177,7 +182,7 @@
   
   .btn {
     background: linear-gradient(135deg, #0a2b4c, #051829); border: 1px solid var(--neon-cyan);
-    color: #fff; padding: 9px 18px; border-radius: 6px; font-weight: bold; cursor: pointer;
+    color: #fff; padding: 9px 16px; border-radius: 6px; font-weight: bold; cursor: pointer;
     transition: all 0.2s ease; font-size: 0.85rem; letter-spacing: 1px; text-shadow: 0 0 5px var(--neon-cyan);
   }
   .btn:hover:not(:disabled) { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
@@ -185,9 +190,29 @@
   .btn-allin { border-color: var(--neon-purple); text-shadow: 0 0 5px var(--neon-purple); }
   .btn-allin:hover:not(:disabled) { background: var(--neon-purple); color: #fff; box-shadow: 0 0 20px var(--neon-purple); }
 
-  .raise-container { display: flex; align-items: center; gap: 8px; flex-grow: 1; max-width: 250px; }
-  .raise-slider { flex-grow: 1; accent-color: var(--neon-cyan); cursor: pointer; }
-  .raise-val { font-weight: bold; color: var(--neon-green); min-width: 45px; text-align: right; }
+  /* PALANCA FÍSICA ESTILO CASINO FUTURISTA */
+  .lever-container {
+    display: flex; align-items: center; gap: 10px; background: rgba(3, 8, 20, 0.6);
+    padding: 4px 12px; border-radius: 10px; border: 1px solid rgba(0,243,255,0.2);
+  }
+  .bet-lever {
+    display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; width: 45px;
+  }
+  .lever-track { width: 4px; height: 35px; background: rgba(0,243,255,0.3); border-radius: 2px; position: relative; }
+  .lever-knob {
+    width: 16px; height: 16px; background: var(--neon-cyan); border-radius: 50%;
+    position: absolute; left: -6px; top: 10px; box-shadow: 0 0 8px var(--neon-cyan);
+    transition: top 0.1s ease;
+  }
+  .lever-labels { font-size: 0.65rem; color: var(--neon-cyan); font-weight: bold; text-align: center; }
+  .raise-slider { accent-color: var(--neon-cyan); cursor: pointer; width: 110px; }
+  .raise-val { font-weight: bold; color: var(--neon-green); min-width: 45px; text-align: right; font-size: 0.9rem; }
+
+  /* BOTE FÍSICO / FICHAS VOLADORAS */
+  .flying-chip {
+    position: fixed; z-index: 500; font-size: 1.4rem; pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  }
 
   /* JACKPOT ALERT BANNER */
   #jackpotBanner {
@@ -197,7 +222,6 @@
   }
   @keyframes strobeBanner { from { opacity: 0.8; transform: translateX(-50%) scale(1); } to { opacity: 1; transform: translateX(-50%) scale(1.05); } }
 
-  /* EFECTO LLUVIA DE BILLETES */
   .bill {
     position: fixed; z-index: 999; font-size: 1.8rem; pointer-events: none;
     animation: fallBill 2.5s linear infinite;
@@ -207,7 +231,7 @@
     100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
   }
 
-  /* OVERLAY DE VICTORIA */
+  /* TRONO DE HIELO Y VICTORIA */
   #winOverlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 8, 20, 0.92);
     z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center;
@@ -217,7 +241,15 @@
   .win-title { font-size: 2.8rem; font-weight: 900; color: var(--neon-green); text-shadow: 0 0 30px var(--neon-green); margin-bottom: 5px; font-family: 'Impact', sans-serif; }
   .win-prize { font-size: 1.4rem; color: var(--neon-gold); margin-bottom: 10px; font-weight: bold; }
   .win-name { font-size: 1.5rem; color: var(--neon-cyan); margin-bottom: 15px; }
-  .win-penguin { font-size: 4.5rem; margin-bottom: 15px; }
+  
+  #iceThrone {
+    font-size: 5rem; margin-bottom: 15px;
+    animation: riseThrone 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  @keyframes riseThrone {
+    from { transform: translateY(400px) scale(0.5); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
 
   @media (max-width: 768px) {
     .logo-graffiti { font-size: 1.6rem; }
@@ -227,16 +259,15 @@
     .card { width: 42px; height: 62px; font-size: 0.8rem; }
     .controls-bar { flex-direction: column; gap: 6px; padding: 6px; }
     .action-btns { justify-content: center; width: 100%; }
-    .raise-container { width: 100%; max-width: 100%; }
+    .lever-container { width: 100%; justify-content: center; }
   }
 </style>
 </head>
 <body>
 
-<!-- BANNER DE JACKPOT ACTIVO -->
 <div id="jackpotBanner">🌟 ¡JACKPOT ÁRTICO ACTIVADO (+5.000€ EXTRA)! 🌟</div>
 
-<!-- PANTALLA DE PORTADA CON LOGO Y PREMIOS -->
+<!-- PANTALLA DE PORTADA -->
 <div id="introScreen">
   <img src="images/logo_iglu.jpg" alt="Logo Pokeriglu" class="intro-logo">
   <div class="intro-title">POKERIGLÚ</div>
@@ -249,15 +280,15 @@
       <div>🥈 2º: <span>1.500€</span></div>
       <div>🥉 3º: <span>500€</span></div>
     </div>
-    <div style="font-size: 0.75rem; color: var(--neon-cyan); margin-top: 6px;">Casa (IVYSNOWCASINO): 100€ por jugador | +Posibilidad de Jackpot Aleatorio de 5.000€</div>
+    <div style="font-size: 0.75rem; color: var(--neon-cyan); margin-top: 6px;">Casa (IVYSNOWCASINO): 100€ por jugador | +Jackpot Aleatorio de 5.000€</div>
   </div>
 
   <button class="btn" onclick="enterCasino()" style="font-size: 1.1rem; padding: 12px 35px; border-color: var(--neon-green); color: var(--neon-green);">ENTRAR AL TORNEO (1.000€)</button>
 </div>
 
-<!-- FONDO PERSONALIZADO -->
 <div id="bgContainer"></div>
 <canvas id="bgCanvas"></canvas>
+<canvas id="auroraCanvas"></canvas>
 
 <div id="app">
   <header>
@@ -267,7 +298,7 @@
       <div class="info-item">BUY-IN: <span>1.000€</span></div>
       <div class="info-item">BOLSA: <span class="prize-pool-tag">5.400€</span></div>
       <div class="info-item">CIEGAS: <span id="blindLevel">10 / 20</span></div>
-      <div class="info-item">SIGUIENTE NIVEL: <span id="blindTimer">03:00</span></div>
+      <div class="info-item">TEMPERATURA IGLÚ: <span id="igluEnergyDisplay">0°C</span></div>
     </div>
   </header>
 
@@ -280,60 +311,78 @@
     <!-- SEATS -->
     <div class="seat seat-0" id="seat-0">
       <div class="player-cards" id="cards-0"></div>
-      <div class="penguin-avatar" id="avatar-0">🐧<div class="dealer-chip" id="dealer-0" style="display:none;">D</div></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-0">🐧</div>
+        <div class="emote-bubble" id="emote-0"></div>
+      </div>
       <div class="player-info">
         <div class="player-name">TÚ (HUMANO)</div>
-        <div class="player-stack" id="stack-0">1000</div>
+        <div class="player-stack" id="stack-0">1500</div>
         <div class="player-action" id="action-0"></div>
       </div>
     </div>
 
     <div class="seat seat-1" id="seat-1">
       <div class="player-cards" id="cards-1"></div>
-      <div class="penguin-avatar" id="avatar-1">😎<div class="dealer-chip" id="dealer-1" style="display:none;">D</div></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-1">😎</div>
+        <div class="emote-bubble" id="emote-1"></div>
+      </div>
       <div class="player-info">
         <div class="player-name">FROSTFIN</div>
-        <div class="player-stack" id="stack-1">1000</div>
+        <div class="player-stack" id="stack-1">1500</div>
         <div class="player-action" id="action-1"></div>
       </div>
     </div>
 
     <div class="seat seat-2" id="seat-2">
       <div class="player-cards" id="cards-2"></div>
-      <div class="penguin-avatar" id="avatar-2">😼<div class="dealer-chip" id="dealer-2" style="display:none;">D</div></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-2">😼</div>
+        <div class="emote-bubble" id="emote-2"></div>
+      </div>
       <div class="player-info">
         <div class="player-name">ICEJACK</div>
-        <div class="player-stack" id="stack-2">1000</div>
+        <div class="player-stack" id="stack-2">1500</div>
         <div class="player-action" id="action-2"></div>
       </div>
     </div>
 
     <div class="seat seat-3" id="seat-3">
       <div class="player-cards" id="cards-3"></div>
-      <div class="penguin-avatar" id="avatar-3">⚡<div class="dealer-chip" id="dealer-3" style="display:none;">D</div></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-3">⚡</div>
+        <div class="emote-bubble" id="emote-3"></div>
+      </div>
       <div class="player-info">
         <div class="player-name">AURORAJOE</div>
-        <div class="player-stack" id="stack-3">1000</div>
+        <div class="player-stack" id="stack-3">1500</div>
         <div class="player-action" id="action-3"></div>
       </div>
     </div>
 
     <div class="seat seat-4" id="seat-4">
       <div class="player-cards" id="cards-4"></div>
-      <div class="penguin-avatar" id="avatar-4">🔥<div class="dealer-chip" id="dealer-4" style="display:none;">D</div></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-4">🔥</div>
+        <div class="emote-bubble" id="emote-4"></div>
+      </div>
       <div class="player-info">
         <div class="player-name">NEONBEAK</div>
-        <div class="player-stack" id="stack-4">1000</div>
+        <div class="player-stack" id="stack-4">1500</div>
         <div class="player-action" id="action-4"></div>
       </div>
     </div>
 
     <div class="seat seat-5" id="seat-5">
       <div class="player-cards" id="cards-5"></div>
-      <div class="penguin-avatar" id="avatar-5">👑<div class="dealer-chip" id="dealer-5" style="display:none;">D</div></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-5">👑</div>
+        <div class="emote-bubble" id="emote-5"></div>
+      </div>
       <div class="player-info">
         <div class="player-name">GLACIERKING</div>
-        <div class="player-stack" id="stack-5">1000</div>
+        <div class="player-stack" id="stack-5">1500</div>
         <div class="player-action" id="action-5"></div>
       </div>
     </div>
@@ -347,8 +396,15 @@
       <button class="btn" id="btnRaise" onclick="humanAction('raise')">SUBIR</button>
       <button class="btn btn-allin" id="btnAllIn" onclick="humanAction('allin')">ALL IN</button>
     </div>
-    <div class="raise-container">
-      <input type="range" class="raise-slider" id="raiseSlider" min="0" max="1000" value="0" oninput="updateRaiseVal()">
+    
+    <!-- PALANCA FÍSICA Y SLIDER -->
+    <div class="lever-container">
+      <div class="bet-lever" id="betLever">
+        <div class="lever-labels">▲</div>
+        <div class="lever-track"><div class="lever-knob" id="leverKnob"></div></div>
+        <div class="lever-labels">▼</div>
+      </div>
+      <input type="range" class="raise-slider" id="raiseSlider" min="0" max="1500" value="0" oninput="updateRaiseVal()">
       <div class="raise-val" id="raiseVal">0</div>
     </div>
   </div>
@@ -357,7 +413,7 @@
 <div id="winOverlay">
   <div class="win-title">🏆 CAMPEÓN DEL POKERIGLÚ 🏆</div>
   <div class="win-prize" id="winPrizeText">PREMIO: 3.400€</div>
-  <div class="win-penguin" id="winPenguin">🐧</div>
+  <div id="iceThrone">🐧👑</div>
   <div class="win-name" id="winName">JUGADOR</div>
   <button class="btn" onclick="location.reload()" style="font-size: 1.1rem; padding: 10px 25px;">NUEVA PARTIDA</button>
 </div>
@@ -405,6 +461,16 @@ function playSound(type) {
     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
     osc.connect(gain); gain.connect(audioCtx.destination);
     osc.start(now); osc.stop(now + 0.4);
+  } else if(type === 'eliminated') {
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.exponentialRampToValueAtTime(50, now + 0.6);
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.6);
   } else if(type === 'win') {
     [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
       let osc = audioCtx.createOscillator();
@@ -419,48 +485,153 @@ function playSound(type) {
   }
 }
 
-/* ================= CANVAS DE NIEVE ================= */
-const canvas = document.getElementById('bgCanvas');
-const ctx = canvas.getContext('2d');
+/* ================= CANVAS NIEVE & AURORAS REACTIVAS ================= */
+const snowCanvas = document.getElementById('bgCanvas');
+const snowCtx = snowCanvas.getContext('2d');
+const auroraCanvas = document.getElementById('auroraCanvas');
+const auroraCtx = auroraCanvas.getContext('2d');
+
 let width, height;
 let particles = [];
+let auroraIntensity = 0.3;
+let igluEnergy = 0;
 
 function resizeCanvas() {
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
+  width = snowCanvas.width = auroraCanvas.width = window.innerWidth;
+  height = snowCanvas.height = auroraCanvas.height = window.innerHeight;
 }
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 for(let i=0; i<60; i++) {
-  particles.push({
-    x: Math.random() * width,
-    y: Math.random() * height,
-    r: Math.random() * 2 + 0.5,
-    d: Math.random() * 1
-  });
+  particles.push({ x: Math.random() * width, y: Math.random() * height, r: Math.random() * 2 + 0.5, d: Math.random() * 1 });
 }
 
 let time = 0;
-function drawSnow() {
+function renderLoop() {
   time += 0.005;
-  ctx.clearRect(0,0,width,height);
-  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-  ctx.beginPath();
+  
+  // Render Nieve
+  snowCtx.clearRect(0,0,width,height);
+  snowCtx.fillStyle = "rgba(255, 255, 255, 0.5)";
+  snowCtx.beginPath();
   for(let i=0; i<particles.length; i++) {
     let p = particles[i];
-    ctx.moveTo(p.x, p.y);
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2, true);
+    snowCtx.moveTo(p.x, p.y);
+    snowCtx.arc(p.x, p.y, p.r, 0, Math.PI*2, true);
     p.y += Math.cos(time + p.d) + 0.4 + p.r/2;
     p.x += Math.sin(time) * 0.4;
     if(p.x > width || p.x < 0 || p.y > height) {
       particles[i] = {x: Math.random()*width, y: -10, r: p.r, d: p.d};
     }
   }
-  ctx.fill();
-  requestAnimationFrame(drawSnow);
+  snowCtx.fill();
+
+  // Render Auroras Boreales Dinámicas
+  auroraCtx.clearRect(0,0,width,height);
+  for(let i=0; i<3; i++) {
+    auroraCtx.beginPath();
+    auroraCtx.moveTo(0, height * 0.3);
+    let speed = 0.003 + (auroraIntensity * 0.003);
+    for(let x=0; x<width; x+=20) {
+      let y = Math.sin(x * speed + time * (i+1) + auroraIntensity) * (40 * auroraIntensity + 20) + height * 0.25;
+      auroraCtx.lineTo(x, y);
+    }
+    auroraCtx.lineTo(width, height);
+    auroraCtx.lineTo(0, height);
+    
+    let auroraGrad = auroraCtx.createLinearGradient(0,0,width,0);
+    auroraGrad.addColorStop(0, `rgba(0, 255, 102, ${0.1 + auroraIntensity * 0.2})`);
+    auroraGrad.addColorStop(0.5, `rgba(0, 243, 255, ${0.15 + auroraIntensity * 0.25})`);
+    auroraGrad.addColorStop(1, `rgba(157, 0, 255, ${0.1 + auroraIntensity * 0.2})`);
+    auroraCtx.fillStyle = auroraGrad;
+    auroraCtx.fill();
+  }
+
+  requestAnimationFrame(renderLoop);
 }
-drawSnow();
+renderLoop();
+
+/* ================= SISTEMA DE EMOTES PINGÜINOS ================= */
+function showEmote(playerId, emoji) {
+  let bubble = document.getElementById(`emote-${playerId}`);
+  if(bubble) {
+    bubble.innerText = emoji;
+    bubble.style.display = 'block';
+    setTimeout(() => { bubble.style.display = 'none'; }, 2500);
+  }
+}
+
+/* ================= FICHAS FÍSICAS AL BOTE ================= */
+function animateChipsToPot(playerId, amount) {
+  if(amount <= 0) return;
+  let seatEl = document.getElementById(`seat-${playerId}`);
+  let potEl = document.getElementById('potDisplay');
+  if(!seatEl || !potEl) return;
+
+  let sRect = seatEl.getBoundingClientRect();
+  let pRect = potEl.getBoundingClientRect();
+
+  let chip = document.createElement('div');
+  chip.className = 'flying-chip';
+  chip.innerText = '🪙';
+  chip.style.left = sRect.left + sRect.width/2 + 'px';
+  chip.style.top = sRect.top + sRect.height/2 + 'px';
+  document.body.appendChild(chip);
+
+  setTimeout(() => {
+    chip.style.left = pRect.left + pRect.width/2 + 'px';
+    chip.style.top = pRect.top + pRect.height/2 + 'px';
+    chip.style.transform = 'scale(0.5) rotate(360deg)';
+    chip.style.opacity = '0.3';
+  }, 20);
+
+  setTimeout(() => { chip.remove(); }, 620);
+}
+
+/* ================= EVALUADOR REAL DE MANOS PÓKER (7 CARTAS) ================= */
+const SUITS = ['♠', '♥', '♦', '♣'];
+const VALUES = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+
+function evaluateHand(cards7) {
+  // Conversión y ordenación para evaluar mejor jugada de 5 cartas entre 7
+  let ranked = cards7.map(c => ({ rank: c.rank, suit: c.suit })).sort((a,b) => b.rank - a.rank);
+  
+  // Lógica simplificada de puntuación exacta Hold'em
+  let counts = {};
+  ranked.forEach(c => counts[c.rank] = (counts[c.rank] || 0) + 1);
+  let groups = Object.keys(counts).map(r => ({ rank: Number(r), count: counts[r] })).sort((a,b) => b.count - a.count || b.rank - a.rank);
+
+  let isFlush = false;
+  let suitCounts = {};
+  cards7.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit] || 0) + 1);
+  for(let s in suitCounts) { if(suitCounts[s] >= 5) isFlush = true; }
+
+  let isStraight = false;
+  let uniqueRanks = [...new Set(ranked.map(c => c.rank))];
+  let straightHigh = -1;
+  for(let i=0; i<=uniqueRanks.length - 5; i++) {
+    if(uniqueRanks[i] - uniqueRanks[i+4] === 4) {
+      isStraight = true;
+      straightHigh = uniqueRanks[i];
+    }
+  }
+  // Escalera al As (A-2-3-4-5)
+  if(!isStraight && uniqueRanks.includes(12) && uniqueRanks.includes(3) && uniqueRanks.includes(2) && uniqueRanks.includes(1) && uniqueRanks.includes(0)) {
+    isStraight = true;
+    straightHigh = 3;
+  }
+
+  if(isFlush && isStraight) return 8000 + straightHigh; // Escalera de color
+  if(groups[0].count === 4) return 7000 + groups[0].rank; // Póker
+  if(groups[0].count === 3 && groups[1].count >= 2) return 6000 + groups[0].rank; // Full
+  if(isFlush) return 5000 + ranked[0].rank; // Color
+  if(isStraight) return 4000 + straightHigh; // Escalera
+  if(groups[0].count === 3) return 3000 + groups[0].rank; // Trío
+  if(groups[0].count === 2 && groups[1].count === 2) return 2000 + groups[0].rank * 15 + groups[1].rank; // Doble Pareja
+  if(groups[0].count === 2) return 1000 + groups[0].rank; // Pareja
+  return ranked[0].rank; // Carta alta
+}
 
 /* ================= VARIABLES DE JACKPOT ================= */
 let jackpotActive = false;
@@ -468,6 +639,7 @@ let jackpotActive = false;
 function triggerJackpotRain() {
   jackpotActive = true;
   document.getElementById('jackpotBanner').style.display = 'block';
+  auroraIntensity = 1;
   
   for(let i=0; i<40; i++) {
     let bill = document.createElement('div');
@@ -482,14 +654,9 @@ function triggerJackpotRain() {
   }
 }
 
-/* ================= ENTRAR AL CASINO ================= */
 function enterCasino() {
   initAudio();
-  
-  if(Math.random() < 0.3) {
-    triggerJackpotRain();
-  }
-
+  if(Math.random() < 0.3) { triggerJackpotRain(); }
   document.getElementById('introScreen').style.opacity = '0';
   setTimeout(() => {
     document.getElementById('introScreen').style.display = 'none';
@@ -499,10 +666,7 @@ function enterCasino() {
   }, 500);
 }
 
-/* ================= LÓGICA DEL JUEGO POKER HOLD'EM ================= */
-const SUITS = ['♠', '♥', '♦', '♣'];
-const VALUES = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-
+/* ================= TORNEO SIT & GO (1.500 STACK) ================= */
 const BLIND_LEVELS = [
   {sb: 10, bb: 20}, {sb: 15, bb: 30}, {sb: 25, bb: 50},
   {sb: 50, bb: 100}, {sb: 75, bb: 150}, {sb: 100, bb: 200},
@@ -510,12 +674,12 @@ const BLIND_LEVELS = [
 ];
 
 let players = [
-  { id: 0, name: "TÚ (HUMANO)", avatar: "🐧", style: "HUMAN", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 1, name: "FROSTFIN", avatar: "😎", style: "TIGHT", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 2, name: "ICEJACK", avatar: "😼", style: "TAG", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 3, name: "AURORAJOE", avatar: "⚡", style: "BLUFFER", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 4, name: "NEONBEAK", avatar: "🔥", style: "MANIAC", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 5, name: "GLACIERKING", avatar: "👑", style: "GTO", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false }
+  { id: 0, name: "TÚ (HUMANO)", avatar: "🐧", style: "HUMAN", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 1, name: "FROSTFIN", avatar: "😎", style: "TIGHT", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 2, name: "ICEJACK", avatar: "😼", style: "TAG", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 3, name: "AURORAJOE", avatar: "⚡", style: "BLUFFER", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 4, name: "NEONBEAK", avatar: "🔥", style: "MANIAC", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 5, name: "GLACIERKING", avatar: "👑", style: "GTO", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false }
 ];
 
 let deck = [];
@@ -549,27 +713,20 @@ function startBlindTimer() {
     blindTimerSeconds--;
     if(blindTimerSeconds <= 0) {
       blindTimerSeconds = 180;
-      if(currentBlindIdx < BLIND_LEVELS.length - 1) {
-        currentBlindIdx++;
-        updateUI();
-      }
+      if(currentBlindIdx < BLIND_LEVELS.length - 1) { currentBlindIdx++; updateUI(); }
     }
-    let m = Math.floor(blindTimerSeconds / 60).toString().padStart(2, '0');
-    let s = (blindTimerSeconds % 60).toString().padStart(2, '0');
-    document.getElementById('blindTimer').innerText = `${m}:${s}`;
   }, 1000);
 }
 
 function startNewHand() {
   let activePlayers = players.filter(p => !p.eliminated);
-  if(activePlayers.length <= 1) {
-    declareWinner(activePlayers[0]);
-    return;
-  }
+  if(activePlayers.length <= 1) { declareWinner(activePlayers[0]); return; }
 
   createDeck();
   communityCards = [];
   pot = 0;
+  igluEnergy = 0;
+  auroraIntensity = 0.3;
   gameStage = 'PREFLOP';
   
   players.forEach(p => {
@@ -581,23 +738,18 @@ function startNewHand() {
     document.getElementById(`cards-${p.id}`).innerHTML = '';
   });
 
-  do {
-    dealerIdx = (dealerIdx + 1) % players.length;
-  } while(players[dealerIdx].eliminated);
+  do { dealerIdx = (dealerIdx + 1) % players.length; } while(players[dealerIdx].eliminated);
 
   for(let i=0; i<2; i++) {
     players.forEach(p => {
-      if(!p.eliminated) {
-        p.cards.push(deck.pop());
-        playSound('card');
-      }
+      if(!p.eliminated) { p.cards.push(deck.pop()); playSound('card'); }
     });
   }
 
   let sbIdx = getNextActivePlayerIdx(dealerIdx);
   let bbIdx = getNextActivePlayerIdx(sbIdx);
-
   let blindInfo = BLIND_LEVELS[currentBlindIdx];
+
   postBet(players[sbIdx], Math.min(players[sbIdx].stack, blindInfo.sb));
   postBet(players[bbIdx], Math.min(players[bbIdx].stack, blindInfo.bb));
 
@@ -611,9 +763,7 @@ function startNewHand() {
 
 function getNextActivePlayerIdx(currIdx) {
   let next = (currIdx + 1) % players.length;
-  while(players[next].eliminated || players[next].folded) {
-    next = (next + 1) % players.length;
-  }
+  while(players[next].eliminated || players[next].folded) { next = (next + 1) % players.length; }
   return next;
 }
 
@@ -621,7 +771,14 @@ function postBet(player, amount) {
   player.stack -= amount;
   player.currentBet += amount;
   pot += amount;
+  animateChipsToPot(player.id, amount);
   if(player.stack === 0) player.isAllIn = true;
+  
+  // Actualizar temperatura del iglú & auroras
+  igluEnergy += amount;
+  auroraIntensity = Math.min(1, pot / 3000);
+  document.getElementById('igluEnergyDisplay').innerText = Math.min(100, Math.floor(igluEnergy / 40)) + '°C';
+  
   playSound('chip');
 }
 
@@ -693,22 +850,20 @@ function executeAITurn(player) {
   let highCard = Math.max(c1, c2);
 
   if(player.style === 'MANIAC') {
-    if(Math.random() < 0.4 && player.stack > callAmt * 2) action = 'raise';
+    if(Math.random() < 0.4 && player.stack > callAmt * 2) { action = 'raise'; showEmote(player.id, '😏'); }
     else if(callAmt <= player.stack) action = callAmt === 0 ? 'check' : 'call';
     else action = 'fold';
   } else if(player.style === 'TIGHT') {
     if(isPair || highCard >= 10) action = callAmt === 0 ? 'check' : 'call';
-    else action = callAmt === 0 ? 'check' : 'fold';
+    else { action = callAmt === 0 ? 'check' : 'fold'; if(Math.random()<0.3) showEmote(player.id, '🧊'); }
   } else if(player.style === 'BLUFFER') {
-    if(Math.random() < 0.35 && player.stack > callAmt) action = 'raise';
+    if(Math.random() < 0.35 && player.stack > callAmt) { action = 'raise'; showEmote(player.id, '😎'); }
     else action = callAmt === 0 ? 'check' : (callAmt < player.stack * 0.2 ? 'call' : 'fold');
   } else {
     if(isPair || highCard >= 8) {
       if(highCard >= 11 && Math.random() < 0.5) action = 'raise';
       else action = callAmt === 0 ? 'check' : 'call';
-    } else {
-      action = callAmt === 0 ? 'check' : 'fold';
-    }
+    } else { action = callAmt === 0 ? 'check' : 'fold'; }
   }
 
   if(action === 'fold') {
@@ -752,10 +907,12 @@ function humanAction(type) {
     minRaise = highestBet * 2;
     document.getElementById(`action-0`).innerText = `SUBE A ${p.currentBet}`;
   } else if(type === 'allin') {
+    auroraIntensity = 1;
     playSound('allin');
     postBet(p, p.stack);
     if(p.currentBet > highestBet) highestBet = p.currentBet;
     document.getElementById(`action-0`).innerText = 'ALL IN!';
+    showEmote(0, '🔥');
   }
 
   enableControls(false);
@@ -764,7 +921,12 @@ function humanAction(type) {
 }
 
 function updateRaiseVal() {
-  document.getElementById('raiseVal').innerText = document.getElementById('raiseSlider').value;
+  let val = document.getElementById('raiseSlider').value;
+  document.getElementById('raiseVal').innerText = val;
+  // Mover la palanca física de apuesta
+  let sliderMax = document.getElementById('raiseSlider').max || 1500;
+  let percent = val / sliderMax;
+  document.getElementById('leverKnob').style.top = (percent * 25) + 'px';
 }
 
 function enableControls(enable) {
@@ -785,25 +947,35 @@ function enableControls(enable) {
   updateRaiseVal();
 }
 
+/* ================= SHOWDOWN REAL & ELIMINACIONES ================= */
 function evaluateShowdown() {
   let active = players.filter(p => !p.eliminated && !p.folded);
-  let winner = active[Math.floor(Math.random() * active.length)];
-  winner.stack += pot;
   
+  // Evaluar puntuación real con evaluateHand
+  let scored = active.map(p => {
+    let score = evaluateHand(p.cards.concat(communityCards));
+    return { player: p, score: score };
+  });
+
+  scored.sort((a,b) => b.score - a.score);
+  let winner = scored[0].player;
+
+  winner.stack += pot;
   document.getElementById(`action-${winner.id}`).innerText = '¡GANA EL BOTE!';
+  showEmote(winner.id, '😂');
   playSound('win');
 
   setTimeout(() => {
     players.forEach(p => {
       if(!p.eliminated && p.stack <= 0) {
         p.eliminated = true;
-        document.getElementById(`seat-${p.id}`).classList.add('eliminated');
+        showEmote(p.id, '😱');
+        playSound('eliminated');
+        document.getElementById(`seat-${p.id}`).classList.add('eliminating');
       }
     });
 
     let remaining = players.filter(p => !p.eliminated);
-    document.getElementById('activeCount').innerText = `${remaining.length}/6`;
-
     if(remaining.length === 1) {
       declareWinner(remaining[0]);
     } else {
@@ -815,12 +987,8 @@ function evaluateShowdown() {
 function declareWinner(winner) {
   playSound('win');
   document.getElementById('winName').innerText = winner.name;
-  document.getElementById('winPenguin').innerText = winner.avatar;
-  
   let prizeText = "🥇 1º PUESTO: 3.400€";
-  if(jackpotActive) {
-    prizeText += " + 🌟 ¡JACKPOT 5.000€ EXTRA! 🌟";
-  }
+  if(jackpotActive) { prizeText += " + 🌟 ¡JACKPOT 5.000€ EXTRA! 🌟"; }
   document.getElementById('winPrizeText').innerText = prizeText;
   document.getElementById('winOverlay').classList.add('active');
 }
@@ -847,8 +1015,6 @@ function updateUI() {
 
     if(currentTurnIdx === p.id && !p.folded && !p.eliminated) seatEl.classList.add('active');
     else seatEl.classList.remove('active');
-
-    document.getElementById(`dealer-${p.id}`).style.display = (dealerIdx === p.id) ? 'flex' : 'none';
 
     let cardsContainer = document.getElementById(`cards-${p.id}`);
     cardsContainer.innerHTML = '';
