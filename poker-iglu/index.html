@@ -23,6 +23,19 @@
     z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
     backdrop-filter: blur(15px); transition: opacity 0.5s ease;
   }
+  
+  /* BOTÓN VOLVER A IVYSNOWCASINO EN LA PORTADA */
+  .btn-top-back {
+    position: absolute; top: 20px; left: 20px;
+    background: rgba(5, 24, 41, 0.8); border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
+    padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem;
+    transition: all 0.2s ease; text-decoration: none; display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+  }
+  .btn-top-back:hover {
+    background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan);
+  }
+
   .intro-logo {
     width: 220px; height: 220px; border-radius: 50%; object-fit: cover;
     border: 4px solid var(--neon-cyan); box-shadow: 0 0 30px var(--neon-cyan); margin-bottom: 25px;
@@ -81,7 +94,6 @@
   .info-item span { color: var(--neon-cyan); font-weight: bold; }
   .prize-pool-tag { color: var(--neon-gold) !important; font-weight: bold; }
 
-  /* BOTÓN DE ABANDONAR LOBBY */
   .btn-lobby {
     background: rgba(255, 0, 85, 0.2); border: 1px solid #ff0055; color: #ff0055;
     padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.8rem;
@@ -149,7 +161,6 @@
   .seat.active .penguin-avatar { border-color: var(--neon-cyan); box-shadow: 0 0 25px var(--neon-cyan); transform: scale(1.1); }
   .seat.folded { opacity: 0.4; filter: grayscale(0.8); }
 
-  /* EMOTE BUBBLE */
   .emote-bubble {
     position: absolute; top: -18px; right: -12px; background: rgba(0,243,255,0.9); color: #000;
     font-size: 1.1rem; padding: 2px 6px; border-radius: 12px; box-shadow: 0 0 10px var(--neon-cyan);
@@ -157,7 +168,6 @@
   }
   @keyframes popEmote { from { transform: scale(0); } to { transform: scale(1); } }
 
-  /* ELIMINATION ANIMATION */
   .eliminating { animation: iceExit 2s forwards; }
   @keyframes iceExit {
     0% { opacity: 1; transform: scale(1); filter: brightness(1); }
@@ -195,7 +205,6 @@
   .btn-allin { border-color: var(--neon-purple); text-shadow: 0 0 5px var(--neon-purple); }
   .btn-allin:hover:not(:disabled) { background: var(--neon-purple); color: #fff; box-shadow: 0 0 20px var(--neon-purple); }
 
-  /* PALANCA FÍSICA ESTILO CASINO FUTURISTA */
   .lever-container {
     display: flex; align-items: center; gap: 10px; background: rgba(3, 8, 20, 0.6);
     padding: 4px 12px; border-radius: 10px; border: 1px solid rgba(0,243,255,0.2);
@@ -213,13 +222,11 @@
   .raise-slider { accent-color: var(--neon-cyan); cursor: pointer; width: 110px; }
   .raise-val { font-weight: bold; color: var(--neon-green); min-width: 45px; text-align: right; font-size: 0.9rem; }
 
-  /* BOTE FÍSICO / FICHAS VOLADORAS */
   .flying-chip {
     position: fixed; z-index: 500; font-size: 1.4rem; pointer-events: none;
     transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   }
 
-  /* JACKPOT ALERT BANNER */
   #jackpotBanner {
     position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, #ff007f, #ffcc00, #00f3ff);
     color: #000; font-weight: 900; padding: 8px 25px; border-radius: 20px; font-size: 1rem; z-index: 500;
@@ -236,7 +243,6 @@
     100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
   }
 
-  /* TRONO DE HIELO Y VICTORIA */
   #winOverlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 8, 20, 0.92);
     z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center;
@@ -274,6 +280,8 @@
 
 <!-- PANTALLA DE PORTADA / LOBBY -->
 <div id="introScreen">
+  <a href="../index.html" class="btn-top-back">← VOLVER A IVYSNOWCASINO</a>
+
   <img src="images/logo_iglu.jpg" alt="Logo Pokeriglu" class="intro-logo">
   <div class="intro-title">POKERIGLÚ</div>
   <div class="intro-sub">IVYSNOWCASINO • ARCTIC SIT & GO (BUY-IN: 1.000€)</div>
@@ -285,7 +293,6 @@
       <div>🥈 2º: <span>1.500€</span></div>
       <div>🥉 3º: <span>500€</span></div>
     </div>
-    <div style="font-size: 0.75rem; color: var(--neon-cyan); margin-top: 6px;">Casa (IVYSNOWCASINO): 100€ por jugador | +Jackpot Aleatorio de 5.000€</div>
   </div>
 
   <button class="btn" onclick="enterCasino()" style="font-size: 1.1rem; padding: 12px 35px; border-color: var(--neon-green); color: var(--neon-green);">ENTRAR AL TORNEO (1.000€)</button>
@@ -405,7 +412,6 @@
       <button class="btn btn-allin" id="btnAllIn" onclick="humanAction('allin')">ALL IN</button>
     </div>
     
-    <!-- PALANCA FÍSICA Y SLIDER -->
     <div class="lever-container">
       <div class="bet-lever" id="betLever">
         <div class="lever-labels">▲</div>
@@ -675,7 +681,6 @@ function returnToLobby() {
   document.getElementById('jackpotBanner').style.display = 'none';
   document.getElementById('introScreen').style.display = 'flex';
   document.getElementById('introScreen').style.opacity = '1';
-  // Reiniciar stacks y estado
   players.forEach(p => { p.stack = 1500; p.eliminated = false; p.folded = false; });
 }
 
@@ -703,7 +708,7 @@ let dealerIdx = 0;
 let currentTurnIdx = 0;
 let highestBet = 0;
 let minRaise = 0;
-let gameStage = 'PREFLOP'; // PREFLOP, FLOP, TURN, RIVER, SHOWDOWN
+let gameStage = 'PREFLOP';
 let blindTimerSeconds = 180;
 let timerInterval = null;
 
@@ -798,7 +803,6 @@ function processTurn() {
   updateUI();
   let activeUnfolded = players.filter(p => !p.eliminated && !p.folded);
   
-  // Si solo queda 1 jugador activo (los demás se retiraron Fold), gana directamente el bote
   if(activeUnfolded.length === 1) {
     let winner = activeUnfolded[0];
     winner.stack += pot;
