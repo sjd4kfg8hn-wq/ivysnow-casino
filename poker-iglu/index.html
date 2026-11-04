@@ -107,7 +107,7 @@
     border: 8px solid rgba(0, 243, 255, 0.4);
     box-shadow: 0 0 50px rgba(0, 243, 255, 0.35), inset 0 0 35px rgba(0, 243, 255, 0.2), inset 0 0 80px rgba(0,0,0,0.6);
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    overflow: visible; transition: box-shadow 0.3s ease;
+    overflow: visible; transition: box-shadow 0.5s ease;
   }
   .table-logo {
     position: absolute; font-size: 1.2rem; font-weight: 800; letter-spacing: 6px; opacity: 0.2;
@@ -116,9 +116,21 @@
 
   .pot-display {
     font-size: 1.2rem; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--neon-cyan);
-    margin-bottom: 10px; background: rgba(3, 8, 20, 0.7); padding: 4px 16px; border-radius: 12px;
+    margin-bottom: 2px; background: rgba(3, 8, 20, 0.7); padding: 4px 16px; border-radius: 12px;
     border: 1px solid rgba(0,243,255,0.3); backdrop-filter: blur(5px);
   }
+  
+  /* BANNER DE RESULTADO DE MANO */
+  #handResult {
+    color: var(--neon-gold);
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    text-shadow: 0 0 12px var(--neon-gold);
+    min-height: 20px;
+    text-align: center;
+  }
+
   .community-cards { display: flex; gap: 10px; height: 95px; align-items: center; }
 
   /* CARTAS GRANDES */
@@ -333,6 +345,7 @@
     <div class="table-logo">POKERIGLÚ<br><span style="font-size:0.55rem; letter-spacing:2px;">NO LIMIT HOLD'EM</span></div>
 
     <div class="pot-display" id="potDisplay">BOTE: 0</div>
+    <div id="handResult"></div>
     <div class="community-cards" id="communityCards"></div>
 
     <!-- SEATS -->
@@ -613,7 +626,7 @@ function animateChipsToPot(playerId, amount) {
   setTimeout(() => { chip.remove(); }, 620);
 }
 
-/* ================= EVALUADOR REAL DE MANOS PÓKER (7 CARTAS) ================= */
+/* ================= EVALUADOR REAL CON KICKERS COMPLETOS ================= */
 const SUITS = ['♠', '♥', '♦', '♣'];
 const VALUES = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 
@@ -636,7 +649,6 @@ function evaluateHand(cards7) {
   }
 
   let flushCards = isFlush ? cards7.filter(c => c.suit === flushSuit).sort((a,b) => b.rank - a.rank) : [];
-  let flushHighRank = isFlush ? flushCards[0].rank : -1;
 
   let isStraightFlush = false;
   let straightFlushHigh = -1;
@@ -666,15 +678,44 @@ function evaluateHand(cards7) {
     straightHigh = 3;
   }
 
-  if(isStraightFlush) return { score: 8000 + straightFlushHigh, name: 'ESCALERA DE COLOR' };
-  if(groups[0].count === 4) return { score: 7000 + groups[0].rank, name: 'PÓKER' };
-  if(groups[0].count === 3 && groups[1] && groups[1].count >= 2) return { score: 6000 + groups[0].rank, name: 'FULL HOUSE' };
-  if(isFlush) return { score: 5000 + flushHighRank, name: 'COLOR' };
-  if(isStraight) return { score: 4000 + straightHigh, name: 'ESCALERA' };
-  if(groups[0].count === 3) return { score: 3000 + groups[0].rank, name: 'TRÍO' };
-  if(groups[0].count === 2 && groups[1] && groups[1].count === 2) return { score: 2000 + groups[0].rank * 15 + groups[1].rank, name: 'DOBLE PAREJA' };
-  if(groups[0].count === 2) return { score: 1000 + groups[0].rank, name: 'PAREJA' };
-  return { score: ranked[0].rank, name: 'CARTA ALTA' };
+  // CONSTRUCCIÓN DE KICKERS PRECISOS PARA DESEMPATES EXACTOS
+  if(isStraightFlush) return { score: [8, straightFlushHigh], name: 'ESCALERA DE COLOR' };
+  if(groups[0].count === 4) {
+    let kicker = ranked.find(c => c.rank !== groups[0].rank).rank;
+    return { score: [7, groups[0].rank, kicker], name: 'PÓKER' };
+  }
+  if(groups[0].count === 3 && groups[1] && groups[1].count >= 2) {
+    return { score: [6, groups[0].rank, groups[1].rank], name: 'FULL HOUSE' };
+  }
+  if(isFlush) {
+    let kickers = flushCards.slice(0, 5).map(c => c.rank);
+    return { score: [5, ...kickers], name: 'COLOR' };
+  }
+  if(isStraight) return { score: [4, straightHigh], name: 'ESCALERA' };
+  if(groups[0].count === 3) {
+    let kickers = ranked.filter(c => c.rank !== groups[0].rank).slice(0, 2).map(c => c.rank);
+    return { score: [3, groups[0].rank, ...kickers], name: 'TRÍO' };
+  }
+  if(groups[0].count === 2 && groups[1] && groups[1].count === 2) {
+    let kicker = ranked.find(c => c.rank !== groups[0].rank && c.rank !== groups[1].rank).rank;
+    return { score: [2, groups[0].rank, groups[1].rank, kicker], name: 'DOBLE PAREJA' };
+  }
+  if(groups[0].count === 2) {
+    let kickers = ranked.filter(c => c.rank !== groups[0].rank).slice(0, 3).map(c => c.rank);
+    return { score: [1, groups[0].rank, ...kickers], name: 'PAREJA' };
+  }
+  let kickers = ranked.slice(0, 5).map(c => c.rank);
+  return { score: [0, ...kickers], name: 'CARTA ALTA' };
+}
+
+// Función auxiliar para comparar arrays de puntuación/kickers con precisión milimétrica
+fn compareScores(s1, s2) {
+  for(let i=0; i<Math.max(s1.length, s2.length); i++) {
+    let v1 = s1[i] || 0;
+    let v2 = s2[i] || 0;
+    if(v1 !== v2) return v1 - v2;
+  }
+  return 0;
 }
 
 /* ================= VARIABLES DE JACKPOT ================= */
@@ -716,6 +757,7 @@ function returnToLobby() {
   document.getElementById('jackpotBanner').style.display = 'none';
   document.getElementById('introScreen').style.display = 'flex';
   document.getElementById('introScreen').style.opacity = '1';
+  document.getElementById('handResult').innerText = '';
   
   pot = 0;
   dealerIdx = 0;
@@ -760,7 +802,7 @@ let dealerIdx = 0;
 let currentTurnIdx = 0;
 let highestBet = 0;
 let minRaise = 0;
-let gameStage = 'PREFLOP'; // PREFLOP -> FLOP -> TURN -> RIVER -> SHOWDOWN
+let gameStage = 'PREFLOP';
 let blindTimerSeconds = 180;
 let timerInterval = null;
 
@@ -798,6 +840,8 @@ function startNewHand() {
   igluEnergy = 0;
   auroraIntensity = 0.3;
   gameStage = 'PREFLOP';
+  document.getElementById('handResult').innerText = '';
+  document.getElementById('pokerTable').style.boxShadow = '';
   
   players.forEach(p => {
     p.cards = [];
@@ -861,6 +905,7 @@ function processTurn() {
     winner.stack += pot;
     pot = 0;
     document.getElementById(`action-${winner.id}`).innerText = '¡GANA EL BOTE!';
+    document.getElementById('handResult').innerText = `${winner.name} gana el bote por retirada`;
     showEmote(winner.id, '😂');
     playSound('win');
     setTimeout(() => { startNewHand(); }, 2500);
@@ -897,7 +942,6 @@ function advanceStage() {
   players.forEach(p => p.currentBet = 0);
   highestBet = 0;
 
-  // CORRECCIÓN DE CALLES ESTRICTAS: Secuencia sin saltos
   if(gameStage === 'PREFLOP') {
     gameStage = 'FLOP';
     communityCards.push(deck.pop(), deck.pop(), deck.pop());
@@ -1026,25 +1070,54 @@ function enableControls(enable) {
   updateRaiseVal();
 }
 
-/* ================= SHOWDOWN REAL CON CLASIFICACIÓN TEXTUAL & ELIMINACIONES ================= */
+/* ================= SHOWDOWN REAL CON KICKERS, SPLIT POT & EFECTOS PREMIUM ================= */
 function evaluateShowdown() {
   let active = players.filter(p => !p.eliminated && !p.folded);
   
   let scored = active.map(p => {
     let evalRes = evaluateHand(p.cards.concat(communityCards));
     document.getElementById(`action-${p.id}`).innerText = evalRes.name;
-    return { player: p, score: evalRes.score, handName: evalRes.name };
+    return { player: p, eval: evalRes };
   });
 
-  scored.sort((a,b) => b.score - a.score);
-  let winner = scored[0].player;
+  // Ordenar usando comparación de kickers múltiples exacta
+  scored.sort((a,b) => compareScores(b.eval.score, a.eval.score));
 
-  winner.stack += pot;
+  // Detectar ganadores múltiples en caso de EMPATE REAL (Split Pot)
+  let bestScore = scored[0].eval.score;
+  let winners = scored.filter(s => compareScores(s.eval.score, bestScore) === 0);
+
+  let sharePot = Math.floor(pot / winners.length);
+  let remainder = pot % winners.length;
+
+  winners.forEach((w, idx) => {
+    let extra = (idx === 0) ? remainder : 0;
+    w.player.stack += (sharePot + extra);
+    document.getElementById(`action-${w.player.id}`).innerText = `¡GANA ${sharePot}€!`;
+    showEmote(w.player.id, '😂');
+  });
+
   pot = 0;
-  
-  document.getElementById(`action-${winner.id}`).innerText = `¡GANA CON ${scored[0].handName}!`;
-  showEmote(winner.id, '😂');
   playSound('win');
+
+  // EFECTO VISUAL PREMIUM PARA MANOS MÁS ALTAS (Full, Póker, Escalera de Color)
+  let topHandName = scored[0].eval.name;
+  if(['FULL HOUSE', 'PÓKER', 'ESCALERA DE COLOR'].includes(topHandName)) {
+    auroraIntensity = 1;
+    let tableEl = document.getElementById('pokerTable');
+    tableEl.style.boxShadow = "0 0 120px cyan, 0 0 180px purple";
+    setTimeout(() => { tableEl.style.boxShadow = ""; }, 5000);
+  }
+
+  // Actualizar banner central de resultado
+  let resultText = "";
+  if(winners.length > 1) {
+    let names = winners.map(w => w.player.name).join(' y ');
+    resultText = `¡EMPATE (SPLIT POT)! ${names} ganan con ${topHandName}`;
+  } else {
+    resultText = `${winners[0].player.name} gana con ${topHandName}`;
+  }
+  document.getElementById('handResult').innerText = resultText;
 
   setTimeout(() => {
     players.forEach(p => {
@@ -1062,7 +1135,7 @@ function evaluateShowdown() {
     } else {
       startNewHand();
     }
-  }, 3500);
+  }, 4000);
 }
 
 function declareWinner(winner) {
