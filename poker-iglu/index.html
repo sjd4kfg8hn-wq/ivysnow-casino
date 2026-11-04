@@ -193,7 +193,7 @@
   }
   .player-name { font-size: 0.7rem; font-weight: bold; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .player-stack { font-size: 0.8rem; font-weight: 800; color: var(--neon-green); }
-  .player-action { font-size: 0.6rem; color: var(--neon-cyan); height: 12px; font-style: italic; }
+  .player-action { font-size: 0.6rem; color: var(--neon-cyan); height: 12px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .player-cards { display: flex; margin-top: -15px; z-index: 3; }
   .player-cards .card { transform: scale(0.88); margin: 0 -8px; }
@@ -627,7 +627,7 @@ function evaluateHand(cards7) {
   let isFlush = false;
   let flushSuit = null;
   let suitCounts = {};
-  cards7.cards = cards7.forEach ? cards7.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit] || 0) + 1) : null;
+  cards7.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit] || 0) + 1);
   for(let s in suitCounts) { 
     if(suitCounts[s] >= 5) { 
       isFlush = true; 
@@ -635,16 +635,20 @@ function evaluateHand(cards7) {
     } 
   }
 
-  // Comprobación estricta de escalera de color (las 5 cartas de la escalera deben ser del mismo palo)
+  // Filtrar cartas exactamente del palo del color (CORRECCIÓN MEJORA Nº1)
+  let flushCards = isFlush ? cards7.filter(c => c.suit === flushSuit).sort((a,b) => b.rank - a.rank) : [];
+  let flushHighRank = isFlush ? flushCards[0].rank : -1;
+
+  // Comprobación estricta de escalera de color
   let isStraightFlush = false;
   let straightFlushHigh = -1;
   if (isFlush) {
-    let flushCards = cards7.filter(c => c.suit === flushSuit).sort((a,b) => b.rank - a.rank);
     let uniqueFlushRanks = [...new Set(flushCards.map(c => c.rank))];
     for(let i=0; i<=uniqueFlushRanks.length - 5; i++) {
       if(uniqueFlushRanks[i] - uniqueFlushRanks[i+4] === 4) {
         isStraightFlush = true;
-        straightHigh = uniqueFlushRanks[i];
+        straightFlushHigh = uniqueFlushRanks[i];
+        break;
       }
     }
   }
@@ -656,6 +660,7 @@ function evaluateHand(cards7) {
     if(uniqueRanks[i] - uniqueRanks[i+4] === 4) {
       isStraight = true;
       straightHigh = uniqueRanks[i];
+      break;
     }
   }
   if(!isStraight && uniqueRanks.includes(12) && uniqueRanks.includes(3) && uniqueRanks.includes(2) && uniqueRanks.includes(1) && uniqueRanks.includes(0)) {
@@ -663,15 +668,15 @@ function evaluateHand(cards7) {
     straightHigh = 3;
   }
 
-  if(isStraightFlush) return 8000 + straightHigh; // Escalera de color real
-  if(groups[0].count === 4) return 7000 + groups[0].rank;
-  if(groups[0].count === 3 && groups[1].count >= 2) return 6000 + groups[0].rank;
-  if(isFlush) return 5000 + ranked[0].rank;
-  if(isStraight) return 4000 + straightHigh;
-  if(groups[0].count === 3) return 3000 + groups[0].rank;
-  if(groups[0].count === 2 && groups[1].count === 2) return 2000 + groups[0].rank * 15 + groups[1].rank;
-  if(groups[0].count === 2) return 1000 + groups[0].rank;
-  return ranked[0].rank;
+  if(isStraightFlush) return { score: 8000 + straightFlushHigh, name: 'ESCALERA DE COLOR' };
+  if(groups[0].count === 4) return { score: 7000 + groups[0].rank, name: 'PÓKER' };
+  if(groups[0].count === 3 && groups[1] && groups[1].count >= 2) return { score: 6000 + groups[0].rank, name: 'FULL HOUSE' };
+  if(isFlush) return { score: 5000 + flushHighRank, name: 'COLOR' };
+  if(isStraight) return { score: 4000 + straightHigh, name: 'ESCALERA' };
+  if(groups[0].count === 3) return { score: 3000 + groups[0].rank, name: 'TRÍO' };
+  if(groups[0].count === 2 && groups[1] && groups[1].count === 2) return { score: 2000 + groups[0].rank * 15 + groups[1].rank, name: 'DOBLE PAREJA' };
+  if(groups[0].count === 2) return { score: 1000 + groups[0].rank, name: 'PAREJA' };
+  return { score: ranked[0].rank, name: 'CARTA ALTA' };
 }
 
 /* ================= VARIABLES DE JACKPOT ================= */
@@ -714,12 +719,24 @@ function returnToLobby() {
   document.getElementById('introScreen').style.display = 'flex';
   document.getElementById('introScreen').style.opacity = '1';
   
+  // CORRECCIÓN MEJORA Nº2: Reset de variables de estado
+  pot = 0;
+  dealerIdx = 0;
+  currentBlindIdx = 0;
+  blindTimerSeconds = 180;
+  communityCards = [];
+  
   players.forEach(p => {
     p.stack = 1500;
     p.eliminated = false;
     p.folded = false;
     const seat = document.getElementById(`seat-${p.id}`);
-    if(seat) seat.classList.remove("eliminating");
+    if(seat) {
+      // CORRECCIÓN MEJORA Nº3: Limpieza total de clases de estado CSS
+      seat.classList.remove("folded");
+      seat.classList.remove("active");
+      seat.classList.remove("eliminating");
+    }
   });
 }
 
@@ -813,7 +830,7 @@ function startNewHand() {
   highestBet = Math.max(...players.map(p => p.currentBet));
   minRaise = highestBet * 2;
   currentTurnIdx = getNextActivePlayerIdx(bbIdx);
-  roundStartPlayerIdx = currentTurnIdx; // CORRECCIÓN ERROR 1: Asignar roundStartPlayerIdx tras ciegas
+  roundStartPlayerIdx = currentTurnIdx;
   
   updateUI();
   processTurn();
@@ -846,7 +863,7 @@ function processTurn() {
   if(activeUnfolded.length === 1) {
     let winner = activeUnfolded[0];
     winner.stack += pot;
-    pot = 0; // CORRECCIÓN ERROR 4: Vaciar bote al ganar por folds
+    pot = 0;
     document.getElementById(`action-${winner.id}`).innerText = '¡GANA EL BOTE!';
     showEmote(winner.id, '😂');
     playSound('win');
@@ -965,8 +982,6 @@ function humanAction(type) {
     document.getElementById(`action-0`).innerText = 'IR';
   } else if(type === 'raise') {
     let raiseVal = parseInt(document.getElementById('raiseSlider').value);
-    
-    // CORRECCIÓN ERROR 2: Evitar raise negativo y cálculo seguro de diferencia
     let diff = Math.max(0, raiseVal - p.currentBet);
     let bet = Math.min(p.stack, diff);
     
@@ -1014,22 +1029,24 @@ function enableControls(enable) {
   updateRaiseVal();
 }
 
-/* ================= SHOWDOWN REAL & ELIMINACIONES ================= */
+/* ================= SHOWDOWN REAL CON CLASIFICACIÓN TEXTUAL & ELIMINACIONES ================= */
 function evaluateShowdown() {
   let active = players.filter(p => !p.eliminated && !p.folded);
   
   let scored = active.map(p => {
-    let score = evaluateHand(p.cards.concat(communityCards));
-    return { player: p, score: score };
+    let evalRes = evaluateHand(p.cards.concat(communityCards));
+    // Mostrar la jugada exacta en la etiqueta de acción del jugador
+    document.getElementById(`action-${p.id}`).innerText = evalRes.name;
+    return { player: p, score: evalRes.score, handName: evalRes.name };
   });
 
   scored.sort((a,b) => b.score - a.score);
   let winner = scored[0].player;
 
   winner.stack += pot;
-  pot = 0; // CORRECCIÓN ERROR 4: Vaciar bote al repartir en showdown
+  pot = 0;
   
-  document.getElementById(`action-${winner.id}`).innerText = '¡GANA EL BOTE!';
+  document.getElementById(`action-${winner.id}`).innerText = `¡GANA CON ${scored[0].handName}!`;
   showEmote(winner.id, '😂');
   playSound('win');
 
@@ -1049,7 +1066,7 @@ function evaluateShowdown() {
     } else {
       startNewHand();
     }
-  }, 3000);
+  }, 3500);
 }
 
 function declareWinner(winner) {
