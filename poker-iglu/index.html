@@ -10,6 +10,7 @@
     --neon-blue: #0066ff;
     --neon-purple: #9d00ff;
     --neon-green: #00ff66;
+    --neon-gold: #ffcc00;
     --dark-bg: #030814;
     --felt-color: #051829;
   }
@@ -33,9 +34,18 @@
   .intro-title {
     font-size: 3rem; font-weight: 900; font-family: 'Impact', sans-serif;
     letter-spacing: 4px; background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; text-align: center;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; text-align: center;
   }
-  .intro-sub { font-size: 0.9rem; letter-spacing: 5px; color: var(--neon-cyan); margin-bottom: 30px; }
+  .intro-sub { font-size: 0.9rem; letter-spacing: 5px; color: var(--neon-cyan); margin-bottom: 20px; }
+
+  /* CAJA DE PREMIOS EN PORTADA */
+  .prizes-box {
+    background: rgba(5, 24, 41, 0.9); border: 1px solid var(--neon-gold); border-radius: 12px;
+    padding: 15px 25px; margin-bottom: 25px; text-align: center; box-shadow: 0 0 20px rgba(255,204,0,0.2);
+  }
+  .prizes-box h3 { color: var(--neon-gold); font-size: 1rem; margin-bottom: 8px; letter-spacing: 2px; }
+  .prizes-list { display: flex; gap: 20px; font-size: 0.9rem; font-weight: bold; color: #fff; }
+  .prizes-list span { color: var(--neon-green); }
 
   /* FONDO DE FOTO PERSONALIZADA */
   #bgContainer {
@@ -57,45 +67,47 @@
   /* HEADER & GRAFFITI */
   header { text-align: center; margin-top: 5px; }
   .logo-graffiti {
-    font-size: 2.6rem; font-weight: 900; font-family: 'Impact', sans-serif; letter-spacing: 3px;
+    font-size: 2.4rem; font-weight: 900; font-family: 'Impact', sans-serif; letter-spacing: 3px;
     background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     text-shadow: 0 0 15px rgba(0,243,255,0.6); transform: rotate(-2deg); display: inline-block;
   }
-  .sub-title { font-size: 0.75rem; letter-spacing: 4px; color: var(--neon-cyan); opacity: 0.9; margin-top: -5px; }
+  .sub-title { font-size: 0.7rem; letter-spacing: 3px; color: var(--neon-cyan); opacity: 0.9; margin-top: -5px; }
 
-  /* INFO BAR */
+  /* INFO BAR & PREMIOS ACTIVOS */
   .info-bar {
-    display: flex; gap: 20px; background: rgba(5, 24, 41, 0.85); border: 1px solid rgba(0,243,255,0.3);
-    padding: 5px 16px; border-radius: 20px; backdrop-filter: blur(8px); font-size: 0.85rem; margin-top: 5px;
+    display: flex; gap: 15px; background: rgba(5, 24, 41, 0.85); border: 1px solid rgba(0,243,255,0.3);
+    padding: 4px 14px; border-radius: 16px; backdrop-filter: blur(8px); font-size: 0.8rem; margin-top: 4px;
+    align-items: center; justify-content: center; flex-wrap: wrap;
   }
   .info-item span { color: var(--neon-cyan); font-weight: bold; }
+  .prize-pool-tag { color: var(--neon-gold) !important; font-weight: bold; }
 
   /* POKER TABLE CONTAINER */
   .table-container {
-    position: relative; width: 900px; height: 480px; max-width: 95vw; max-height: 56vh;
-    margin: auto; border-radius: 240px; background: var(--felt-color);
+    position: relative; width: 900px; height: 460px; max-width: 95vw; max-height: 54vh;
+    margin: auto; border-radius: 230px; background: var(--felt-color);
     border: 12px solid #112233;
     box-shadow: 0 0 40px rgba(0, 243, 255, 0.25), inset 0 0 50px rgba(0,0,0,0.8), inset 0 0 15px var(--neon-blue);
     display: flex; flex-direction: column; justify-content: center; align-items: center;
   }
   .table-logo {
-    position: absolute; font-size: 1.2rem; font-weight: 800; letter-spacing: 6px; opacity: 0.15;
+    position: absolute; font-size: 1.1rem; font-weight: 800; letter-spacing: 6px; opacity: 0.15;
     color: var(--neon-cyan); pointer-events: none; text-align: center;
   }
 
   .pot-display {
     font-size: 1.1rem; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--neon-cyan);
-    margin-bottom: 8px; background: rgba(0,0,0,0.5); padding: 3px 14px; border-radius: 10px;
+    margin-bottom: 6px; background: rgba(0,0,0,0.5); padding: 3px 12px; border-radius: 10px;
     border: 1px solid rgba(0,243,255,0.2);
   }
-  .community-cards { display: flex; gap: 8px; height: 75px; align-items: center; }
+  .community-cards { display: flex; gap: 8px; height: 70px; align-items: center; }
 
   /* CARDS */
   .card {
-    width: 48px; height: 70px; background: #fff; border-radius: 5px; color: #111;
+    width: 45px; height: 65px; background: #fff; border-radius: 5px; color: #111;
     display: flex; flex-direction: column; justify-content: space-between; padding: 4px;
-    font-weight: bold; font-size: 0.85rem; box-shadow: 0 4px 8px rgba(0,0,0,0.5); position: relative;
+    font-weight: bold; font-size: 0.8rem; box-shadow: 0 4px 8px rgba(0,0,0,0.5); position: relative;
   }
   .card.red { color: #d00; }
   .card.back {
@@ -103,23 +115,23 @@
   }
   .card.back::after {
     content: '❄'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    color: var(--neon-cyan); font-size: 1.2rem; opacity: 0.6;
+    color: var(--neon-cyan); font-size: 1.1rem; opacity: 0.6;
   }
-  .card .suit { font-size: 1rem; align-self: flex-end; }
+  .card .suit { font-size: 0.95rem; align-self: flex-end; }
 
   /* SEATS */
-  .seat { position: absolute; width: 110px; display: flex; flex-direction: column; align-items: center; transition: all 0.4s ease; }
-  .seat-0 { bottom: -42px; left: 50%; transform: translateX(-50%); }
-  .seat-1 { bottom: 35px; left: -30px; }
-  .seat-2 { top: 35px; left: -30px; }
-  .seat-3 { top: -42px; left: 50%; transform: translateX(-50%); }
-  .seat-4 { top: 35px; right: -30px; }
-  .seat-5 { bottom: 35px; right: -30px; }
+  .seat { position: absolute; width: 105px; display: flex; flex-direction: column; align-items: center; transition: all 0.4s ease; }
+  .seat-0 { bottom: -40px; left: 50%; transform: translateX(-50%); }
+  .seat-1 { bottom: 35px; left: -25px; }
+  .seat-2 { top: 35px; left: -25px; }
+  .seat-3 { top: -40px; left: 50%; transform: translateX(-50%); }
+  .seat-4 { top: 35px; right: -25px; }
+  .seat-5 { bottom: 35px; right: -25px; }
 
   .penguin-avatar {
-    width: 60px; height: 60px; border-radius: 50%; background: #081a2b;
+    width: 55px; height: 55px; border-radius: 50%; background: #081a2b;
     border: 3px solid rgba(255,255,255,0.2); position: relative;
-    display: flex; justify-content: center; align-items: center; font-size: 1.8rem;
+    display: flex; justify-content: center; align-items: center; font-size: 1.6rem;
     box-shadow: 0 0 12px rgba(0,0,0,0.6);
   }
   .seat.active .penguin-avatar { border-color: var(--neon-cyan); box-shadow: 0 0 20px var(--neon-cyan); transform: scale(1.08); }
@@ -134,14 +146,14 @@
 
   .player-info {
     background: rgba(3, 8, 20, 0.85); border: 1px solid rgba(0,243,255,0.3); border-radius: 6px;
-    padding: 2px 6px; text-align: center; width: 100%; margin-top: 3px; backdrop-filter: blur(4px);
+    padding: 2px 5px; text-align: center; width: 100%; margin-top: 3px; backdrop-filter: blur(4px);
   }
-  .player-name { font-size: 0.7rem; font-weight: bold; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .player-stack { font-size: 0.75rem; font-weight: 800; color: var(--neon-green); }
-  .player-action { font-size: 0.6rem; color: var(--neon-cyan); height: 11px; font-style: italic; }
+  .player-name { font-size: 0.65rem; font-weight: bold; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .player-stack { font-size: 0.7rem; font-weight: 800; color: var(--neon-green); }
+  .player-action { font-size: 0.55rem; color: var(--neon-cyan); height: 10px; font-style: italic; }
 
-  .player-cards { display: flex; margin-top: -12px; z-index: 3; }
-  .player-cards .card { transform: scale(0.7); margin: 0 -7px; }
+  .player-cards { display: flex; margin-top: -10px; z-index: 3; }
+  .player-cards .card { transform: scale(0.65); margin: 0 -6px; }
 
   /* CONTROLES */
   .controls-bar {
@@ -166,6 +178,24 @@
   .raise-slider { flex-grow: 1; accent-color: var(--neon-cyan); cursor: pointer; }
   .raise-val { font-weight: bold; color: var(--neon-green); min-width: 45px; text-align: right; }
 
+  /* JACKPOT ALERT BANNER */
+  #jackpotBanner {
+    position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, #ff007f, #ffcc00, #00f3ff);
+    color: #000; font-weight: 900; padding: 8px 25px; border-radius: 20px; font-size: 1rem; z-index: 500;
+    box-shadow: 0 0 25px #ffcc00; display: none; animation: strobeBanner 0.5s infinite alternate; text-align: center;
+  }
+  @keyframes strobeBanner { from { opacity: 0.8; transform: translateX(-50%) scale(1); } to { opacity: 1; transform: translateX(-50%) scale(1.05); } }
+
+  /* EFECTO LLUVIA DE BILLETES */
+  .bill {
+    position: fixed; z-index: 999; font-size: 1.8rem; pointer-events: none;
+    animation: fallBill 2.5s linear infinite;
+  }
+  @keyframes fallBill {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+  }
+
   /* OVERLAY DE VICTORIA */
   #winOverlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 8, 20, 0.92);
@@ -173,16 +203,17 @@
     backdrop-filter: blur(12px); text-align: center;
   }
   #winOverlay.active { display: flex; }
-  .win-title { font-size: 2.8rem; font-weight: 900; color: var(--neon-green); text-shadow: 0 0 30px var(--neon-green); margin-bottom: 10px; font-family: 'Impact', sans-serif; }
-  .win-name { font-size: 1.8rem; color: var(--neon-cyan); margin-bottom: 20px; }
-  .win-penguin { font-size: 5rem; margin-bottom: 20px; }
+  .win-title { font-size: 2.5rem; font-weight: 900; color: var(--neon-green); text-shadow: 0 0 30px var(--neon-green); margin-bottom: 5px; font-family: 'Impact', sans-serif; }
+  .win-prize { font-size: 1.4rem; color: var(--neon-gold); margin-bottom: 10px; font-weight: bold; }
+  .win-name { font-size: 1.5rem; color: var(--neon-cyan); margin-bottom: 15px; }
+  .win-penguin { font-size: 4.5rem; margin-bottom: 15px; }
 
   @media (max-width: 768px) {
-    .logo-graffiti { font-size: 1.8rem; }
-    .table-container { height: 360px; }
-    .seat { width: 80px; }
-    .penguin-avatar { width: 42px; height: 42px; font-size: 1.2rem; }
-    .card { width: 35px; height: 50px; font-size: 0.65rem; }
+    .logo-graffiti { font-size: 1.6rem; }
+    .table-container { height: 340px; }
+    .seat { width: 75px; }
+    .penguin-avatar { width: 38px; height: 38px; font-size: 1.1rem; }
+    .card { width: 32px; height: 46px; font-size: 0.6rem; }
     .controls-bar { flex-direction: column; gap: 6px; padding: 6px; }
     .action-btns { justify-content: center; width: 100%; }
     .raise-container { width: 100%; max-width: 100%; }
@@ -191,12 +222,26 @@
 </head>
 <body>
 
-<!-- PANTALLA DE PORTADA CON LOGO -->
+<!-- BANNER DE JACKPOT ACTIVO -->
+<div id="jackpotBanner">🌟 ¡JACKPOT ÁRTICO ACTIVADO (+5.000€ EXTRA)! 🌟</div>
+
+<!-- PANTALLA DE PORTADA CON LOGO Y PREMIOS -->
 <div id="introScreen">
   <img src="images/logo_iglu.jpg" alt="Logo Pokeriglu" class="intro-logo">
   <div class="intro-title">POKERIGLÚ</div>
-  <div class="intro-sub">IVYSNOWCASINO • ARCTIC SIT & GO</div>
-  <button class="btn" onclick="enterCasino()" style="font-size: 1.1rem; padding: 12px 35px; border-color: var(--neon-green); color: var(--neon-green);">ENTRAR AL TORNEO</button>
+  <div class="intro-sub">IVYSNOWCASINO • ARCTIC SIT & GO (BUY-IN: 1.000€)</div>
+  
+  <div class="prizes-box">
+    <h3>ESTRUCTURA DE PREMIOS (BOTE TOTAL: 5.400€)</h3>
+    <div class="prizes-list">
+      <div>🥇 1º: <span>3.400€</span></div>
+      <div>🥈 2º: <span>1.500€</span></div>
+      <div>🥉 3º: <span>500€</span></div>
+    </div>
+    <div style="font-size: 0.75rem; color: var(--neon-cyan); margin-top: 6px;">Casa (IVYSNOWCASINO): 100€ por jugador | +Posibilidad de Jackpot Aleatorio de 5.000€</div>
+  </div>
+
+  <button class="btn" onclick="enterCasino()" style="font-size: 1.1rem; padding: 12px 35px; border-color: var(--neon-green); color: var(--neon-green);">ENTRAR AL TORNEO (1.000€)</button>
 </div>
 
 <!-- FONDO PERSONALIZADO -->
@@ -208,9 +253,10 @@
     <div class="logo-graffiti">POKERIGLÚ</div>
     <div class="sub-title">IVYSNOWCASINO • ARCTIC SIT & GO</div>
     <div class="info-bar">
+      <div class="info-item">BUY-IN: <span>1.000€</span></div>
+      <div class="info-item">BOLSA: <span class="prize-pool-tag">5.400€</span></div>
       <div class="info-item">CIEGAS: <span id="blindLevel">10 / 20</span></div>
       <div class="info-item">SIGUIENTE NIVEL: <span id="blindTimer">03:00</span></div>
-      <div class="info-item">JUGADORES: <span id="activeCount">6/6</span></div>
     </div>
   </header>
 
@@ -226,7 +272,7 @@
       <div class="penguin-avatar" id="avatar-0">🐧<div class="dealer-chip" id="dealer-0" style="display:none;">D</div></div>
       <div class="player-info">
         <div class="player-name">TÚ (HUMANO)</div>
-        <div class="player-stack" id="stack-0">1500</div>
+        <div class="player-stack" id="stack-0">1000</div>
         <div class="player-action" id="action-0"></div>
       </div>
     </div>
@@ -236,7 +282,7 @@
       <div class="penguin-avatar" id="avatar-1">😎<div class="dealer-chip" id="dealer-1" style="display:none;">D</div></div>
       <div class="player-info">
         <div class="player-name">FROSTFIN</div>
-        <div class="player-stack" id="stack-1">1500</div>
+        <div class="player-stack" id="stack-1">1000</div>
         <div class="player-action" id="action-1"></div>
       </div>
     </div>
@@ -246,7 +292,7 @@
       <div class="penguin-avatar" id="avatar-2">😼<div class="dealer-chip" id="dealer-2" style="display:none;">D</div></div>
       <div class="player-info">
         <div class="player-name">ICEJACK</div>
-        <div class="player-stack" id="stack-2">1500</div>
+        <div class="player-stack" id="stack-2">1000</div>
         <div class="player-action" id="action-2"></div>
       </div>
     </div>
@@ -256,7 +302,7 @@
       <div class="penguin-avatar" id="avatar-3">⚡<div class="dealer-chip" id="dealer-3" style="display:none;">D</div></div>
       <div class="player-info">
         <div class="player-name">AURORAJOE</div>
-        <div class="player-stack" id="stack-3">1500</div>
+        <div class="player-stack" id="stack-3">1000</div>
         <div class="player-action" id="action-3"></div>
       </div>
     </div>
@@ -266,7 +312,7 @@
       <div class="penguin-avatar" id="avatar-4">🔥<div class="dealer-chip" id="dealer-4" style="display:none;">D</div></div>
       <div class="player-info">
         <div class="player-name">NEONBEAK</div>
-        <div class="player-stack" id="stack-4">1500</div>
+        <div class="player-stack" id="stack-4">1000</div>
         <div class="player-action" id="action-4"></div>
       </div>
     </div>
@@ -276,7 +322,7 @@
       <div class="penguin-avatar" id="avatar-5">👑<div class="dealer-chip" id="dealer-5" style="display:none;">D</div></div>
       <div class="player-info">
         <div class="player-name">GLACIERKING</div>
-        <div class="player-stack" id="stack-5">1500</div>
+        <div class="player-stack" id="stack-5">1000</div>
         <div class="player-action" id="action-5"></div>
       </div>
     </div>
@@ -291,7 +337,7 @@
       <button class="btn btn-allin" id="btnAllIn" onclick="humanAction('allin')">ALL IN</button>
     </div>
     <div class="raise-container">
-      <input type="range" class="raise-slider" id="raiseSlider" min="0" max="1500" value="0" oninput="updateRaiseVal()">
+      <input type="range" class="raise-slider" id="raiseSlider" min="0" max="1000" value="0" oninput="updateRaiseVal()">
       <div class="raise-val" id="raiseVal">0</div>
     </div>
   </div>
@@ -299,8 +345,9 @@
 
 <div id="winOverlay">
   <div class="win-title">🏆 CAMPEÓN DEL POKERIGLÚ 🏆</div>
+  <div class="win-prize" id="winPrizeText">PREMIO: 3.400€</div>
   <div class="win-penguin" id="winPenguin">🐧</div>
-  <div class="win-name" id="winName">JUGADORES</div>
+  <div class="win-name" id="winName">JUGADOR</div>
   <button class="btn" onclick="location.reload()" style="font-size: 1.1rem; padding: 10px 25px;">NUEVA PARTIDA</button>
 </div>
 
@@ -404,9 +451,36 @@ function drawSnow() {
 }
 drawSnow();
 
+/* ================= VARIABLES DE JACKPOT ================= */
+let jackpotActive = false;
+
+function triggerJackpotRain() {
+  jackpotActive = true;
+  document.getElementById('jackpotBanner').style.display = 'block';
+  
+  // Generar lluvia de billetes por toda la pantalla
+  for(let i=0; i<40; i++) {
+    let bill = document.createElement('div');
+    bill.className = 'bill';
+    bill.innerText = '💶';
+    bill.style.left = Math.random() * window.innerWidth + 'px';
+    bill.style.top = -50 + 'px';
+    bill.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    bill.style.animationDelay = (Math.random() * 1.5) + 's';
+    document.body.appendChild(bill);
+    setTimeout(() => { bill.remove(); }, 4000);
+  }
+}
+
 /* ================= ENTRAR AL CASINO ================= */
 function enterCasino() {
   initAudio();
+  
+  // 30% de probabilidad de activar el Jackpot Aleatorio de 5000€
+  if(Math.random() < 0.3) {
+    triggerJackpotRain();
+  }
+
   document.getElementById('introScreen').style.opacity = '0';
   setTimeout(() => {
     document.getElementById('introScreen').style.display = 'none';
@@ -427,12 +501,12 @@ const BLIND_LEVELS = [
 ];
 
 let players = [
-  { id: 0, name: "TÚ (HUMANO)", avatar: "🐧", style: "HUMAN", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 1, name: "FROSTFIN", avatar: "😎", style: "TIGHT", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 2, name: "ICEJACK", avatar: "😼", style: "TAG", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 3, name: "AURORAJOE", avatar: "⚡", style: "BLUFFER", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 4, name: "NEONBEAK", avatar: "🔥", style: "MANIAC", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 5, name: "GLACIERKING", avatar: "👑", style: "GTO", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false }
+  { id: 0, name: "TÚ (HUMANO)", avatar: "🐧", style: "HUMAN", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 1, name: "FROSTFIN", avatar: "😎", style: "TIGHT", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 2, name: "ICEJACK", avatar: "😼", style: "TAG", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 3, name: "AURORAJOE", avatar: "⚡", style: "BLUFFER", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 4, name: "NEONBEAK", avatar: "🔥", style: "MANIAC", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 5, name: "GLACIERKING", avatar: "👑", style: "GTO", stack: 1000, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false }
 ];
 
 let deck = [];
@@ -733,6 +807,12 @@ function declareWinner(winner) {
   playSound('win');
   document.getElementById('winName').innerText = winner.name;
   document.getElementById('winPenguin').innerText = winner.avatar;
+  
+  let prizeText = "🥇 1º PUESTO: 3.400€";
+  if(jackpotActive) {
+    prizeText += " + 🌟 ¡JACKPOT 5.000€ EXTRA! 🌟";
+  }
+  document.getElementById('winPrizeText').innerText = prizeText;
   document.getElementById('winOverlay').classList.add('active');
 }
 
@@ -764,6 +844,7 @@ function updateUI() {
     let cardsContainer = document.getElementById(`cards-${p.id}`);
     cardsContainer.innerHTML = '';
     if(p.cards.length > 0 && !p.eliminated) {
+      p.cards.push(); // mantener estructura
       p.cards.forEach(c => {
         let cardEl = document.createElement('div');
         if(p.id === 0 || gameStage === 'SHOWDOWN') {
