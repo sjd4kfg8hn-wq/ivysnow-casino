@@ -21,7 +21,7 @@
   #introScreen {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 8, 20, 0.95);
     z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
-    backdrop-filter: blur(15px); transition: opacity 0.5s ease;
+    backdrop-filter: blur(15px); transition: opacity 0.5s ease; overflow-y: auto; padding: 20px 10px;
   }
   
   .btn-top-back {
@@ -34,25 +34,56 @@
   .btn-top-back:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
 
   .intro-logo {
-    width: 220px; height: 220px; border-radius: 50%; object-fit: cover;
-    border: 4px solid var(--neon-cyan); box-shadow: 0 0 30px var(--neon-cyan); margin-bottom: 25px;
+    width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
+    border: 4px solid var(--neon-cyan); box-shadow: 0 0 30px var(--neon-cyan); margin-bottom: 15px;
     animation: pulseLogo 2s infinite alternate;
   }
   @keyframes pulseLogo { from { transform: scale(1); box-shadow: 0 0 20px var(--neon-cyan); } to { transform: scale(1.05); box-shadow: 0 0 40px var(--neon-green); } }
 
   .intro-title {
-    font-size: 3rem; font-weight: 900; font-family: 'Impact', sans-serif;
+    font-size: 2.8rem; font-weight: 900; font-family: 'Impact', sans-serif;
     letter-spacing: 4px; background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; text-align: center;
   }
-  .intro-sub { font-size: 0.9rem; letter-spacing: 5px; color: var(--neon-cyan); margin-bottom: 20px; }
+  .intro-sub { font-size: 0.85rem; letter-spacing: 4px; color: var(--neon-cyan); margin-bottom: 15px; }
+
+  /* COMPONENTES DE LOBBY: PERFIL, STATS Y LOGROS */
+  .lobby-dashboard {
+    display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; max-width: 900px; width: 100%; margin-bottom: 20px;
+  }
+
+  .lobby-card {
+    background: rgba(5, 24, 41, 0.85); border: 1px solid rgba(0,243,255,0.3); border-radius: 12px;
+    padding: 12px 18px; backdrop-filter: blur(8px); flex: 1; min-width: 250px; text-align: left;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  }
+  .lobby-card h4 { color: var(--neon-cyan); font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 1px; border-bottom: 1px solid rgba(0,243,255,0.2); padding-bottom: 4px; }
+  
+  .user-input-box { display: flex; gap: 8px; align-items: center; }
+  .user-input-box input {
+    background: rgba(3, 8, 20, 0.8); border: 1px solid var(--neon-cyan); color: #fff; padding: 6px 10px;
+    border-radius: 6px; font-weight: bold; outline: none; width: 100%; font-size: 0.9rem;
+  }
+  .user-input-box button {
+    background: var(--neon-cyan); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;
+  }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.8rem; }
+  .stats-grid div span { color: var(--neon-green); font-weight: bold; }
+
+  .achievements-list { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    background: rgba(3, 8, 20, 0.9); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px;
+    border-radius: 8px; font-size: 0.75rem; opacity: 0.4; filter: grayscale(1); transition: all 0.3s ease;
+  }
+  .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: var(--neon-gold); box-shadow: 0 0 10px rgba(255,204,0,0.4); color: var(--neon-gold); }
 
   .prizes-box {
     background: rgba(5, 24, 41, 0.9); border: 1px solid var(--neon-gold); border-radius: 12px;
-    padding: 15px 25px; margin-bottom: 25px; text-align: center; box-shadow: 0 0 20px rgba(255,204,0,0.2);
+    padding: 12px 25px; margin-bottom: 15px; text-align: center; box-shadow: 0 0 20px rgba(255,204,0,0.2);
   }
-  .prizes-box h3 { color: var(--neon-gold); font-size: 1rem; margin-bottom: 8px; letter-spacing: 2px; }
-  .prizes-list { display: flex; gap: 20px; font-size: 0.9rem; font-weight: bold; color: #fff; }
+  .prizes-box h3 { color: var(--neon-gold); font-size: 0.95rem; margin-bottom: 6px; letter-spacing: 2px; }
+  .prizes-list { display: flex; gap: 20px; font-size: 0.85rem; font-weight: bold; color: #fff; }
   .prizes-list span { color: var(--neon-green); }
 
   /* FONDO & CANVAS AURORAS */
@@ -308,6 +339,37 @@
   <img src="images/logo_iglu.jpg" alt="Logo Pokeriglu" class="intro-logo">
   <div class="intro-title">POKERIGLÚ</div>
   <div class="intro-sub">IVYSNOWCASINO • ARCTIC SIT & GO (BUY-IN: 1.000€)</div>
+
+  <!-- DASHBOARD: PERFIL, STATS Y LOGROS -->
+  <div class="lobby-dashboard">
+    <div class="lobby-card">
+      <h4>👤 PERFIL DEL RIDER</h4>
+      <div class="user-input-box">
+        <input type="text" id="playerNameInput" placeholder="Tu Nickname...">
+        <button onclick="savePlayerName()">GUARDAR</button>
+      </div>
+    </div>
+
+    <div class="lobby-card">
+      <h4>📊 ESTADÍSTICAS GLOBALES</h4>
+      <div class="stats-grid">
+        <div>🎰 Slots: <span id="statSlots">0</span></div>
+        <div>🃏 Torneos Ganados: <span id="statPokerWins">0</span></div>
+        <div>🎯 Ruleta: <span id="statRoulette">0</span></div>
+        <div>🏔️ Nivel Montaña: <span id="statMountainLevel">1</span></div>
+      </div>
+    </div>
+
+    <div class="lobby-card">
+      <h4>🏆 SISTEMA DE LOGROS</h4>
+      <div class="achievements-list">
+        <div class="badge" id="badge-forfait">🏔️ Primer Forfait</div>
+        <div class="badge" id="badge-poker">🃏 Ganador Poker Alpino</div>
+        <div class="badge" id="badge-iglu">❄️ Rey del Iglú</div>
+        <div class="badge" id="badge-slots">🎰 Maestro Slots</div>
+      </div>
+    </div>
+  </div>
   
   <div class="prizes-box">
     <h3>ESTRUCTURA DE PREMIOS (BOTE TOTAL: 5.400€)</h3>
@@ -329,7 +391,7 @@
   <header>
     <div class="header-left">
       <div class="logo-graffiti">POKERIGLÚ</div>
-      <div class="sub-title">IVYSNOWCASINO • ARCTIC SIT & GO</div>
+      <div class="sub-title" id="welcomeUserDisplay">BIENVENIDO, RIDER</div>
     </div>
     <div class="info-bar">
       <div class="info-item">BUY-IN: <span>1.000€</span></div>
@@ -355,7 +417,7 @@
         <div class="emote-bubble" id="emote-0"></div>
       </div>
       <div class="player-info">
-        <div class="player-name">TÚ (HUMANO)</div>
+        <div class="player-name" id="seat-0-name">TÚ (HUMANO)</div>
         <div class="player-stack" id="stack-0">1500</div>
         <div class="player-action" id="action-0"></div>
       </div>
@@ -456,7 +518,74 @@
   <button class="btn" onclick="returnToLobby()" style="font-size: 1.1rem; padding: 10px 25px;">VOLVER AL LOBBY</button>
 </div>
 
+<!-- REPRODUCTOR OCULTO SOUNDCLOUD -->
+<div style="display:none;">
+  <iframe id="soundCloudPlayer" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
+    src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sobre-filo/sets/huevos-a-la-vida-eurobloke&color=%2300f3ff&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+  </iframe>
+</div>
+
 <script>
+/* ================= LOCAL STORAGE & PERSISTENCIA ================= */
+let playerData = {
+  name: "Jugador",
+  slotsSpins: 0,
+  pokerWins: 0,
+  rouletteWins: 0,
+  mountainLevel: 1,
+  achievements: { forfait: false, poker: false, iglu: false, slots: false }
+};
+
+function loadPlayerData() {
+  const saved = localStorage.getItem("ivysnow_player_data");
+  if(saved) {
+    try { playerData = Object.assign(playerData, JSON.parse(saved)); } catch(e){}
+  } else {
+    const savedName = localStorage.getItem("ivysnow_player");
+    if(savedName) playerData.name = savedName;
+  }
+  document.getElementById('playerNameInput').value = playerData.name;
+  updateUIStats();
+}
+
+function savePlayerData() {
+  localStorage.setItem("ivysnow_player", playerData.name);
+  localStorage.setItem("ivysnow_player_data", JSON.stringify(playerData));
+  updateUIStats();
+}
+
+function savePlayerName() {
+  const inputVal = document.getElementById('playerNameInput').value.trim();
+  if(inputVal) {
+    playerData.name = inputVal;
+    savePlayerData();
+    unlockAchievement('forfait');
+  }
+}
+
+function updateUIStats() {
+  document.getElementById('welcomeUserDisplay').innerText = `BIENVENIDO, ${playerData.name.toUpperCase()}`;
+  document.getElementById('seat-0-name').innerText = playerData.name.toUpperCase();
+  document.getElementById('statSlots').innerText = playerData.slotsSpins;
+  document.getElementById('statPokerWins').innerText = playerData.pokerWins;
+  document.getElementById('statRoulette').innerText = playerData.rouletteWins;
+  document.getElementById('statMountainLevel').innerText = playerData.mountainLevel;
+
+  if(playerData.achievements.forfait) document.getElementById('badge-forfait').classList.add('unlocked');
+  if(playerData.achievements.poker) document.getElementById('badge-poker').classList.add('unlocked');
+  if(playerData.achievements.iglu) document.getElementById('badge-iglu').classList.add('unlocked');
+  if(playerData.achievements.slots) document.getElementById('badge-slots').classList.add('unlocked');
+}
+
+function unlockAchievement(key) {
+  if(!playerData.achievements[key]) {
+    playerData.achievements[key] = true;
+    savePlayerData();
+  }
+}
+
+loadPlayerData();
+
 /* ================= AUDIO ENGINE ================= */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
@@ -749,6 +878,7 @@ function triggerJackpotRain() {
   jackpotActive = true;
   document.getElementById('jackpotBanner').style.display = 'block';
   auroraIntensity = 1;
+  unlockAchievement('iglu');
   
   for(let i=0; i<40; i++) {
     let bill = document.createElement('div');
@@ -765,15 +895,11 @@ function triggerJackpotRain() {
 
 function enterCasino() {
   initAudio();
+  unlockAchievement('forfait');
   
-  // Activar reproducción de SoundCloud de forma invisible
   let iframe = document.getElementById('soundCloudPlayer');
-  if(iframe) {
-    // Forzar recarga o interacción con el widget si es necesario
-    let currentSrc = iframe.src;
-    if(!currentSrc.includes('auto_play=true')) {
-      iframe.src = currentSrc + "&auto_play=true";
-    }
+  if(iframe && !iframe.src.includes('auto_play=true')) {
+    iframe.src += "&auto_play=true";
   }
 
   if(Math.random() < 0.3) { triggerJackpotRain(); }
@@ -787,15 +913,13 @@ function enterCasino() {
 }
 
 function returnToLobby() {
-  // Pausar o resetear el iframe de SoundCloud al salir
   let iframe = document.getElementById('soundCloudPlayer');
   if(iframe) {
     let src = iframe.src;
-    iframe.src = ""; // Apaga el reproductor
-    iframe.src = src; // Restaura la ruta original para la próxima vez
+    iframe.src = "";
+    iframe.src = src;
   }
-  
-  document.getElementById('winOverlay').classList.remove('active');
+
   document.getElementById('winOverlay').classList.remove('active');
   document.getElementById('app').classList.remove('active');
   document.getElementById('jackpotBanner').style.display = 'none';
@@ -1013,7 +1137,7 @@ function advanceStage() {
   processTurn();
 }
 
-/* ================= INTELIGENCIA ARTIFICIAL TÁCTICA AVANZADA ================= */
+/* ================= INTELIGENCIA ARTIFICIAL TÁCTICA AVANZADA REAL ================= */
 function executeAITurn(player) {
   let callAmt = highestBet - player.currentBet;
   let action = 'check';
@@ -1227,6 +1351,13 @@ function evaluateShowdown() {
       w.player.stack += (share + extra);
       document.getElementById(`action-${w.player.id}`).innerText = `¡GANA ${share + extra}€!`;
       showEmote(w.player.id, '😂');
+
+      if(w.player.id === 0) {
+        playerData.pokerWins++;
+        playerData.mountainLevel++;
+        unlockAchievement('poker');
+        savePlayerData();
+      }
     });
 
     topHandName = contenders[0].eval.name;
@@ -1279,6 +1410,10 @@ function declareWinner(winner) {
   if(jackpotActive) { prizeText += " + 🌟 ¡JACKPOT 5.000€ EXTRA! 🌟"; }
   document.getElementById('winPrizeText').innerText = prizeText;
   document.getElementById('winOverlay').classList.add('active');
+
+  if(winner.id === 0) {
+    unlockAchievement('poker');
+  }
 }
 
 function updateUI() {
@@ -1321,12 +1456,5 @@ function updateUI() {
   });
 }
 </script>
-  
- <!-- Reproductor oculto de SoundCloud -->
-<div style="display:none;">
-  <iframe id="soundCloudPlayer" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
-    src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sobre-filo/sets/huevos-a-la-vida-eurobloke&color=%2300f3ff&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
-  </iframe>
-</div>
 </body>
 </html>
