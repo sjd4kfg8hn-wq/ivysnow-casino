@@ -625,7 +625,7 @@ function animateChipsToPot(playerId, amount) {
   setTimeout(() => { chip.remove(); }, 620);
 }
 
-/* ================= EVALUADOR REAL CON KICKERS COMPLETOS ================= */
+/* ================= EVALUADOR REAL CON KICKERS Y ESCALERA DE COLOR A-2-3-4-5 ================= */
 const SUITS = ['♠', '♥', '♦', '♣'];
 const VALUES = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 
@@ -659,6 +659,11 @@ function evaluateHand(cards7) {
         straightFlushHigh = uniqueFlushRanks[i];
         break;
       }
+    }
+    // SOPORTE ESCALERA DE COLOR A-2-3-4-5
+    if(!isStraightFlush && uniqueFlushRanks.includes(12) && uniqueFlushRanks.includes(3) && uniqueFlushRanks.includes(2) && uniqueFlushRanks.includes(1) && uniqueFlushRanks.includes(0)) {
+      isStraightFlush = true;
+      straightFlushHigh = 3; // El 5 es la carta alta
     }
   }
 
@@ -706,7 +711,6 @@ function evaluateHand(cards7) {
   return { score: [0, ...kickers], name: 'CARTA ALTA' };
 }
 
-// CORRECCIÓN BUG 1: Sintaxis correcta de compareScores con function
 function compareScores(s1, s2) {
   for(let i = 0; i < Math.max(s1.length, s2.length); i++){
     let v1 = s1[i] || 0;
@@ -786,12 +790,12 @@ const BLIND_LEVELS = [
 ];
 
 let players = [
-  { id: 0, name: "TÚ (HUMANO)", avatar: "🐧", style: "HUMAN", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 1, name: "FROSTFIN", avatar: "😎", style: "TIGHT", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 2, name: "ICEJACK", avatar: "😼", style: "TAG", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 3, name: "AURORAJOE", avatar: "⚡", style: "BLUFFER", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 4, name: "NEONBEAK", avatar: "🔥", style: "MANIAC", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false },
-  { id: 5, name: "GLACIERKING", avatar: "👑", style: "GTO", stack: 1500, cards: [], currentBet: 0, folded: false, isAllIn: false, eliminated: false }
+  { id: 0, name: "TÚ (HUMANO)", avatar: "🐧", style: "HUMAN", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 1, name: "FROSTFIN", avatar: "😎", style: "TIGHT", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 2, name: "ICEJACK", avatar: "😼", style: "TAG", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 3, name: "AURORAJOE", avatar: "⚡", style: "BLUFFER", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 4, name: "NEONBEAK", avatar: "🔥", style: "MANIAC", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 5, name: "GLACIERKING", avatar: "👑", style: "GTO", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false }
 ];
 
 let deck = [];
@@ -841,13 +845,12 @@ function startNewHand() {
   auroraIntensity = 0.3;
   gameStage = 'PREFLOP';
   document.getElementById('handResult').innerText = '';
-  
-  // CORRECCIÓN BUG 2: Restaurar sombra original de la mesa sin perder estilos de diseño
   document.getElementById('pokerTable').style.boxShadow = "0 0 50px rgba(0,243,255,.35), inset 0 0 35px rgba(0,243,255,.2), inset 0 0 80px rgba(0,0,0,.6)";
   
   players.forEach(p => {
     p.cards = [];
     p.currentBet = 0;
+    p.totalInvested = 0;
     p.folded = p.eliminated;
     p.isAllIn = false;
     document.getElementById(`action-${p.id}`).innerText = '';
@@ -887,6 +890,7 @@ function getNextActivePlayerIdx(currIdx) {
 function postBet(player, amount) {
   player.stack -= amount;
   player.currentBet += amount;
+  player.totalInvested += amount;
   pot += amount;
   animateChipsToPot(player.id, amount);
   if(player.stack === 0) player.isAllIn = true;
@@ -1072,49 +1076,93 @@ function enableControls(enable) {
   updateRaiseVal();
 }
 
-/* ================= SHOWDOWN REAL CON KICKERS, SPLIT POT & EFECTOS PREMIUM ================= */
+/* ================= MOTOR PROFESIONAL DE SIDE POTS & SHOWDOWN ================= */
+function calculatePots() {
+  let eligiblePlayers = players.filter(p => !p.eliminated && !p.folded);
+  let pots = [];
+  let investments = eligiblePlayers.map(p => ({ player: p, inv: p.totalInvested })).sort((a,b) => a.inv - b.inv);
+  
+  let previousInvested = 0;
+  investments.forEach((item, idx) => {
+    let currentInvested = item.inv;
+    let diff = currentInvested - previousInvested;
+    if(diff > 0) {
+      let potAmount = 0;
+      let contributors = [];
+      investments.forEach(other => {
+        if(other.inv >= currentInvested) {
+          potAmount += diff;
+          contributors.push(other.player);
+        } else if(other.inv > previousInvested) {
+          potAmount += (other.inv - previousInvested);
+          contributors.push(other.player);
+        }
+      });
+      pots.push({ amount: potAmount, eligible: contributors });
+      previousInvested = currentInvested;
+    }
+  });
+
+  if(pots.length === 0 && pot > 0) {
+    pots.push({ amount: pot, eligible: eligiblePlayers });
+  }
+  return pots;
+}
+
 function evaluateShowdown() {
   let active = players.filter(p => !p.eliminated && !p.folded);
   
-  let scored = active.map(p => {
+  scored = active.map(p => {
     let evalRes = evaluateHand(p.cards.concat(communityCards));
     document.getElementById(`action-${p.id}`).innerText = evalRes.name;
     return { player: p, eval: evalRes };
   });
 
-  scored.sort((a,b) => compareScores(b.eval.score, a.eval.score));
+  let pots = calculatePots();
+  let potSummaryText = [];
+  let topHandName = "";
 
-  let bestScore = scored[0].eval.score;
-  let winners = scored.filter(s => compareScores(s.eval.score, bestScore) === 0);
+  pots.forEach((pObj, potIdx) => {
+    let contenders = scored.filter(s => pObj.eligible.includes(s.player));
+    if(contenders.length === 0) return;
 
-  let sharePot = Math.floor(pot / winners.length);
-  let remainder = pot % winners.length;
+    contenders.sort((a,b) => compareScores(b.eval.score, a.eval.score));
+    let bestScore = contenders[0].eval.score;
+    let winners = contenders.filter(s => compareScores(s.eval.score, bestScore) === 0);
 
-  winners.forEach((w, idx) => {
-    let extra = (idx === 0) ? remainder : 0;
-    w.player.stack += (sharePot + extra);
-    document.getElementById(`action-${w.player.id}`).innerText = `¡GANA ${sharePot}€!`;
-    showEmote(w.player.id, '😂');
+    let share = Math.floor(pObj.amount / winners.length);
+    let remainder = pObj.amount % winners.length;
+
+    winners.forEach((w, wIdx) => {
+      let extra = (wIdx === 0) ? remainder : 0;
+      w.player.stack += (share + extra);
+      document.getElementById(`action-${w.player.id}`).innerText = `¡GANA ${share + extra}€!`;
+      showEmote(w.player.id, '😂');
+    });
+
+    topHandName = contenders[0].eval.name;
+    if(potIdx === 0) {
+      if(winners.length > 1) {
+        let names = winners.map(w => w.player.name).join(' y ');
+        potSummaryText.push(`Main Pot: ${names} empatan con ${topHandName}`);
+      } else {
+        potSummaryText.push(`${winners[0].player.name} gana Main Pot con ${topHandName}`);
+      }
+    } else {
+      potSummaryText.push(`Side Pot ${potIdx}: ${winners[0].player.name} gana con ${topHandName}`);
+    }
   });
 
   pot = 0;
   playSound('win');
 
-  let topHandName = scored[0].eval.name;
   if(['FULL HOUSE', 'PÓKER', 'ESCALERA DE COLOR'].includes(topHandName)) {
     auroraIntensity = 1;
     let tableEl = document.getElementById('pokerTable');
     tableEl.style.boxShadow = "0 0 120px cyan, 0 0 180px purple";
   }
 
-  let resultText = "";
-  if(winners.length > 1) {
-    let names = winners.map(w => w.player.name).join(' y ');
-    resultText = `¡EMPATE (SPLIT POT)! ${names} ganan con ${topHandName}`;
-  } else {
-    resultText = `${winners[0].player.name} gana con ${topHandName}`;
-  }
-  document.getElementById('handResult').innerText = resultText;
+  document.getElementById('handResult').innerText = potSummaryText.join(' | ');
 
   setTimeout(() => {
     players.forEach(p => {
