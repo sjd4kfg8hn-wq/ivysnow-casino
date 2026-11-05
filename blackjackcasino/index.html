@@ -62,36 +62,37 @@
             </div>
         </div>
 
-        <!-- PANEL DE CONTROL Y FICHAS PREMIUM -->
-<!-- PANEL DE CONTROL PROFESIONAL -->
-<div class="control-panel" style="display: flex; gap: 10px; align-items: center; justify-content: center; padding: 10px; background: rgba(0,0,0,0.8); border-radius: 12px; margin-top: 10px;">
-    <!-- Fichas -->
-    <div class="chips-group" style="display: flex; gap: 5px;">
-        <button class="chip-btn" data-value="10" style="background: #e5e7eb; color: #111; border-radius: 50%; width: 45px; height: 45px; font-weight: bold; border: 2px solid #ccc; cursor: pointer;">10€</button>
-        <button class="chip-btn" data-value="100" style="background: #10b981; color: #fff; border-radius: 50%; width: 45px; height: 45px; font-weight: bold; border: 2px solid #059669; cursor: pointer;">100€</button>
-        <button class="chip-btn" data-value="1000" style="background: #3b82f6; color: #fff; border-radius: 50%; width: 45px; height: 45px; font-weight: bold; border: 2px solid #2563eb; cursor: pointer;">1K</button>
-        <button class="chip-btn" data-value="5000" style="background: #8b5cf6; color: #fff; border-radius: 50%; width: 45px; height: 45px; font-weight: bold; border: 2px solid #7c3aed; cursor: pointer;">5K</button>
-        <button class="chip-btn" data-value="10000" style="background: #111827; color: #d4af37; border-radius: 50%; width: 45px; height: 45px; font-weight: bold; border: 2px solid #d4af37; cursor: pointer;">10K</button>
+       <!-- PANEL DE CONTROL VIP -->
+<div id="control-panel" style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 12px; background: rgba(0, 0, 0, 0.85); border-top: 2px solid #d4af37; border-radius: 12px; width: 90%; max-width: 800px; margin: 10px auto;">
+    
+    <!-- FASE 1: APUESTAS -->
+    <div id="betting-controls" style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap;">
+        <div class="chips-group" style="display: flex; gap: 6px;">
+            <button class="chip-btn" data-value="10" style="background: #e5e7eb; color: #111; border-radius: 50%; width: 44px; height: 44px; font-weight: bold; border: 2px solid #9ca3af; cursor: pointer;">10€</button>
+            <button class="chip-btn" data-value="100" style="background: #10b981; color: #fff; border-radius: 50%; width: 44px; height: 44px; font-weight: bold; border: 2px solid #059669; cursor: pointer;">100€</button>
+            <button class="chip-btn" data-value="1000" style="background: #3b82f6; color: #fff; border-radius: 50%; width: 44px; height: 44px; font-weight: bold; border: 2px solid #2563eb; cursor: pointer;">1K</button>
+            <button class="chip-btn" data-value="5000" style="background: #8b5cf6; color: #fff; border-radius: 50%; width: 44px; height: 44px; font-weight: bold; border: 2px solid #7c3aed; cursor: pointer;">5K</button>
+            <button class="chip-btn" data-value="10000" style="background: #111827; color: #d4af37; border-radius: 50%; width: 44px; height: 44px; font-weight: bold; border: 2px solid #d4af37; cursor: pointer;">10K</button>
+        </div>
+        <button id="clear-btn" style="background: #4b5563; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">BORRAR APUESTA</button>
+        <button id="deal-btn" style="background: #10b981; color: #fff; padding: 10px 24px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">REPARTIR</button>
     </div>
 
-    <!-- Botones de Apuesta inicial -->
-    <button id="clear-btn" class="action-btn" style="background: #6b7280; color: #fff; padding: 10px 14px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">BORRAR APUESTA</button>
-    <button id="deal-btn" class="action-btn" style="background: #10b981; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">REPARTIR</button>
-
-    <!-- Botones de Acción de Juego (Visibles tras repartir) -->
-    <div id="game-actions" style="display: none; gap: 8px; align-items: center;">
-        <button id="hit-btn" class="action-btn" style="background: #3b82f6; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">PEDIR</button>
-        <button id="stand-btn" class="action-btn" style="background: #ef4444; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">PLANTARSE</button>
-        <button id="double-btn" class="action-btn" style="background: #f59e0b; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">DOBLAR</button>
-        <button id="split-btn" class="action-btn" style="background: #8b5cf6; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: none;">DIVIDIR</button>
+    <!-- FASE 2: ACCIONES DE JUEGO (Oculto al inicio) -->
+    <div id="game-actions" style="display: none; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap;">
+        <button id="hit-btn" style="background: #2563eb; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">PEDIR</button>
+        <button id="stand-btn" style="background: #dc2626; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">PLANTARSE</button>
+        <button id="double-btn" style="background: #d97706; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">DOBLAR</button>
+        <button id="split-btn" style="background: #7c3aed; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: none;">DIVIDIR</button>
     </div>
 
-    <!-- Modal de Seguro -->
-    <div id="insurance-modal" style="display: none; background: rgba(17, 24, 39, 0.95); padding: 8px 12px; border: 1px solid #d4af37; border-radius: 8px; color: #fff; gap: 8px; align-items: center;">
-        <span style="font-size: 0.9rem;">¿Seguro?</span>
-        <button id="insurance-yes" style="background:#10b981; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Sí</button>
-        <button id="insurance-no" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">No</button>
+    <!-- MODAL DE SEGURO (Oculto) -->
+    <div id="insurance-modal" style="display: none; background: rgba(17, 24, 39, 0.95); padding: 8px 16px; border: 1px solid #d4af37; border-radius: 8px; color: #fff; gap: 10px; align-items: center;">
+        <span style="font-size: 0.95rem; font-weight: bold;">¿Comprar Seguro (1:1)?</span>
+        <button id="insurance-yes" style="background:#10b981; color:#fff; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;">SÍ</button>
+        <button id="insurance-no" style="background:#ef4444; color:#fff; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;">NO</button>
     </div>
+
 </div>
 </body>
 </html>
