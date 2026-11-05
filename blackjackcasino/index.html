@@ -4,198 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casino Monte Pináculo - Blackjack VIP</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: #050811;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            padding: 10px;
-            overflow-x: hidden;
-        }
-        /* Contenedor principal con la imagen de fondo de la sala VIP */
-        .casino-table-container {
-            position: relative;
-            width: 100%;
-            max-width: 1200px;
-            height: 650px;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('images/blackjack_hall.jpg') center/cover no-repeat;
-            border: 8px solid #d4af37;
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-        }
-        /* Crupier */
-        .dealer-zone {
-            text-align: center;
-            background: rgba(10, 15, 25, 0.85);
-            padding: 8px 20px;
-            border-radius: 10px;
-            border: 1px solid #d4af37;
-            max-width: 500px;
-            width: 100%;
-        }
-        .dealer-zone h2 {
-            font-size: 1.1rem;
-            color: #fbbf24;
-        }
-        .dealer-dialogue {
-            font-style: italic;
-            color: #e2e8f0;
-            font-size: 0.85rem;
-            margin-top: 2px;
-        }
-        /* Asientos de los animales y jugador */
-        .seats-container {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            gap: 8px;
-            padding: 0 10px;
-            margin-bottom: 20px;
-        }
-        .seat {
-            background: rgba(15, 23, 42, 0.9);
-            border: 2px solid #3b82f6;
-            border-radius: 10px;
-            padding: 8px;
-            width: 18%;
-            text-align: center;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.7);
-        }
-        .seat.human {
-            border-color: #d4af37;
-            background: rgba(30, 41, 59, 0.95);
-        }
-        .seat h3 {
-            font-size: 0.9rem;
-            color: #93c5fd;
-            margin-bottom: 2px;
-        }
-        .seat.human h3 {
-            color: #fde047;
-        }
-        .seat .bet-info, .seat .bankroll-display {
-            font-size: 0.75rem;
-            color: #cbd5e1;
-        }
-        .seat .cards {
-            min-height: 35px;
-            margin-top: 4px;
-        }
-        /* Panel de control inferior */
-        #control-panel {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.9);
-            border-top: 2px solid #d4af37;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 1200px;
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-    <!-- MESA DE JUEGO VIP -->
     <div class="casino-table-container">
         
-        <!-- ZONA DEL CRUPIER -->
-        <div class="dealer-zone">
-            <h2>Gato Culturista - Crupier VIP</h2>
-            <div id="dealer-dialogue" class="dealer-dialogue">"Bienvenidos a Monte Pináculo. Hagan sus apuestas, caballeros."</div>
-            <div id="dealer-cards" class="cards" style="margin-top: 5px;"></div>
+        <!-- ZONA DEL CRUPIER (Gato Culturista) -->
+        <div class="dealer-area">
+            <h2 id="dealer-title">Gato Culturista - Crupier VIP</h2>
+            <div id="dealer-dialogue" class="dialogue-box">"Bienvenidos a Monte Pináculo. Hagan sus apuestas, caballeros."</div>
+            <div id="dealer-cards" class="card-container"></div>
+            <div id="dealer-score" class="score-display">Puntuación: 0</div>
         </div>
 
-        <!-- ASIENTOS DE LOS ANIMALES Y JUGADOR -->
-        <div class="seats-container">
-            <!-- Bot 1: Shih Tzu -->
-            <div id="seat-1" class="seat">
+        <!-- ZONA DE LA MESA: 4 JUGADORES IA + JUGADOR HUMANO -->
+        <div class="table-positions">
+            <!-- Posición 1: Shih Tzu (El Quinqui) -->
+            <div class="player-seat" id="seat-1">
                 <h3>Shih Tzu</h3>
-                <div style="font-size: 0.7rem; color: #94a3b8;">El Quinqui</div>
+                <span class="personality-tag">El Quinqui</span>
+                <div class="cards"></div>
                 <div class="bet-info">Apuesta: 100€</div>
-                <div class="cards"></div>
             </div>
-            <!-- Bot 2: Husky -->
-            <div id="seat-2" class="seat">
+
+            <!-- Posición 2: Husky (El Seductor) -->
+            <div class="player-seat" id="seat-2">
                 <h3>Husky</h3>
-                <div style="font-size: 0.7rem; color: #94a3b8;">El Seductor</div>
+                <span class="personality-tag">El Seductor</span>
+                <div class="cards"></div>
                 <div class="bet-info">Apuesta: 1.000€</div>
-                <div class="cards"></div>
             </div>
-            <!-- Bot 3: Pitbull -->
-            <div id="seat-3" class="seat">
+
+            <!-- Posición 3: Pitbull (La Diva) -->
+            <div class="player-seat" id="seat-3">
                 <h3>Pitbull</h3>
-                <div style="font-size: 0.7rem; color: #94a3b8;">La Diva</div>
+                <span class="personality-tag">La Diva</span>
+                <div class="cards"></div>
                 <div class="bet-info">Apuesta: 500€</div>
-                <div class="cards"></div>
             </div>
-            <!-- Bot 4: Dogo de Burdeos -->
-            <div id="seat-4" class="seat">
+
+            <!-- Posición 4: Dogo de Burdeos (El Hippie) -->
+            <div class="player-seat" id="seat-4">
                 <h3>Dogo de Burdeos</h3>
-                <div style="font-size: 0.7rem; color: #94a3b8;">El Hippie</div>
-                <div class="bet-info">Apuesta: 50€</div>
+                <span class="personality-tag">El Hippie</span>
                 <div class="cards"></div>
+                <div class="bet-info">Apuesta: 50€</div>
             </div>
-            <!-- Jugador Humano VIP -->
-            <div id="seat-human" class="seat human">
+
+            <!-- Posición 5: TÚ (Jugador Humano en Primera Persona) -->
+            <div class="player-seat human" id="seat-human">
                 <h3>Tú (VIP)</h3>
-                <div style="font-size: 0.7rem; color: #fde047;">Jugador</div>
+                <span class="personality-tag">Jugador</span>
+                <div class="cards"></div>
                 <div class="bet-info" id="human-bet">Apuesta: 0€</div>
                 <div class="bankroll-display">Saldo: <span id="player-bankroll">10.000€</span></div>
-                <div class="cards"></div>
             </div>
         </div>
 
+        <!-- PANEL DE CONTROL Y FICHAS PREMIUM -->
+<!-- PANEL DE CONTROL PROFESIONAL -->
+<div class="control-panel" style="display: flex; gap: 10px; align-items: center; justify-content: center; padding: 10px; background: rgba(0,0,0,0.8); border-radius: 12px; margin-top: 10px;">
+    <!-- Fichas -->
+    <div class="chips-group" style="display: flex; gap: 5px;">
+        <button class="chip-btn" data-value="10" style="background: #e5e7eb; color: #111; border-radius: 50%; width: 45px; height: 45px; font-weight: bold; border: 2px solid #ccc; cursor: pointer;">10€</button>
+        <button class="chip-btn" data-value="100" style="background: #10b981; color: #fff; border-radius: 50%; width: 45px; height: 45px; font-weight: bold; border: 2px solid #059669; cursor: pointer;">100€</button>
+        <button class="chip-btn" data-value="1000" style="background: #3b82f6; color: #fff; border-radius: 50%; width: 45px; height: 45px; font-weight: bold; border: 2px solid #2563eb; cursor: pointer;">1K</button>
+        <button class="chip-btn" data-value="5000" style="background: #8b5cf6; color: #fff; border-radius: 50%; width: 45px; height: 45px; font-weight: bold; border: 2px solid #7c3aed; cursor: pointer;">5K</button>
+        <button class="chip-btn" data-value="10000" style="background: #111827; color: #d4af37; border-radius: 50%; width: 45px; height: 45px; font-weight: bold; border: 2px solid #d4af37; cursor: pointer;">10K</button>
     </div>
 
-    <!-- PANEL DE CONTROL VIP (APUESTAS Y ACCIONES) -->
-    <div id="control-panel">
-        
-        <!-- FASE 1: APUESTAS -->
-        <div id="betting-controls" style="display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap;">
-            <div class="chips-group" style="display: flex; gap: 6px;">
-                <button class="chip-btn" data-value="10" style="background: #e5e7eb; color: #111; border-radius: 50%; width: 42px; height: 42px; font-weight: bold; border: 2px solid #9ca3af; cursor: pointer;">10€</button>
-                <button class="chip-btn" data-value="100" style="background: #10b981; color: #fff; border-radius: 50%; width: 42px; height: 42px; font-weight: bold; border: 2px solid #059669; cursor: pointer;">100€</button>
-                <button class="chip-btn" data-value="1000" style="background: #3b82f6; color: #fff; border-radius: 50%; width: 42px; height: 42px; font-weight: bold; border: 2px solid #2563eb; cursor: pointer;">1K</button>
-                <button class="chip-btn" data-value="5000" style="background: #8b5cf6; color: #fff; border-radius: 50%; width: 42px; height: 42px; font-weight: bold; border: 2px solid #7c3aed; cursor: pointer;">5K</button>
-                <button class="chip-btn" data-value="10000" style="background: #111827; color: #d4af37; border-radius: 50%; width: 42px; height: 42px; font-weight: bold; border: 2px solid #d4af37; cursor: pointer;">10K</button>
-            </div>
-            <button id="clear-btn" style="background: #4b5563; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">BORRAR APUESTA</button>
-            <button id="deal-btn" style="background: #10b981; color: #fff; padding: 10px 24px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">REPARTIR</button>
-        </div>
+    <!-- Botones de Apuesta inicial -->
+    <button id="clear-btn" class="action-btn" style="background: #6b7280; color: #fff; padding: 10px 14px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">BORRAR APUESTA</button>
+    <button id="deal-btn" class="action-btn" style="background: #10b981; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">REPARTIR</button>
 
-        <!-- FASE 2: ACCIONES DE JUEGO (Oculto al inicio) -->
-        <div id="game-actions" style="display: none; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap;">
-            <button id="hit-btn" style="background: #2563eb; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">PEDIR</button>
-            <button id="stand-btn" style="background: #dc2626; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">PLANTARSE</button>
-            <button id="double-btn" style="background: #d97706; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">DOBLAR</button>
-            <button id="split-btn" style="background: #7c3aed; color: #fff; padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: none;">DIVIDIR</button>
-        </div>
-
-        <!-- MODAL DE SEGURO (Oculto) -->
-        <div id="insurance-modal" style="display: none; background: rgba(17, 24, 39, 0.95); padding: 8px 16px; border: 1px solid #d4af37; border-radius: 8px; color: #fff; gap: 10px; align-items: center;">
-            <span style="font-size: 0.95rem; font-weight: bold;">¿Comprar Seguro (1:1)?</span>
-            <button id="insurance-yes" style="background:#10b981; color:#fff; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;">SÍ</button>
-            <button id="insurance-no" style="background:#ef4444; color:#fff; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;">NO</button>
-        </div>
-
+    <!-- Botones de Acción de Juego (Visibles tras repartir) -->
+    <div id="game-actions" style="display: none; gap: 8px; align-items: center;">
+        <button id="hit-btn" class="action-btn" style="background: #3b82f6; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">PEDIR</button>
+        <button id="stand-btn" class="action-btn" style="background: #ef4444; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">PLANTARSE</button>
+        <button id="double-btn" class="action-btn" style="background: #f59e0b; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">DOBLAR</button>
+        <button id="split-btn" class="action-btn" style="background: #8b5cf6; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: none;">DIVIDIR</button>
     </div>
 
-    <!-- CARGA DEL MOTOR JAVASCRIPT -->
-    <script type="module" src="./js/game.js"></script>
+    <!-- Modal de Seguro -->
+    <div id="insurance-modal" style="display: none; background: rgba(17, 24, 39, 0.95); padding: 8px 12px; border: 1px solid #d4af37; border-radius: 8px; color: #fff; gap: 8px; align-items: center;">
+        <span style="font-size: 0.9rem;">¿Seguro?</span>
+        <button id="insurance-yes" style="background:#10b981; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Sí</button>
+        <button id="insurance-no" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">No</button>
+    </div>
+</div>
 </body>
 </html>
