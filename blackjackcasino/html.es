@@ -71,6 +71,12 @@
             <button class="chip-btn" data-value="10000" style="background: #111827; color: #d4af37; border-color: #d4af37;">10K</button>
             <button id="deal-btn" class="action-btn">REPARTIR</button>
         </div>
+<!-- Botones de Acción de Juego (Aparecen durante el turno del jugador) -->
+<div id="game-actions" style="display: none; gap: 10px; margin-left: 15px;">
+    <button id="hit-btn" class="action-btn" style="background: #3b82f6; color: #fff; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer;">Pedir</button>
+    <button id="stand-btn" class="action-btn" style="background: #ef4444; color: #fff; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer;">Plantarse</button>
+    <button id="double-btn" class="action-btn" style="background: #f59e0b; color: #fff; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer;">Doblar</button>
+</div>
 
     </div>
 
