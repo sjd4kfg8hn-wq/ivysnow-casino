@@ -1,482 +1,1614 @@
-<!DOCTYPE html>
+revisalo porque no deja poner el nombre del rider y se amontona lo del top 5 y sale cargando <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IVYSNOWCASINO - Snow & Skate Street Bets</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
-    
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POKERIGLÚ - IVYSNOWCASINO</title>
+<style>
+  :root {
+    --neon-cyan: #00f3ff;
+    --neon-blue: #0066ff;
+    --neon-purple: #9d00ff;
+    --neon-green: #00ff66;
+    --neon-gold: #ffcc00;
+    --dark-bg: #030814;
+  }
 
-        body {
-            background: linear-gradient(135deg, #030712 0%, #0f172a 50%, #1e1b4b 100%);
-            color: #fff;
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+  body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); color: #fff; }
 
-        /* CABECERA Y WALLET DE FORFAITS */
-        .casino-header {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(15, 23, 42, 0.85);
-            border: 2px solid rgba(56, 189, 248, 0.4);
-            border-radius: 16px;
-            padding: 15px 25px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
+  /* PORTADA DE INICIO / LOBBY */
+  #introScreen {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 8, 20, 0.95);
+    z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    backdrop-filter: blur(15px); transition: opacity 0.5s ease; overflow-y: auto; padding: 20px 10px;
+  }
+  
+  .btn-top-back {
+    position: absolute; top: 20px; left: 20px;
+    background: rgba(5, 24, 41, 0.8); border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
+    padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem;
+    transition: all 0.2s ease; text-decoration: none; display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+  }
+  .btn-top-back:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
 
-        .casino-logo {
-            font-size: 1.6rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #38bdf8, #818cf8, #f472b6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+  .intro-logo {
+    width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
+    border: 4px solid var(--neon-cyan); box-shadow: 0 0 30px var(--neon-cyan); margin-bottom: 15px;
+    animation: pulseLogo 2s infinite alternate;
+  }
+  @keyframes pulseLogo { from { transform: scale(1); box-shadow: 0 0 20px var(--neon-cyan); } to { transform: scale(1.05); box-shadow: 0 0 40px var(--neon-green); } }
 
-        .wallet-box {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: rgba(3, 7, 18, 0.9);
-            border: 2px solid #facc15;
-            padding: 8px 18px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(250, 204, 21, 0.2);
-        }
+  .intro-title {
+    font-size: 2.8rem; font-weight: 900; font-family: 'Impact', sans-serif;
+    letter-spacing: 4px; background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; text-align: center;
+  }
+  .intro-sub { font-size: 0.85rem; letter-spacing: 4px; color: var(--neon-cyan); margin-bottom: 15px; }
 
-        .wallet-info { display: flex; flex-direction: column; }
-        .wallet-label { font-size: 0.65rem; color: #94a3b8; font-weight: 800; }
-        .wallet-value { font-size: 1.1rem; color: #facc15; font-weight: 900; }
+  /* COMPONENTES DE LOBBY: PERFIL, STATS Y LOGROS */
+  .lobby-dashboard {
+    display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; max-width: 900px; width: 100%; margin-bottom: 20px;
+  }
 
-        .btn-refill {
-            background: linear-gradient(135deg, #facc15, #ca8a04);
-            color: #000;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-transform: uppercase;
-        }
-        .btn-refill:hover { transform: scale(1.05); box-shadow: 0 0 15px #facc15; }
+  .lobby-card {
+    background: rgba(5, 24, 41, 0.85); border: 1px solid rgba(0,243,255,0.3); border-radius: 12px;
+    padding: 12px 18px; backdrop-filter: blur(8px); flex: 1; min-width: 250px; text-align: left;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  }
+  .lobby-card h4 { color: var(--neon-cyan); font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 1px; border-bottom: 1px solid rgba(0,243,255,0.2); padding-bottom: 4px; }
+  
+  .user-input-box { display: flex; gap: 8px; align-items: center; }
+  .user-input-box input {
+    background: rgba(3, 8, 20, 0.8); border: 1px solid var(--neon-cyan); color: #fff; padding: 6px 10px;
+    border-radius: 6px; font-weight: bold; outline: none; width: 100%; font-size: 0.9rem;
+  }
+  .user-input-box button {
+    background: var(--neon-cyan); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;
+  }
 
-        /* CONTENEDOR PRINCIPAL */
-        .casino-container {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            flex-direction: column;
-            gap: 35px;
-            padding-bottom: 40px;
-        }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.8rem; }
+  .stats-grid div span { color: var(--neon-green); font-weight: bold; }
 
-        /* SECCIONES DE JUEGOS */
-        .category-section {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 20px;
-            padding: 25px;
-            backdrop-filter: blur(5px);
-        }
+  .achievements-list { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    background: rgba(3, 8, 20, 0.9); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px;
+    border-radius: 8px; font-size: 0.75rem; opacity: 0.4; filter: grayscale(1); transition: all 0.3s ease;
+  }
+  .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: var(--neon-gold); box-shadow: 0 0 10px rgba(255,204,0,0.4); color: var(--neon-gold); }
 
-        .category-title {
-            font-size: 1.2rem;
-            font-weight: 900;
-            color: #38bdf8;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+  .prizes-box {
+    background: rgba(5, 24, 41, 0.9); border: 1px solid var(--neon-gold); border-radius: 12px;
+    padding: 12px 25px; margin-bottom: 15px; text-align: center; box-shadow: 0 0 20px rgba(255,204,0,0.2);
+  }
+  .prizes-box h3 { color: var(--neon-gold); font-size: 0.95rem; margin-bottom: 6px; letter-spacing: 2px; }
+  .prizes-list { display: flex; gap: 20px; font-size: 0.85rem; font-weight: bold; color: #fff; }
+  .prizes-list span { color: var(--neon-green); }
 
-        /* REJILLA DE TARJETAS */
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
+  /* FONDO & CANVAS AURORAS */
+  #bgContainer {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+    background: url('images/poker_iglu.jpg') no-repeat center center/cover;
+    transition: filter 0.5s ease;
+  }
+  #bgContainer::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(3, 8, 20, 0.35); backdrop-filter: blur(1px);
+  }
 
-        /* TARJETA DE JUEGO */
-        .game-card {
-            background: linear-gradient(145deg, #0f172a, #1e293b);
-            border: 2px solid rgba(56, 189, 248, 0.3);
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
+  #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+  #auroraCanvas { position: fixed; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: screen; }
 
-        .game-card:hover {
-            transform: translateY(-5px);
-            border-color: #38bdf8;
-            box-shadow: 0 10px 35px rgba(56, 189, 248, 0.3);
-        }
+  /* APP CONTAINER */
+  #app { position: relative; z-index: 3; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 10px; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
+  #app.active { opacity: 1; pointer-events: auto; }
 
-        .card-tag {
-            position: absolute;
-            top: 12px; right: 12px;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: 900;
-            z-index: 10;
-            text-transform: uppercase;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        }
+  header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-top: 5px; }
+  .header-left { display: flex; flex-direction: column; align-items: flex-start; }
+  .logo-graffiti {
+    font-size: 2.2rem; font-weight: 900; font-family: 'Impact', sans-serif; letter-spacing: 3px;
+    background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(0,243,255,0.6); transform: rotate(-2deg); display: inline-block;
+  }
+  .sub-title { font-size: 0.65rem; letter-spacing: 3px; color: var(--neon-cyan); opacity: 0.9; margin-top: -5px; }
 
-        .card-image-container {
-            width: 100%;
-            height: 150px;
-            overflow: hidden;
-            background: #020617;
-        }
+  .info-bar {
+    display: flex; gap: 12px; background: rgba(5, 24, 41, 0.85); border: 1px solid rgba(0,243,255,0.3);
+    padding: 6px 14px; border-radius: 16px; backdrop-filter: blur(8px); font-size: 0.75rem;
+    align-items: center; justify-content: center;
+  }
+  .info-item span { color: var(--neon-cyan); font-weight: bold; }
+  .prize-pool-tag { color: var(--neon-gold) !important; font-weight: bold; }
 
-        .game-card-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
+  .btn-lobby {
+    background: rgba(255, 0, 85, 0.2); border: 1px solid #ff0055; color: #ff0055;
+    padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.8rem;
+    transition: all 0.2s ease; text-shadow: 0 0 5px #ff0055;
+  }
+  .btn-lobby:hover { background: #ff0055; color: #fff; box-shadow: 0 0 15px #ff0055; }
 
-        .game-card:hover .game-card-img { transform: scale(1.08); }
+  /* MESA DE CRISTAL / VIDRIO */
+  .table-container {
+    position: relative; width: 920px; height: 490px; max-width: 95vw; max-height: 56vh;
+    margin: auto; border-radius: 240px; 
+    background: linear-gradient(135deg, rgba(12, 38, 64, 0.45), rgba(5, 18, 32, 0.6));
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border: 8px solid rgba(0, 243, 255, 0.4);
+    box-shadow: 0 0 50px rgba(0, 243, 255, 0.35), inset 0 0 35px rgba(0, 243, 255, 0.2), inset 0 0 80px rgba(0,0,0,0.6);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    overflow: visible; transition: box-shadow 0.5s ease;
+  }
+  .table-logo {
+    position: absolute; font-size: 1.2rem; font-weight: 800; letter-spacing: 6px; opacity: 0.2;
+    color: var(--neon-cyan); pointer-events: none; text-align: center;
+  }
 
-        .card-content {
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex-grow: 1;
-            justify-content: space-between;
-        }
+  .pot-display {
+    font-size: 1.2rem; font-weight: bold; color: #fff; text-shadow: 0 0 10px var(--neon-cyan);
+    margin-bottom: 2px; background: rgba(3, 8, 20, 0.7); padding: 4px 16px; border-radius: 12px;
+    border: 1px solid rgba(0,243,255,0.3); backdrop-filter: blur(5px);
+  }
+  
+  #handResult {
+    color: var(--neon-gold);
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    text-shadow: 0 0 12px var(--neon-gold);
+    min-height: 20px;
+    text-align: center;
+  }
 
-        .game-title { font-size: 1.1rem; font-weight: 900; color: #fff; }
-        .game-desc { font-size: 0.8rem; color: #94a3b8; line-height: 1.4; }
+  .community-cards { display: flex; gap: 10px; height: 95px; align-items: center; }
 
-        .btn-play {
-            width: 100%;
-            background: linear-gradient(135deg, #38bdf8, #0284c7);
-            color: #000;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            margin-top: 12px;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
-        }
-        .btn-play:hover { background: #38bdf8; box-shadow: 0 0 20px #38bdf8; transform: scale(1.02); }
-    </style>
+  /* CARTAS GRANDES */
+  .card {
+    width: 60px; height: 88px; background: #ffffff; border-radius: 7px; color: #111;
+    display: flex; flex-direction: column; justify-content: space-between; padding: 6px;
+    font-weight: 800; font-size: 1.1rem; box-shadow: 0 6px 14px rgba(0,0,0,0.7), 0 0 4px rgba(255,255,255,0.8); 
+    position: relative; transition: transform 0.2s ease;
+  }
+  .card.red { color: #d00; }
+  .card.back {
+    background: linear-gradient(135deg, #051829, #0a3d62); border: 2px solid var(--neon-cyan);
+    box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+  }
+  .card.back::after {
+    content: '❄'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    color: var(--neon-cyan); font-size: 1.5rem; opacity: 0.8;
+  }
+  .card .suit { font-size: 1.3rem; align-self: flex-end; line-height: 1; }
+
+  /* SEATS & PENGUINS CON RESPIRACIÓN VIVA */
+  .seat { position: absolute; width: 115px; display: flex; flex-direction: column; align-items: center; transition: all 0.4s ease; }
+  .seat-0 { bottom: -52px; left: 50%; transform: translateX(-50%); }
+  .seat-1 { bottom: 35px; left: -35px; }
+  .seat-2 { top: 35px; left: -35px; }
+  .seat-3 { top: -52px; left: 50%; transform: translateX(-50%); }
+  .seat-4 { top: 35px; right: -35px; }
+  .seat-5 { bottom: 35px; right: -35px; }
+
+  .penguin-avatar-container { position: relative; }
+  .penguin-avatar {
+    width: 60px; height: 60px; border-radius: 50%; background: rgba(8, 26, 43, 0.85);
+    border: 3px solid rgba(255,255,255,0.3); position: relative;
+    display: flex; justify-content: center; align-items: center; font-size: 1.8rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    animation: idleBreath 4s ease-in-out infinite;
+  }
+  @keyframes idleBreath {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
+
+  .seat.active .penguin-avatar {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 25px var(--neon-cyan);
+    animation: activePulseBreath 1.8s ease-in-out infinite;
+  }
+  @keyframes activePulseBreath {
+    0%, 100% { transform: scale(1.08); box-shadow: 0 0 20px var(--neon-cyan); }
+    50% { transform: scale(1.15); box-shadow: 0 0 35px var(--neon-cyan); }
+  }
+
+  .seat.folded { opacity: 0.4; filter: grayscale(0.8); }
+
+  .emote-bubble {
+    position: absolute; top: -18px; right: -12px; background: rgba(0,243,255,0.9); color: #000;
+    font-size: 1.1rem; padding: 2px 6px; border-radius: 12px; box-shadow: 0 0 10px var(--neon-cyan);
+    display: none; animation: popEmote 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; z-index: 10;
+  }
+  @keyframes popEmote { from { transform: scale(0); } to { transform: scale(1); } }
+
+  .eliminating { animation: iceExit 2s forwards; }
+  @keyframes iceExit {
+    0% { opacity: 1; transform: scale(1); filter: brightness(1); }
+    50% { transform: translateY(-30px) scale(1.05); filter: brightness(1.5) drop-shadow(0 0 15px var(--neon-cyan)); }
+    100% { opacity: 0; transform: translateY(-150px) scale(0.8); filter: brightness(2) blur(4px); }
+  }
+
+  .player-info {
+    background: rgba(3, 8, 20, 0.9); border: 1px solid rgba(0,243,255,0.4); border-radius: 8px;
+    padding: 3px 6px; text-align: center; width: 100%; margin-top: 4px; backdrop-filter: blur(6px);
+  }
+  .player-name { font-size: 0.7rem; font-weight: bold; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .player-stack { font-size: 0.8rem; font-weight: 800; color: var(--neon-green); }
+  .player-action { font-size: 0.6rem; color: var(--neon-cyan); height: 12px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .player-cards { display: flex; margin-top: -15px; z-index: 3; }
+  .player-cards .card { transform: scale(0.88); margin: 0 -8px; }
+
+  /* CONTROLES & PALANCA FÍSICA */
+  .controls-bar {
+    width: 100%; max-width: 820px; background: rgba(5, 24, 41, 0.92); border: 1px solid rgba(0,243,255,0.4);
+    border-radius: 14px; padding: 10px 18px; display: flex; gap: 15px; align-items: center;
+    justify-content: space-between; backdrop-filter: blur(10px); box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+    margin-bottom: 5px;
+  }
+  .action-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  
+  .btn {
+    background: linear-gradient(135deg, #0a2b4c, #051829); border: 1px solid var(--neon-cyan);
+    color: #fff; padding: 9px 16px; border-radius: 6px; font-weight: bold; cursor: pointer;
+    transition: all 0.2s ease; font-size: 0.85rem; letter-spacing: 1px; text-shadow: 0 0 5px var(--neon-cyan);
+  }
+  .btn:hover:not(:disabled) { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; text-shadow: none; }
+  .btn-allin { border-color: var(--neon-purple); text-shadow: 0 0 5px var(--neon-purple); }
+  .btn-allin:hover:not(:disabled) { background: var(--neon-purple); color: #fff; box-shadow: 0 0 20px var(--neon-purple); }
+
+  .lever-container {
+    display: flex; align-items: center; gap: 10px; background: rgba(3, 8, 20, 0.6);
+    padding: 4px 12px; border-radius: 10px; border: 1px solid rgba(0,243,255,0.2);
+  }
+  .bet-lever {
+    display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; width: 45px;
+  }
+  .lever-track { width: 4px; height: 35px; background: rgba(0,243,255,0.3); border-radius: 2px; position: relative; }
+  .lever-knob {
+    width: 16px; height: 16px; background: var(--neon-cyan); border-radius: 50%;
+    position: absolute; left: -6px; top: 10px; box-shadow: 0 0 8px var(--neon-cyan);
+    transition: top 0.1s ease;
+  }
+  .lever-labels { font-size: 0.65rem; color: var(--neon-cyan); font-weight: bold; text-align: center; }
+  .raise-slider { accent-color: var(--neon-cyan); cursor: pointer; width: 110px; }
+  .raise-val { font-weight: bold; color: var(--neon-green); min-width: 45px; text-align: right; font-size: 0.9rem; }
+
+  .flying-chip {
+    position: fixed; z-index: 500; font-size: 1.4rem; pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  #jackpotBanner {
+    position: fixed; top: 15px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, #ff007f, #ffcc00, #00f3ff);
+    color: #000; font-weight: 900; padding: 8px 25px; border-radius: 20px; font-size: 1rem; z-index: 500;
+    box-shadow: 0 0 25px #ffcc00; display: none; animation: strobeBanner 0.5s infinite alternate; text-align: center;
+  }
+  @keyframes strobeBanner { from { opacity: 0.8; transform: translateX(-50%) scale(1); } to { opacity: 1; transform: translateX(-50%) scale(1.05); } }
+
+  .bill {
+    position: fixed; z-index: 999; font-size: 1.8rem; pointer-events: none;
+    animation: fallBill 2.5s linear infinite;
+  }
+  @keyframes fallBill {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+  }
+
+  #winOverlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3, 8, 20, 0.92);
+    z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center;
+    backdrop-filter: blur(12px); text-align: center;
+  }
+  #winOverlay.active { display: flex; }
+  .win-title { font-size: 2.8rem; font-weight: 900; color: var(--neon-green); text-shadow: 0 0 30px var(--neon-green); margin-bottom: 5px; font-family: 'Impact', sans-serif; }
+  .win-prize { font-size: 1.4rem; color: var(--neon-gold); margin-bottom: 10px; font-weight: bold; }
+  .win-name { font-size: 1.5rem; color: var(--neon-cyan); margin-bottom: 15px; }
+  
+  #iceThrone {
+    font-size: 5rem; margin-bottom: 15px;
+    animation: riseThrone 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  @keyframes riseThrone {
+    from { transform: translateY(400px) scale(0.5); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  @media (max-width: 768px) {
+    .logo-graffiti { font-size: 1.6rem; }
+    .table-container { height: 360px; }
+    .seat { width: 85px; }
+    .penguin-avatar { width: 45px; height: 45px; font-size: 1.3rem; }
+    .card { width: 42px; height: 62px; font-size: 0.8rem; }
+    .controls-bar { flex-direction: column; gap: 6px; padding: 6px; }
+    .action-btns { justify-content: center; width: 100%; }
+    .lever-container { width: 100%; justify-content: center; }
+  }
+</style>
 </head>
 <body>
 
-    <!-- CABECERA -->
-    <header class="casino-header">
-        <div class="casino-logo"><i class="fa-solid fa-snowflake"></i> IVYSNOWCASINO</div>
-        <div class="wallet-box">
-            <div class="wallet-info">
-                <span class="wallet-label">SALDO DISPONIBLE</span>
-                <span class="wallet-value" id="lobbyBal">500</span>
-            </div>
-            <button class="btn-refill" onclick="recargarForfaits()">+500 Forfaits</button>
-        </div>
-    </header>
+<div id="jackpotBanner">🌟 ¡JACKPOT ÁRTICO ACTIVADO (+5.000€ EXTRA)! 🌟</div>
 
-    <!-- CONTENEDOR DE SECCIONES -->
-    <div class="casino-container">
+<!-- PANTALLA DE PORTADA / LOBBY -->
+<div id="introScreen">
+  <a href="../index.html" class="btn-top-back">← VOLVER A IVYSNOWCASINO</a>
 
-        <!-- CATEGORÍA: SLOTS DE NIEVE -->
-        <section class="category-section">
-            <div class="category-title"><i class="fa-solid fa-dice"></i> Slots de Nieve & Aventura</div>
-            <div class="games-grid">
-                
-                <!-- Slot Alpina -->
-                <div class="game-card">
-                    <span class="card-tag" style="background: #38bdf8; color: #000;">SLOT 1</span>
-                    <div class="card-image-container">
-                        <img src="images/slot-alpina.jpg" alt="Slot Alpina" class="game-card-img">
-                    </div>
-                    <div class="card-content">
-                        <div>
-                            <div class="game-title">Slot Alpina</div>
-                            <div class="game-desc">Tragaperras temática de freeride y líneas de alta montaña.</div>
-                        </div>
-                        <button class="btn-play" onclick="location.href='slot-alpina/index.html'">ENTRAR</button>
-                    </div>
-                </div>
+  <img src="images/logo_iglu.jpg" alt="Logo Pokeriglu" class="intro-logo">
+  <div class="intro-title">POKERIGLÚ</div>
+  <div class="intro-sub">IVYSNOWCASINO • ARCTIC SIT & GO (BUY-IN: 1.000€)</div>
 
-                <!-- Slot Egipcia -->
-                <div class="game-card">
-                    <span class="card-tag" style="background: #facc15; color: #000;">SLOT 2</span>
-                    <div class="card-image-container">
-                        <img src="images/slot-egipcia.jpg" alt="Slot Egipcia" class="game-card-img">
-                    </div>
-                    <div class="card-content">
-                        <div>
-                            <div class="game-title">Slot Egipcia</div>
-                            <div class="game-desc">Tragaperras mítica con estética faraónica y monopatines dorados.</div>
-                        </div>
-                        <button class="btn-play" onclick="location.href='slot-egipcia/index.html'">ENTRAR</button>
-                    </div>
-                </div>
+  <!-- DASHBOARD: PERFIL, STATS Y LOGROS -->
+  <div class="lobby-dashboard">
+    <div class="lobby-card">
+      <h4>👤 PERFIL DEL RIDER</h4>
+      <div class="user-input-box">
+        <input type="text" id="playerNameInput" placeholder="Tu Nickname...">
+        <button onclick="savePlayerName()">GUARDAR</button>
+        <div class="lobby-card">
+  <h4>🏆 TOP 5 RIDERS</h4>
 
-                <!-- Slot Iglú -->
-                <div class="game-card">
-                    <span class="card-tag" style="background: #a855f7; color: #fff;">SLOT 3</span>
-                    <div class="card-image-container">
-                        <img src="images/slot-iglu.jpg" alt="Slot Iglú" class="game-card-img">
-                    </div>
-                    <div class="card-content">
-                        <div>
-                            <div class="game-title">Slot Iglú</div>
-                            <div class="game-desc">Aventura en el ártico con pantalla de minijuegos y trile de iglús.</div>
-                        </div>
-                        <button class="btn-play" onclick="location.href='slot-iglu/index.html'">ENTRAR</button>
-                    </div>
-                </div>
+  <div id="top5Leaderboard">
 
-            </div>
-        </section>
+    Cargando ranking...
 
-        <!-- CATEGORÍA: MESAS DE PÓKER -->
-        <section class="category-section">
-            <div class="category-title"><i class="fa-solid fa-crown"></i> Mesas de Póker & Cartas</div>
-            <div class="games-grid">
-                
-                <div class="game-card">
-                    <span class="card-tag" style="background: #ec4899; color: #fff;">PÓKER 1</span>
-                    <div class="card-image-container">
-                        <img src="images/poker-alpino.jpg" alt="Póker Alpino" class="game-card-img">
-                    </div>
-                    <div class="card-content">
-                        <div>
-                            <div class="game-title">Póker Alpino</div>
-                            <div class="game-desc">Partidas de Texas Hold'em en la cima del dominio esquiable.</div>
-                        </div>
-                        <button class="btn-play" onclick="location.href='poker-alpino/index.html'">ENTRAR</button>
-                    </div>
-                </div>
-
-                <div class="game-card">
-                    <span class="card-tag" style="background: #ec4899; color: #fff;">PÓKER 2</span>
-                    <div class="card-image-container" style="display:flex; align-items:center; justify-content:center; background:#0b0f19;">
-                        <i class="fa-solid fa-mug-hot" style="font-size: 3rem; color: #facc15;"></i>
-                    </div>
-                    <div class="card-content">
-                        <div>
-                            <div class="game-title">Póker Pub</div>
-                            <div class="game-desc">Ambiente après-ski de bar de montaña, partidas rápidas.</div>
-                        </div>
-                        <button class="btn-play" onclick="location.href='poker-pub/index.html'">ENTRAR</button>
-                    </div>
-                </div>
-
-                <div class="game-card">
-                    <span class="card-tag" style="background: #ec4899; color: #fff;">PÓKER 3</span>
-                    <div class="card-image-container">
-                        <img src="poker-iglu/images/logo_iglu.jpg" alt="Póker Iglú" class="game-card-img">
-                        <i class="fa-solid fa-igloo" style="font-size: 3rem; color: #38bdf8;"></i>
-                    </div>
-                    <div class="card-content">
-                        <div>
-                            <div class="game-title">Póker Iglú</div>
-                            <div class="game-desc">Mesa bajo cero para jugadores de sangre fría.</div>
-                        </div>
-                        <button class="btn-play" onclick="location.href='poker-iglu/index.html'">ENTRAR</button>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- CATEGORÍA: RULETA Y OTROS -->
-        <section class="category-section">
-            <div class="category-title"><i class="fa-solid fa-circle-notch"></i> Ruleta & Salas VIP</div>
-            <div class="games-grid">
-                
-                <div class="game-card" style="background: #111c2e; border: 1px solid #1e3a5f; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative;">
-                    <div style="position: relative; width: 100%; height: 140px; overflow: hidden;">
-                        <span style="position: absolute; top: 10px; left: 10px; background: #e63946; color: #fff; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 4px; z-index: 2;">RULETA</span>
-                        <img src="alpinesnowroulette/images/logo_banner.jpg" alt="Alpine Snow Roulette" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
-                    </div>
-                    <div style="padding: 15px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
-                        <div>
-                            <h3 style="color: #ffffff; font-size: 16px; font-weight: bold; margin-bottom: 6px;">Alpine Snow Roulette</h3>
-                            <p style="color: #94a3b8; font-size: 12px; line-height: 1.4; margin-bottom: 12px;">Ruleta europea temática de alta montaña con edición Alpine y premios de avalancha.</p>
-                        </div>
-                        <a href="alpinesnowroulette/index.html" style="display: block; text-align: center; background: #00a8ff; color: #ffffff; font-weight: bold; text-decoration: none; padding: 10px; border-radius: 6px; font-size: 13px;">ENTRAR</a>
-                    </div>
-                </div>
-
-                <div class="game-card">
-                    <span class="card-tag" style="background: #10b981; color: #fff;">VIP</span>
-                    <div class="card-image-container" style="display:flex; align-items:center; justify-content:center; background:#0b0f19;">
-                        <i class="fa-solid fa-gem" style="font-size: 3rem; color: #10b981;"></i>
-                    </div>
-                    <div class="card-content">
-                        <div>
-                            <div class="game-title">Casino de Lujo</div>
-                            <div class="game-desc">Mesa de Blackjack VIP con apuestas altas en bullaco.</div>
-                        </div>
-                        <button class="btn-play" onclick="location.href='casino-lujo/index.html'">ENTRAR</button>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
+  </div>
+</div>
+      </div>
     </div>
 
-    <script>
-        // Sincronización de saldo y estadísticas con localStorage
-        let lobbyBal = parseInt(localStorage.getItem('ivysnow_forfaits')) || 500;
-        document.getElementById('lobbyBal').textContent = lobbyBal;
+    <div class="lobby-card">
+      <h4>📊 ESTADÍSTICAS GLOBALES</h4>
+      <div class="stats-grid">
+        <div>🎰 Slots: <span id="statSlots">0</span></div>
+        <div>🃏 Torneos Ganados: <span id="statPokerWins">0</span></div>
+        <div>🎯 Ruleta: <span id="statRoulette">0</span></div>
+        <div>🏔️ Nivel Montaña: <span id="statMountainLevel">1</span></div>
+      </div>
+    </div>
 
-        // Estadísticas globales del Rider guardadas en localStorage
-        let ivysnowStats = JSON.parse(localStorage.getItem('ivysnow_stats')) || {
-            tournamentsWon: 0,
-            slotsPlayed: 0,
-            roulettesPlayed: 0,
-            maxPrize: 0,
-            playerLevel: 1
-        };
+    <div class="lobby-card">
+      <h4>🏆 SISTEMA DE LOGROS</h4>
+      <div class="achievements-list">
+        <div class="badge" id="badge-forfait">🏔️ Primer Forfait</div>
+        <div class="badge" id="badge-poker">🃏 Ganador Poker Alpino</div>
+        <div class="badge" id="badge-iglu">❄️ Rey del Iglú</div>
+        <div class="badge" id="badge-slots">🎰 Maestro Slots</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="prizes-box">
+    <h3>ESTRUCTURA DE PREMIOS (BOTE TOTAL: 5.400€)</h3>
+    <div class="prizes-list">
+      <div>🥇 1º: <span>3.400€</span></div>
+      <div>🥈 2º: <span>1.500€</span></div>
+      <div>🥉 3º: <span>500€</span></div>
+    </div>
+  </div>
 
-        function updateBalance() {
-            document.getElementById('lobbyBal').textContent = lobbyBal;
-            localStorage.setItem('ivysnow_forfaits', lobbyBal);
-            localStorage.setItem('ivysnow_stats', JSON.stringify(ivysnowStats));
-        }
+  <button class="btn" onclick="enterCasino()" style="font-size: 1.1rem; padding: 12px 35px; border-color: var(--neon-green); color: var(--neon-green);">ENTRAR AL TORNEO (1.000€)</button>
+</div>
 
-        function recargarForfaits() {
-            if (lobbyBal < 100) {
-                lobbyBal += 500;
-                updateBalance();
-            } else {
-                alert("¡Todavía tienes suficientes forfaits en la cartera, Rider! Guárdalos para la bajada.");
-            }
-        }
-    </script>
+<div id="bgContainer"></div>
+<canvas id="bgCanvas"></canvas>
+<canvas id="auroraCanvas"></canvas>
 
-    <!-- FOOTER PROFESIONAL IVYSNOWCASINO -->
-    <footer class="casino-footer">
-        <div class="footer-badges">
-            <span class="badge-item age-badge">+18</span>
-            <span class="badge-item">JUEGO RESPONSABLE</span>
-            <span class="badge-item">USO FICTICIO</span>
-            <span class="badge-item">DIRECCIÓN GENERAL DE ORDENACIÓN DEL JUEGO (SIMULADO)</span>
+<div id="app">
+  <header>
+    <div class="header-left">
+      <div class="logo-graffiti">POKERIGLÚ</div>
+      <div class="sub-title" id="welcomeUserDisplay">BIENVENIDO, RIDER</div>
+    </div>
+    <div class="info-bar">
+      <div class="info-item">BUY-IN: <span>1.000€</span></div>
+      <div class="info-item">BOLSA: <span class="prize-pool-tag">5.400€</span></div>
+      <div class="info-item">CIEGAS: <span id="blindLevel">10 / 20</span></div>
+      <div class="info-item">ENERGÍA IGLÚ: <span id="igluEnergyDisplay">0%</span></div>
+    </div>
+    <button class="btn-lobby" onclick="returnToLobby()">ABANDONAR LOBBY</button>
+  </header>
+
+  <div class="table-container" id="pokerTable">
+    <div class="table-logo">POKERIGLÚ<br><span style="font-size:0.55rem; letter-spacing:2px;">NO LIMIT HOLD'EM</span></div>
+
+    <div class="pot-display" id="potDisplay">BOTE: 0</div>
+    <div id="handResult"></div>
+    <div class="community-cards" id="communityCards"></div>
+
+    <!-- SEATS -->
+    <div class="seat seat-0" id="seat-0">
+      <div class="player-cards" id="cards-0"></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-0">🐧</div>
+        <div class="emote-bubble" id="emote-0"></div>
+      </div>
+      <div class="player-info">
+        <div class="player-name" id="seat-0-name">TÚ (HUMANO)</div>
+        <div class="player-stack" id="stack-0">1500</div>
+        <div class="player-action" id="action-0"></div>
+      </div>
+    </div>
+
+    <div class="seat seat-1" id="seat-1">
+      <div class="player-cards" id="cards-1"></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-1">😎</div>
+        <div class="emote-bubble" id="emote-1"></div>
+      </div>
+      <div class="player-info">
+        <div class="player-name">FROSTFIN</div>
+        <div class="player-stack" id="stack-1">1500</div>
+        <div class="player-action" id="action-1"></div>
+      </div>
+    </div>
+
+    <div class="seat seat-2" id="seat-2">
+      <div class="player-cards" id="cards-2"></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-2">😼</div>
+        <div class="emote-bubble" id="emote-2"></div>
+      </div>
+      <div class="player-info">
+        <div class="player-name">ICEJACK</div>
+        <div class="player-stack" id="stack-2">1500</div>
+        <div class="player-action" id="action-2"></div>
+      </div>
+    </div>
+
+    <div class="seat seat-3" id="seat-3">
+      <div class="player-cards" id="cards-3"></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-3">⚡</div>
+        <div class="emote-bubble" id="emote-3"></div>
+      </div>
+      <div class="player-info">
+        <div class="player-name">AURORAJOE</div>
+        <div class="player-stack" id="stack-3">1500</div>
+        <div class="player-action" id="action-3"></div>
+      </div>
+    </div>
+
+    <div class="seat seat-4" id="seat-4">
+      <div class="player-cards" id="cards-4"></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-4">🔥</div>
+        <div class="emote-bubble" id="emote-4"></div>
+      </div>
+      <div class="player-info">
+        <div class="player-name">NEONBEAK</div>
+        <div class="player-stack" id="stack-4">1500</div>
+        <div class="player-action" id="action-4"></div>
+      </div>
+    </div>
+
+    <div class="seat seat-5" id="seat-5">
+      <div class="player-cards" id="cards-5"></div>
+      <div class="penguin-avatar-container">
+        <div class="penguin-avatar" id="avatar-5">👑</div>
+        <div class="emote-bubble" id="emote-5"></div>
+      </div>
+      <div class="player-info">
+        <div class="player-name">GLACIERKING</div>
+        <div class="player-stack" id="stack-5">1500</div>
+        <div class="player-action" id="action-5"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="action-btns">
+      <button class="btn" id="btnFold" onclick="humanAction('fold')">RETIRARSE</button>
+      <button class="btn" id="btnCheck" onclick="humanAction('check')">PASAR</button>
+      <button class="btn" id="btnCall" onclick="humanAction('call')">IR</button>
+      <button class="btn" id="btnRaise" onclick="humanAction('raise')">SUBIR</button>
+      <button class="btn btn-allin" id="btnAllIn" onclick="humanAction('allin')">ALL IN</button>
+    </div>
+    
+    <div class="lever-container">
+      <div class="bet-lever" id="betLever">
+        <div class="lever-labels">▲</div>
+        <div class="lever-track"><div class="lever-knob" id="leverKnob"></div></div>
+        <div class="lever-labels">▼</div>
+      </div>
+      <input type="range" class="raise-slider" id="raiseSlider" min="0" max="1500" value="0" oninput="updateRaiseVal()">
+      <div class="raise-val" id="raiseVal">0</div>
+    </div>
+  </div>
+</div>
+
+<div id="winOverlay">
+  <div class="win-title">🏆 CAMPEÓN DEL POKERIGLÚ 🏆</div>
+  <div class="win-prize" id="winPrizeText">PREMIO: 3.400€</div>
+  <div id="iceThrone">🐧👑</div>
+  <div class="win-name" id="winName">JUGADOR</div>
+  <button class="btn" onclick="returnToLobby()" style="font-size: 1.1rem; padding: 10px 25px;">VOLVER AL LOBBY</button>
+</div>
+
+<!-- REPRODUCTOR OCULTO SOUNDCLOUD -->
+<div style="display:none;">
+  <iframe id="soundCloudPlayer" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
+    src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/sobre-filo/sets/huevos-a-la-vida-eurobloke&color=%2300f3ff&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false">
+  </iframe>
+</div>
+
+<script>
+/* ================= LOCAL STORAGE & PERSISTENCIA ================= */
+  async function loadTop5(){
+
+  try{
+
+    const rankingQuery = query(
+      collection(
+        db,
+        "pokeriglu_ranking"
+      ),
+      orderBy(
+        "wins",
+        "desc"
+      ),
+      limit(5)
+    );
+
+    const snapshot =
+      await getDocs(
+        rankingQuery
+      );
+
+    const container =
+      document.getElementById(
+        "top5Leaderboard"
+      );
+
+    container.innerHTML = "";
+
+    let position = 1;
+
+    snapshot.forEach(docSnap=>{
+
+      const p = docSnap.data();
+
+      container.innerHTML += `
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          margin-bottom:6px;
+        ">
+          <span>
+            ${position}.
+            ${p.rider}
+          </span>
+
+          <span style="
+            color:var(--neon-gold);
+          ">
+            ${p.wins}
+          </span>
         </div>
-        
-        <div class="footer-links">
-            <a href="aviso-legal.html">Aviso Legal</a>
-            <a href="cookies.html">Política de Cookies</a>
-            <a href="privacidad.html">Política de Privacidad</a>
-        </div>
+      `;
 
-        <div class="footer-disclaimer">
-            <p><strong>IVYSNOWCASINO</strong> es una plataforma de simulación de entretenimiento en entorno alpino. Las apuestas se realizan exclusivamente con créditos virtuales ("forfaits") sin valor monetario real. El juego está estrictamente prohibido para menores de 18 años. Fomenta el juego responsable.</p>
-            <p>&copy; 2026 IVYSNOWCASINO - Todos los derechos reservados.</p>
-        </div>
-    </footer>
+      position++;
 
-    <style>
-        .casino-footer {
-            width: 100%;
-            background: #020617;
-            border-top: 1px solid rgba(56, 189, 248, 0.2);
-            padding: 30px 20px;
-            margin-top: 50px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.75rem;
+    });
+
+  }
+  catch(err){
+
+    console.error(err);
+
+  }
+
+}
+let playerData = {
+  name: "Jugador",
+  slotsSpins: 0,
+  pokerWins: 0,
+  rouletteWins: 0,
+  mountainLevel: 1,
+  achievements: { forfait: false, poker: false, iglu: false, slots: false }
+};
+
+function loadPlayerData() {
+  loadTop5();
+  const saved = localStorage.getItem("ivysnow_player_data");
+  if(saved) {
+    try { playerData = Object.assign(playerData, JSON.parse(saved)); } catch(e){}
+  } else {
+    const savedName = localStorage.getItem("ivysnow_player");
+    if(savedName) playerData.name = savedName;
+  }
+  document.getElementById('playerNameInput').value = playerData.name;
+  updateUIStats();
+}
+
+function savePlayerData() {
+  localStorage.setItem("ivysnow_player", playerData.name);
+  localStorage.setItem("ivysnow_player_data", JSON.stringify(playerData));
+  updateUIStats();
+}
+
+function savePlayerName() {
+  const inputVal = document.getElementById('playerNameInput').value.trim();
+  if(inputVal) {
+    playerData.name = inputVal;
+    savePlayerData();
+    unlockAchievement('forfait');
+  }
+}
+  async function saveTopPlayer() {
+
+  try{
+
+    await setDoc(
+      doc(
+        db,
+        "pokeriglu_ranking",
+        playerData.name
+      ),
+      {
+        rider: playerData.name,
+        wins: playerData.pokerWins,
+        level: playerData.mountainLevel,
+        updatedAt: Date.now()
+      }
+    );
+
+    loadTop5();
+
+  }catch(err){
+
+    console.error(err);
+
+  }
+
+}
+
+function updateUIStats() {
+  document.getElementById('welcomeUserDisplay').innerText = `BIENVENIDO, ${playerData.name.toUpperCase()}`;
+  document.getElementById('seat-0-name').innerText = playerData.name.toUpperCase();
+  document.getElementById('statSlots').innerText = playerData.slotsSpins;
+  document.getElementById('statPokerWins').innerText = playerData.pokerWins;
+  document.getElementById('statRoulette').innerText = playerData.rouletteWins;
+  document.getElementById('statMountainLevel').innerText = playerData.mountainLevel;
+
+  if(playerData.achievements.forfait) document.getElementById('badge-forfait').classList.add('unlocked');
+  if(playerData.achievements.poker) document.getElementById('badge-poker').classList.add('unlocked');
+  if(playerData.achievements.iglu) document.getElementById('badge-iglu').classList.add('unlocked');
+  if(playerData.achievements.slots) document.getElementById('badge-slots').classList.add('unlocked');
+}
+
+function unlockAchievement(key) {
+  if(!playerData.achievements[key]) {
+    playerData.achievements[key] = true;
+    savePlayerData();
+  }
+}
+
+loadPlayerData();
+
+/* ================= AUDIO ENGINE ================= */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function initAudio() {
+  if(!audioCtx) audioCtx = new AudioCtx();
+}
+
+function playSound(type) {
+  if(!audioCtx) return;
+  const now = audioCtx.currentTime;
+  
+  if(type === 'card') {
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(400, now);
+    osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.08);
+  } else if(type === 'chip') {
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1800, now);
+    osc.frequency.exponentialRampToValueAtTime(600, now + 0.05);
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.05);
+  } else if(type === 'allin') {
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(300, now);
+    osc.frequency.linearRampToValueAtTime(900, now + 0.4);
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.4);
+  } else if(type === 'eliminated') {
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.exponentialRampToValueAtTime(50, now + 0.6);
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.6);
+  } else if(type === 'win') {
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx*0.1);
+      gain.gain.setValueAtTime(0.3, now + idx*0.1);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + idx*0.1 + 0.3);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now + idx*0.1); osc.stop(now + idx*0.1 + 0.3);
+    });
+  }
+}
+
+/* ================= CANVAS NIEVE & AURORAS REACTIVAS ================= */
+const snowCanvas = document.getElementById('bgCanvas');
+const snowCtx = snowCanvas.getContext('2d');
+const auroraCanvas = document.getElementById('auroraCanvas');
+const auroraCtx = auroraCanvas.getContext('2d');
+
+let width, height;
+let particles = [];
+let auroraIntensity = 0.3;
+let igluEnergy = 0;
+
+function resizeCanvas() {
+  width = snowCanvas.width = auroraCanvas.width = window.innerWidth;
+  height = snowCanvas.height = auroraCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+for(let i=0; i<60; i++) {
+  particles.push({ x: Math.random() * width, y: Math.random() * height, r: Math.random() * 2 + 0.5, d: Math.random() * 1 });
+}
+
+let time = 0;
+function renderLoop() {
+  time += 0.005;
+  
+  snowCtx.clearRect(0,0,width,height);
+  snowCtx.fillStyle = "rgba(255, 255, 255, 0.5)";
+  snowCtx.beginPath();
+  for(let i=0; i<particles.length; i++) {
+    let p = particles[i];
+    snowCtx.moveTo(p.x, p.y);
+    snowCtx.arc(p.x, p.y, p.r, 0, Math.PI*2, true);
+    p.y += Math.cos(time + p.d) + 0.4 + p.r/2;
+    p.x += Math.sin(time) * 0.4;
+    if(p.x > width || p.x < 0 || p.y > height) {
+      particles[i] = {x: Math.random()*width, y: -10, r: p.r, d: p.d};
+    }
+  }
+  snowCtx.fill();
+
+  auroraCtx.clearRect(0,0,width,height);
+  for(let i=0; i<3; i++) {
+    auroraCtx.beginPath();
+    auroraCtx.moveTo(0, height * 0.3);
+    let speed = 0.003 + (auroraIntensity * 0.003);
+    for(let x=0; x<width; x+=20) {
+      let y = Math.sin(x * speed + time * (i+1) + auroraIntensity) * (40 * auroraIntensity + 20) + height * 0.25;
+      auroraCtx.lineTo(x, y);
+    }
+    auroraCtx.lineTo(width, height);
+    auroraCtx.lineTo(0, height);
+    
+    let auroraGrad = auroraCtx.createLinearGradient(0,0,width,0);
+    auroraGrad.addColorStop(0, `rgba(0, 255, 102, ${0.1 + auroraIntensity * 0.2})`);
+    auroraGrad.addColorStop(0.5, `rgba(0, 243, 255, ${0.15 + auroraIntensity * 0.25})`);
+    auroraGrad.addColorStop(1, `rgba(157, 0, 255, ${0.1 + auroraIntensity * 0.2})`);
+    auroraCtx.fillStyle = auroraGrad;
+    auroraCtx.fill();
+  }
+
+  requestAnimationFrame(renderLoop);
+}
+renderLoop();
+
+/* ================= SISTEMA DE EMOTES PINGÜINOS ================= */
+function showEmote(playerId, emoji) {
+  let bubble = document.getElementById(`emote-${playerId}`);
+  if(bubble) {
+    bubble.innerText = emoji;
+    bubble.style.display = 'block';
+    setTimeout(() => { bubble.style.display = 'none'; }, 2500);
+  }
+}
+
+/* ================= FICHAS FÍSICAS AL BOTE ================= */
+function animateChipsToPot(playerId, amount) {
+  if(amount <= 0) return;
+  let seatEl = document.getElementById(`seat-${playerId}`);
+  let potEl = document.getElementById('potDisplay');
+  if(!seatEl || !potEl) return;
+
+  let sRect = seatEl.getBoundingClientRect();
+  let pRect = potEl.getBoundingClientRect();
+
+  let chip = document.createElement('div');
+  chip.className = 'flying-chip';
+  chip.innerText = '🪙';
+  chip.style.left = sRect.left + sRect.width/2 + 'px';
+  chip.style.top = sRect.top + sRect.height/2 + 'px';
+  document.body.appendChild(chip);
+
+  setTimeout(() => {
+    chip.style.left = pRect.left + pRect.width/2 + 'px';
+    chip.style.top = pRect.top + pRect.height/2 + 'px';
+    chip.style.transform = 'scale(0.5) rotate(360deg)';
+    chip.style.opacity = '0.3';
+  }, 20);
+
+  setTimeout(() => { chip.remove(); }, 620);
+}
+
+/* ================= EVALUADOR REAL CON KICKERS Y ESCALERA DE COLOR A-2-3-4-5 ================= */
+const SUITS = ['♠', '♥', '♦', '♣'];
+const VALUES = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+
+function evaluateHand(cards7) {
+  let ranked = cards7.map(c => ({ rank: c.rank, suit: c.suit })).sort((a,b) => b.rank - a.rank);
+  
+  let counts = {};
+  ranked.forEach(c => counts[c.rank] = (counts[c.rank] || 0) + 1);
+  let groups = Object.keys(counts).map(r => ({ rank: Number(r), count: counts[r] })).sort((a,b) => b.count - a.count || b.rank - a.rank);
+
+  let isFlush = false;
+  let flushSuit = null;
+  let suitCounts = {};
+  cards7.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit] || 0) + 1);
+  for(let s in suitCounts) { 
+    if(suitCounts[s] >= 5) { 
+      isFlush = true; 
+      flushSuit = s; 
+    } 
+  }
+
+  let flushCards = isFlush ? cards7.filter(c => c.suit === flushSuit).sort((a,b) => b.rank - a.rank) : [];
+
+  let isStraightFlush = false;
+  let straightFlushHigh = -1;
+  if (isFlush) {
+    let uniqueFlushRanks = [...new Set(flushCards.map(c => c.rank))];
+    for(let i=0; i<=uniqueFlushRanks.length - 5; i++) {
+      if(uniqueFlushRanks[i] - uniqueFlushRanks[i+4] === 4) {
+        isStraightFlush = true;
+        straightFlushHigh = uniqueFlushRanks[i];
+        break;
+      }
+    }
+    if(!isStraightFlush && uniqueFlushRanks.includes(12) && uniqueFlushRanks.includes(3) && uniqueFlushRanks.includes(2) && uniqueFlushRanks.includes(1) && uniqueFlushRanks.includes(0)) {
+      isStraightFlush = true;
+      straightFlushHigh = 3;
+    }
+  }
+
+  let isStraight = false;
+  let uniqueRanks = [...new Set(ranked.map(c => c.rank))];
+  let straightHigh = -1;
+  for(let i=0; i<=uniqueRanks.length - 5; i++) {
+    if(uniqueRanks[i] - uniqueRanks[i+4] === 4) {
+      isStraight = true;
+      straightHigh = uniqueRanks[i];
+      break;
+    }
+  }
+  if(!isStraight && uniqueRanks.includes(12) && uniqueRanks.includes(3) && uniqueRanks.includes(2) && uniqueRanks.includes(1) && uniqueRanks.includes(0)) {
+    isStraight = true;
+    straightHigh = 3;
+  }
+
+  if(isStraightFlush) return { score: [8, straightFlushHigh], name: 'ESCALERA DE COLOR' };
+  if(groups[0].count === 4) {
+    let kicker = ranked.find(c => c.rank !== groups[0].rank).rank;
+    return { score: [7, groups[0].rank, kicker], name: 'PÓKER' };
+  }
+  if(groups[0].count === 3 && groups[1] && groups[1].count >= 2) {
+    return { score: [6, groups[0].rank, groups[1].rank], name: 'FULL HOUSE' };
+  }
+  if(isFlush) {
+    let kickers = flushCards.slice(0, 5).map(c => c.rank);
+    return { score: [5, ...kickers], name: 'COLOR' };
+  }
+  if(isStraight) return { score: [4, straightHigh], name: 'ESCALERA' };
+  if(groups[0].count === 3) {
+    let kickers = ranked.filter(c => c.rank !== groups[0].rank).slice(0, 2).map(c => c.rank);
+    return { score: [3, groups[0].rank, ...kickers], name: 'TRÍO' };
+  }
+  if(groups[0].count === 2 && groups[1] && groups[1].count === 2) {
+    let kicker = ranked.find(c => c.rank !== groups[0].rank && c.rank !== groups[1].rank).rank;
+    return { score: [2, groups[0].rank, groups[1].rank, kicker], name: 'DOBLE PAREJA' };
+  }
+  if(groups[0].count === 2) {
+    let kickers = ranked.filter(c => c.rank !== groups[0].rank).slice(0, 3).map(c => c.rank);
+    return { score: [1, groups[0].rank, ...kickers], name: 'PAREJA' };
+  }
+  let kickers = ranked.slice(0, 5).map(c => c.rank);
+  return { score: [0, ...kickers], name: 'CARTA ALTA' };
+}
+
+function compareScores(s1, s2) {
+  for(let i = 0; i < Math.max(s1.length, s2.length); i++){
+    let v1 = s1[i] || 0;
+    let v2 = s2[i] || 0;
+    if(v1 !== v2){
+      return v1 - v2;
+    }
+  }
+  return 0;
+}
+
+/* ================= DETECCIÓN DE PROYECTOS PARA LA IA ================= */
+function hasFlushDraw(cards) {
+  let suits = {};
+  cards.forEach(c => {
+    suits[c.suit] = (suits[c.suit] || 0) + 1;
+  });
+  return Object.values(suits).some(v => v === 4);
+}
+
+function hasOpenEndedStraightDraw(cards) {
+  let ranks = [...new Set(cards.map(c => c.rank))];
+  ranks.sort((a,b) => a - b);
+  for(let i = 0; i < ranks.length - 3; i++) {
+    if(ranks[i+3] - ranks[i] === 3) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/* ================= VARIABLES DE JACKPOT Y CONTROL DE CALLE ================= */
+let jackpotActive = false;
+let actedThisRound = new Set();
+
+function triggerJackpotRain() {
+  jackpotActive = true;
+  document.getElementById('jackpotBanner').style.display = 'block';
+  auroraIntensity = 1;
+  unlockAchievement('iglu');
+  
+  for(let i=0; i<40; i++) {
+    let bill = document.createElement('div');
+    bill.className = 'bill';
+    bill.innerText = '💶';
+    bill.style.left = Math.random() * window.innerWidth + 'px';
+    bill.style.top = -50 + 'px';
+    bill.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    bill.style.animationDelay = (Math.random() * 1.5) + 's';
+    document.body.appendChild(bill);
+    setTimeout(() => { bill.remove(); }, 4000);
+  }
+}
+
+function enterCasino() {
+  initAudio();
+  unlockAchievement('forfait');
+  
+  let iframe = document.getElementById('soundCloudPlayer');
+  if(iframe && !iframe.src.includes('auto_play=true')) {
+    iframe.src += "&auto_play=true";
+  }
+
+  if(Math.random() < 0.3) { triggerJackpotRain(); }
+  document.getElementById('introScreen').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('introScreen').style.display = 'none';
+    document.getElementById('app').classList.add('active');
+    startBlindTimer();
+    startNewHand();
+  }, 500);
+}
+
+function returnToLobby() {
+  let iframe = document.getElementById('soundCloudPlayer');
+  if(iframe) {
+    let src = iframe.src;
+    iframe.src = "";
+    iframe.src = src;
+  }
+
+  document.getElementById('winOverlay').classList.remove('active');
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('jackpotBanner').style.display = 'none';
+  document.getElementById('introScreen').style.display = 'flex';
+  document.getElementById('introScreen').style.opacity = '1';
+  document.getElementById('handResult').innerText = '';
+  
+  pot = 0;
+  dealerIdx = 0;
+  currentBlindIdx = 0;
+  blindTimerSeconds = 180;
+  communityCards = [];
+  actedThisRound.clear();
+  
+  players.forEach(p => {
+    p.stack = 1500;
+    p.eliminated = false;
+    p.folded = false;
+    const seat = document.getElementById(`seat-${p.id}`);
+    if(seat) {
+      seat.classList.remove("folded");
+      seat.classList.remove("active");
+      seat.classList.remove("eliminating");
+    }
+  });
+}
+
+/* ================= TORNEO SIT & GO (1.500 STACK) ================= */
+const BLIND_LEVELS = [
+  {sb: 10, bb: 20}, {sb: 15, bb: 30}, {sb: 25, bb: 50},
+  {sb: 50, bb: 100}, {sb: 75, bb: 150}, {sb: 100, bb: 200},
+  {sb: 150, bb: 300}, {sb: 200, bb: 400}, {sb: 300, bb: 600}, {sb: 400, bb: 800}
+];
+
+let players = [
+  { id: 0, name: "TÚ (HUMANO)", avatar: "🐧", style: "HUMAN", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 1, name: "FROSTFIN", avatar: "😎", style: "TIGHT", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 2, name: "ICEJACK", avatar: "😼", style: "TAG", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 3, name: "AURORAJOE", avatar: "⚡", style: "BLUFFER", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 4, name: "NEONBEAK", avatar: "🔥", style: "MANIAC", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false },
+  { id: 5, name: "GLACIERKING", avatar: "👑", style: "GTO", stack: 1500, cards: [], currentBet: 0, totalInvested: 0, folded: false, isAllIn: false, eliminated: false }
+];
+
+let deck = [];
+let communityCards = [];
+let pot = 0;
+let currentBlindIdx = 0;
+let dealerIdx = 0;
+let currentTurnIdx = 0;
+let highestBet = 0;
+let minRaise = 0;
+let gameStage = 'PREFLOP';
+let blindTimerSeconds = 180;
+let timerInterval = null;
+
+function createDeck() {
+  deck = [];
+  for(let s of SUITS) {
+    for(let v of VALUES) {
+      deck.push({ suit: s, value: v, rank: VALUES.indexOf(v) });
+    }
+  }
+  for(let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+}
+
+function startBlindTimer() {
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    blindTimerSeconds--;
+    if(blindTimerSeconds <= 0) {
+      blindTimerSeconds = 180;
+      if(currentBlindIdx < BLIND_LEVELS.length - 1) { currentBlindIdx++; updateUI(); }
+    }
+  }, 1000);
+}
+
+function startNewHand() {
+  let activePlayers = players.filter(p => !p.eliminated);
+  if(activePlayers.length <= 1) { declareWinner(activePlayers[0]); return; }
+
+  createDeck();
+  communityCards = [];
+  pot = 0;
+  igluEnergy = 0;
+  auroraIntensity = 0.3;
+  gameStage = 'PREFLOP';
+  actedThisRound.clear();
+  document.getElementById('handResult').innerText = '';
+  document.getElementById('pokerTable').style.boxShadow = "0 0 50px rgba(0,243,255,.35), inset 0 0 35px rgba(0,243,255,.2), inset 0 0 80px rgba(0,0,0,.6)";
+  
+  players.forEach(p => {
+    p.cards = [];
+    p.currentBet = 0;
+    p.totalInvested = 0;
+    p.folded = p.eliminated;
+    p.isAllIn = false;
+    document.getElementById(`action-${p.id}`).innerText = '';
+    document.getElementById(`cards-${p.id}`).innerHTML = '';
+  });
+
+  do { dealerIdx = (dealerIdx + 1) % players.length; } while(players[dealerIdx].eliminated);
+
+  for(let i=0; i<2; i++) {
+    players.forEach(p => {
+      if(!p.eliminated) { p.cards.push(deck.pop()); playSound('card'); }
+    });
+  }
+
+  let sbIdx = getNextActivePlayerIdx(dealerIdx);
+  let bbIdx = getNextActivePlayerIdx(sbIdx);
+  let blindInfo = BLIND_LEVELS[currentBlindIdx];
+
+  postBet(players[sbIdx], Math.min(players[sbIdx].stack, blindInfo.sb));
+  postBet(players[bbIdx], Math.min(players[bbIdx].stack, blindInfo.bb));
+
+  highestBet = Math.max(...players.map(p => p.currentBet));
+  minRaise = highestBet * 2;
+  currentTurnIdx = getNextActivePlayerIdx(bbIdx);
+  roundStartPlayerIdx = currentTurnIdx;
+  
+  updateUI();
+  processTurn();
+}
+
+function getNextActivePlayerIdx(currIdx) {
+  let next = (currIdx + 1) % players.length;
+  while(players[next].eliminated || players[next].folded) { next = (next + 1) % players.length; }
+  return next;
+}
+
+function postBet(player, amount) {
+  player.stack -= amount;
+  player.currentBet += amount;
+  player.totalInvested += amount;
+  pot += amount;
+  animateChipsToPot(player.id, amount);
+  if(player.stack === 0) player.isAllIn = true;
+  
+  igluEnergy += amount;
+  auroraIntensity = Math.min(1, pot / 3000);
+  document.getElementById('igluEnergyDisplay').innerText = Math.min(100, Math.floor(igluEnergy / 40)) + '%';
+  
+  playSound('chip');
+}
+
+function processTurn() {
+  updateUI();
+  let activeUnfolded = players.filter(p => !p.eliminated && !p.folded);
+  
+  if(activeUnfolded.length === 1) {
+    let winner = activeUnfolded[0];
+    winner.stack += pot;
+    pot = 0;
+    document.getElementById(`action-${winner.id}`).innerText = '¡GANA EL BOTE!';
+    document.getElementById('handResult').innerText = `${winner.name} gana el bote por retirada`;
+    showEmote(winner.id, '😂');
+    playSound('win');
+    setTimeout(() => { startNewHand(); }, 2500);
+    return;
+  }
+
+  let playersCanAct = activeUnfolded.filter(p => !p.isAllIn);
+  let allMatched = activeUnfolded.every(p => p.currentBet === highestBet || p.isAllIn);
+  let everyoneActed = activeUnfolded.every(p => p.isAllIn || actedThisRound.has(p.id));
+
+  if(playersCanAct.length === 0 || (allMatched && everyoneActed)) {
+    advanceStage();
+    return;
+  }
+
+  let currPlayer = players[currentTurnIdx];
+  if(currPlayer.folded || currPlayer.isAllIn || currPlayer.eliminated) {
+    currentTurnIdx = getNextActivePlayerIdx(currentTurnIdx);
+    processTurn();
+    return;
+  }
+
+  if(currPlayer.style === 'HUMAN') {
+    enableControls(true);
+  } else {
+    enableControls(false);
+    setTimeout(() => { executeAITurn(currPlayer); }, 1000);
+  }
+}
+
+let roundStartPlayerIdx = -1;
+function getFirstToActThisRound() { return roundStartPlayerIdx; }
+
+function advanceStage() {
+  actedThisRound.clear();
+  players.forEach(p => p.currentBet = 0);
+  highestBet = 0;
+
+  if(gameStage === 'PREFLOP') {
+    gameStage = 'FLOP';
+    communityCards.push(deck.pop(), deck.pop(), deck.pop());
+  } else if(gameStage === 'FLOP') {
+    gameStage = 'TURN';
+    communityCards.push(deck.pop());
+  } else if(gameStage === 'TURN') {
+    gameStage = 'RIVER';
+    communityCards.push(deck.pop());
+  } else if(gameStage === 'RIVER') {
+    gameStage = 'SHOWDOWN';
+    evaluateShowdown();
+    return;
+  }
+
+  playSound('card');
+  roundStartPlayerIdx = getNextActivePlayerIdx(dealerIdx);
+  currentTurnIdx = roundStartPlayerIdx;
+  processTurn();
+}
+
+/* ================= INTELIGENCIA ARTIFICIAL TÁCTICA AVANZADA REAL ================= */
+function executeAITurn(player) {
+  let callAmt = highestBet - player.currentBet;
+  let action = 'check';
+
+  let allCards = player.cards.concat(communityCards);
+  let handEval = evaluateHand(allCards);
+  let handStrength = handEval.score[0];
+
+  let flushDraw = hasFlushDraw(allCards);
+  let straightDraw = hasOpenEndedStraightDraw(allCards);
+  let potOdds = callAmt / Math.max(pot, 1);
+
+  if(player.style === "TIGHT") {
+    if(handStrength >= 5) {
+      action = "raise";
+      showEmote(player.id, '🧊');
+    } else if(handStrength >= 2) {
+      action = "call";
+    } else if(flushDraw && potOdds < 0.10) {
+      action = "call";
+    } else {
+      action = callAmt === 0 ? "check" : "fold";
+    }
+  } else if(player.style === "TAG") {
+    if(handStrength >= 4) {
+      action = Math.random() < 0.7 ? "raise" : "call";
+      showEmote(player.id, '😼');
+    } else if(handStrength >= 1) {
+      action = "call";
+    } else if(flushDraw || straightDraw) {
+      action = potOdds < 0.15 ? "call" : "fold";
+    } else {
+      action = callAmt === 0 ? "check" : "fold";
+    }
+  } else if(player.style === "BLUFFER") {
+    if(Math.random() < 0.25) {
+      action = "raise";
+      showEmote(player.id, '😎');
+    } else if(handStrength >= 2) {
+      action = "call";
+    } else if(flushDraw || straightDraw) {
+      action = "call";
+    } else {
+      action = callAmt === 0 ? "check" : "fold";
+    }
+  } else if(player.style === "MANIAC") {
+    if(handStrength >= 1 || Math.random() < 0.55) {
+      action = "raise";
+      showEmote(player.id, '🔥');
+    } else {
+      action = callAmt <= player.stack ? "call" : "fold";
+    }
+  } else if(player.style === "GTO") {
+    if(handStrength >= 5) {
+      action = "raise";
+      showEmote(player.id, '👑');
+    } else if(handStrength >= 2) {
+      action = "call";
+    } else if(flushDraw || straightDraw) {
+      action = potOdds < 0.18 ? "call" : "fold";
+    } else {
+      action = callAmt === 0 ? "check" : "fold";
+    }
+  } else {
+    action = callAmt === 0 ? "check" : "call";
+  }
+
+  if(action === 'fold') {
+    player.folded = true;
+    document.getElementById(`action-${player.id}`).innerText = 'RETIRADO';
+  } else if(action === 'check') {
+    document.getElementById(`action-${player.id}`).innerText = 'PASAR';
+  } else if(action === 'call') {
+    let bet = Math.min(callAmt, player.stack);
+    postBet(player, bet);
+    document.getElementById(`action-${player.id}`).innerText = 'IR';
+  } else if(action === 'raise') {
+    let raiseAmt = Math.min(player.stack, Math.max(minRaise, callAmt + BLIND_LEVELS[currentBlindIdx].bb));
+    postBet(player, raiseAmt);
+    highestBet = player.currentBet;
+    minRaise = highestBet * 2;
+    document.getElementById(`action-${player.id}`).innerText = `SUBE A ${player.currentBet}`;
+  }
+
+  actedThisRound.add(player.id);
+  currentTurnIdx = getNextActivePlayerIdx(currentTurnIdx);
+  processTurn();
+}
+
+function humanAction(type) {
+  let p = players[0];
+  let callAmt = highestBet - p.currentBet;
+
+  if(type === 'fold') {
+    p.folded = true;
+    document.getElementById(`action-0`).innerText = 'RETIRADO';
+  } else if(type === 'check') {
+    document.getElementById(`action-0`).innerText = 'PASAR';
+  } else if(type === 'call') {
+    postBet(p, Math.min(callAmt, p.stack));
+    document.getElementById(`action-0`).innerText = 'IR';
+  } else if(type === 'raise') {
+    let raiseVal = parseInt(document.getElementById('raiseSlider').value);
+    let diff = Math.max(0, raiseVal - p.currentBet);
+    let bet = Math.min(p.stack, diff);
+    
+    postBet(p, bet);
+    highestBet = p.currentBet;
+    minRaise = highestBet * 2;
+    document.getElementById(`action-0`).innerText = `SUBE A ${p.currentBet}`;
+  } else if(type === 'allin') {
+    auroraIntensity = 1;
+    playSound('allin');
+    postBet(p, p.stack);
+    if(p.currentBet > highestBet) highestBet = p.currentBet;
+    document.getElementById(`action-0`).innerText = 'ALL IN!';
+    showEmote(0, '🔥');
+  }
+
+  actedThisRound.add(0);
+  enableControls(false);
+  currentTurnIdx = getNextActivePlayerIdx(0);
+  processTurn();
+}
+
+function updateRaiseVal() {
+  let val = document.getElementById('raiseSlider').value;
+  document.getElementById('raiseVal').innerText = val;
+  let sliderMax = document.getElementById('raiseSlider').max || 1500;
+  let percent = val / sliderMax;
+  document.getElementById('leverKnob').style.top = (percent * 25) + 'px';
+}
+
+function enableControls(enable) {
+  let p = players[0];
+  let callAmt = highestBet - p.currentBet;
+
+  document.getElementById('btnFold').disabled = !enable;
+  document.getElementById('btnCheck').disabled = !enable || callAmt > 0;
+  document.getElementById('btnCall').disabled = !enable || callAmt === 0 || callAmt > p.stack;
+  document.getElementById('btnRaise').disabled = !enable || p.stack <= callAmt;
+  document.getElementById('btnAllIn').disabled = !enable || p.stack === 0;
+
+  let slider = document.getElementById('raiseSlider');
+  slider.disabled = !enable;
+  slider.min = highestBet + BLIND_LEVELS[currentBlindIdx].bb;
+  slider.max = p.stack + p.currentBet;
+  slider.value = slider.min;
+  updateRaiseVal();
+}
+
+/* ================= MOTOR PROFESIONAL DE SIDE POTS & SHOWDOWN ================= */
+function calculatePots() {
+  let eligiblePlayers = players.filter(p => !p.eliminated && !p.folded);
+  let pots = [];
+  let investments = eligiblePlayers.map(p => ({ player: p, inv: p.totalInvested })).sort((a,b) => a.inv - b.inv);
+  
+  let previousInvested = 0;
+  investments.forEach((item, idx) => {
+    let currentInvested = item.inv;
+    let diff = currentInvested - previousInvested;
+    if(diff > 0) {
+      let potAmount = 0;
+      let contributors = [];
+      investments.forEach(other => {
+        if(other.inv >= currentInvested) {
+          potAmount += diff;
+          contributors.push(other.player);
+        } else if(other.inv > previousInvested) {
+          potAmount += (other.inv - previousInvested);
+          contributors.push(other.player);
         }
+      });
+      pots.push({ amount: potAmount, eligible: contributors });
+      previousInvested = currentInvested;
+    }
+  });
 
-        .footer-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 5px;
-        }
+  if(pots.length === 0 && pot > 0) {
+    pots.push({ amount: pot, eligible: eligiblePlayers });
+  }
+  return pots;
+}
 
-        .badge-item {
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-weight: 700;
-            color: #cbd5e1;
-            background: rgba(15, 23, 42, 0.6);
-            letter-spacing: 0.5px;
-        }
+function evaluateShowdown() {
+  let active = players.filter(p => !p.eliminated && !p.folded);
+  
+  let scored = active.map(p => {
+    let evalRes = evaluateHand(p.cards.concat(communityCards));
+    document.getElementById(`action-${p.id}`).innerText = evalRes.name;
+    return { player: p, eval: evalRes };
+  });
 
-        .age-badge {
-            background: #e11d48;
-            color: #fff;
-            border-color: #e11d48;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-        }
+  let pots = calculatePots();
+  let potSummaryText = [];
+  let topHandName = "";
 
-        .footer-links {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+  pots.forEach((pObj, potIdx) => {
+    let contenders = scored.filter(s => pObj.eligible.includes(s.player));
+    if(contenders.length === 0) return;
 
-        .footer-links a {
-            color: #38bdf8;
-            text-decoration: none;
-            font-weight: 700;
-            transition: color 0.2s;
-        }
+    contenders.sort((a,b) => compareScores(b.eval.score, a.eval.score));
+    let bestScore = contenders[0].eval.score;
+    let winners = contenders.filter(s => compareScores(s.eval.score, bestScore) === 0);
 
-        .footer-links a:hover {
-            color: #facc15;
-            text-decoration: underline;
-        }
+    let share = Math.floor(pObj.amount / winners.length);
+    let remainder = pObj.amount % winners.length;
 
-        .footer-disclaimer {
-            max-width: 800px;
-            line-height: 1.5;
-            color: #64748b;
-        }
+    winners.forEach((w, wIdx) => {
+      let extra = (wIdx === 0) ? remainder : 0;
+      w.player.stack += (share + extra);
+      document.getElementById(`action-${w.player.id}`).innerText = `¡GANA ${share + extra}€!`;
+      showEmote(w.player.id, '😂');
 
-        .footer-disclaimer strong {
-            color: #cbd5e1;
+      if(w.player.id === 0) {
+        playerData.pokerWins++;
+        playerData.mountainLevel++;
+        unlockAchievement('poker');
+        savePlayerData();
+      }
+    });
+
+    topHandName = contenders[0].eval.name;
+    if(potIdx === 0) {
+      if(winners.length > 1) {
+        let names = winners.map(w => w.player.name).join(' y ');
+        potSummaryText.push(`Main Pot: ${names} empatan con ${topHandName}`);
+      } else {
+        potSummaryText.push(`${winners[0].player.name} gana Main Pot con ${topHandName}`);
+      }
+    } else {
+      potSummaryText.push(`Side Pot ${potIdx}: ${winners[0].player.name} gana con ${topHandName}`);
+    }
+  });
+
+  pot = 0;
+  playSound('win');
+
+  if(['FULL HOUSE', 'PÓKER', 'ESCALERA DE COLOR'].includes(topHandName)) {
+    auroraIntensity = 1;
+    let tableEl = document.getElementById('pokerTable');
+    tableEl.style.boxShadow = "0 0 120px cyan, 0 0 180px purple";
+  }
+
+  document.getElementById('handResult').innerText = potSummaryText.join(' | ');
+
+  setTimeout(() => {
+    players.forEach(p => {
+      if(!p.eliminated && p.stack <= 0) {
+        p.eliminated = true;
+        showEmote(p.id, '😱');
+        playSound('eliminated');
+        document.getElementById(`seat-${p.id}`).classList.add('eliminating');
+      }
+    });
+
+    let remaining = players.filter(p => !p.eliminated);
+    if(remaining.length === 1) {
+      declareWinner(remaining[0]);
+    } else {
+      startNewHand();
+    }
+  }, 4000);
+}
+
+function declareWinner(winner) {
+  playSound('win');
+  document.getElementById('winName').innerText = winner.name;
+  let prizeText = "🥇 1º PUESTO: 3.400€";
+  if(jackpotActive) { prizeText += " + 🌟 ¡JACKPOT 5.000€ EXTRA! 🌟"; }
+  document.getElementById('winPrizeText').innerText = prizeText;
+  document.getElementById('winOverlay').classList.add('active');
+
+  if(winner.id === 0) {
+
+    playerData.pokerWins++;
+
+    playerData.mountainLevel++;
+
+    unlockAchievement('poker');
+
+    savePlayerData();
+
+    saveTopPlayer();
+
+}
+}
+
+function updateUI() {
+  document.getElementById('blindLevel').innerText = `${BLIND_LEVELS[currentBlindIdx].sb} / ${BLIND_LEVELS[currentBlindIdx].bb}`;
+  document.getElementById('potDisplay').innerText = `BOTE: ${pot}`;
+
+  let commContainer = document.getElementById('communityCards');
+  commContainer.innerHTML = '';
+  communityCards.forEach(c => {
+    let cardEl = document.createElement('div');
+    cardEl.className = `card ${c.suit === '♥' || c.suit === '♦' ? 'red' : ''}`;
+    cardEl.innerHTML = `<div>${c.value}</div><div class="suit">${c.suit}</div>`;
+    commContainer.appendChild(cardEl);
+  });
+
+  players.forEach(p => {
+    document.getElementById(`stack-${p.id}`).innerText = p.stack;
+    let seatEl = document.getElementById(`seat-${p.id}`);
+    
+    if(p.folded) seatEl.classList.add('folded');
+    else seatEl.classList.remove('folded');
+
+    if(currentTurnIdx === p.id && !p.folded && !p.eliminated) seatEl.classList.add('active');
+    else seatEl.classList.remove('active');
+
+    let cardsContainer = document.getElementById(`cards-${p.id}`);
+    cardsContainer.innerHTML = '';
+    if(p.cards.length > 0 && !p.eliminated) {
+      p.cards.forEach(c => {
+        let cardEl = document.createElement('div');
+        if(p.id === 0 || gameStage === 'SHOWDOWN') {
+          cardEl.className = `card ${c.suit === '♥' || c.suit === '♦' ? 'red' : ''}`;
+          cardEl.innerHTML = `<div>${c.value}</div><div class="suit">${c.suit}</div>`;
+        } else {
+          cardEl.className = 'card back';
         }
-    </style>
+        cardsContainer.appendChild(cardEl);
+      });
+    }
+  });
+}
+</script>
+  <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-analytics.js";
+    import { initializeApp }
+from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+
+import { getAnalytics }
+from "https://www.gstatic.com/firebasejs/13.2.0/firebase-analytics.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDocs,
+  collection,
+  query,
+  orderBy,
+  limit
+}
+from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAY9JQHlRdq3JMHB-LNX3yyxk6_hI3Msd4",
+    authDomain: "ivysnowcasino-db.firebaseapp.com",
+    projectId: "ivysnowcasino-db",
+    storageBucket: "ivysnowcasino-db.firebasestorage.app",
+    messagingSenderId: "118627524141",
+    appId: "1:118627524141:web:9d8a13920ed9f4ae08a2a4",
+    measurementId: "G-7JZVZBBMHR"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+    console.log("¡Ivysnowcasino conectado a Firebase con éxito!");
+</script>
 </body>
 </html>
