@@ -347,6 +347,15 @@
       <div class="user-input-box">
         <input type="text" id="playerNameInput" placeholder="Tu Nickname...">
         <button onclick="savePlayerName()">GUARDAR</button>
+        <div class="lobby-card">
+  <h4>🏆 TOP 5 RIDERS</h4>
+
+  <div id="top5Leaderboard">
+
+    Cargando ranking...
+
+  </div>
+</div>
       </div>
     </div>
 
@@ -527,6 +536,71 @@
 
 <script>
 /* ================= LOCAL STORAGE & PERSISTENCIA ================= */
+  async function loadTop5(){
+
+  try{
+
+    const rankingQuery = query(
+      collection(
+        db,
+        "pokeriglu_ranking"
+      ),
+      orderBy(
+        "wins",
+        "desc"
+      ),
+      limit(5)
+    );
+
+    const snapshot =
+      await getDocs(
+        rankingQuery
+      );
+
+    const container =
+      document.getElementById(
+        "top5Leaderboard"
+      );
+
+    container.innerHTML = "";
+
+    let position = 1;
+
+    snapshot.forEach(docSnap=>{
+
+      const p = docSnap.data();
+
+      container.innerHTML += `
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          margin-bottom:6px;
+        ">
+          <span>
+            ${position}.
+            ${p.rider}
+          </span>
+
+          <span style="
+            color:var(--neon-gold);
+          ">
+            ${p.wins}
+          </span>
+        </div>
+      `;
+
+      position++;
+
+    });
+
+  }
+  catch(err){
+
+    console.error(err);
+
+  }
+
+}
 let playerData = {
   name: "Jugador",
   slotsSpins: 0,
@@ -537,6 +611,7 @@ let playerData = {
 };
 
 function loadPlayerData() {
+  loadTop5();
   const saved = localStorage.getItem("ivysnow_player_data");
   if(saved) {
     try { playerData = Object.assign(playerData, JSON.parse(saved)); } catch(e){}
@@ -561,6 +636,33 @@ function savePlayerName() {
     savePlayerData();
     unlockAchievement('forfait');
   }
+}
+  async function saveTopPlayer() {
+
+  try{
+
+    await setDoc(
+      doc(
+        db,
+        "pokeriglu_ranking",
+        playerData.name
+      ),
+      {
+        rider: playerData.name,
+        wins: playerData.pokerWins,
+        level: playerData.mountainLevel,
+        updatedAt: Date.now()
+      }
+    );
+
+    loadTop5();
+
+  }catch(err){
+
+    console.error(err);
+
+  }
+
 }
 
 function updateUIStats() {
@@ -1412,8 +1514,18 @@ function declareWinner(winner) {
   document.getElementById('winOverlay').classList.add('active');
 
   if(winner.id === 0) {
+
+    playerData.pokerWins++;
+
+    playerData.mountainLevel++;
+
     unlockAchievement('poker');
-  }
+
+    savePlayerData();
+
+    saveTopPlayer();
+
+}
 }
 
 function updateUI() {
@@ -1460,6 +1572,23 @@ function updateUI() {
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-analytics.js";
+    import { initializeApp }
+from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+
+import { getAnalytics }
+from "https://www.gstatic.com/firebasejs/13.2.0/firebase-analytics.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDocs,
+  collection,
+  query,
+  orderBy,
+  limit
+}
+from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
   // TODO: Add SDKs for Firebase products that you want to use
   // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -1478,6 +1607,7 @@ function updateUI() {
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+    const db = getFirestore(app);
     console.log("¡Ivysnowcasino conectado a Firebase con éxito!");
 </script>
 </body>
