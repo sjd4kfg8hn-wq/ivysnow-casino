@@ -298,7 +298,6 @@
                     <span class="card-tag" style="background: #ec4899; color: #fff;">PÓKER 3</span>
                     <div class="card-image-container">
                         <img src="poker-iglu/images/logo_iglu.jpg" alt="Póker Iglú" class="game-card-img">
-                        <i class="fa-solid fa-igloo" style="font-size: 3rem; color: #38bdf8;"></i>
                     </div>
                     <div class="card-content">
                         <div>
@@ -350,36 +349,6 @@
 
     </div>
 
-    <script>
-        // Sincronización de saldo y estadísticas con localStorage
-        let lobbyBal = parseInt(localStorage.getItem('ivysnow_forfaits')) || 500;
-        document.getElementById('lobbyBal').textContent = lobbyBal;
-
-        // Estadísticas globales del Rider guardadas en localStorage
-        let ivysnowStats = JSON.parse(localStorage.getItem('ivysnow_stats')) || {
-            tournamentsWon: 0,
-            slotsPlayed: 0,
-            roulettesPlayed: 0,
-            maxPrize: 0,
-            playerLevel: 1
-        };
-
-        function updateBalance() {
-            document.getElementById('lobbyBal').textContent = lobbyBal;
-            localStorage.setItem('ivysnow_forfaits', lobbyBal);
-            localStorage.setItem('ivysnow_stats', JSON.stringify(ivysnowStats));
-        }
-
-        function recargarForfaits() {
-            if (lobbyBal < 100) {
-                lobbyBal += 500;
-                updateBalance();
-            } else {
-                alert("¡Todavía tienes suficientes forfaits en la cartera, Rider! Guárdalos para la bajada.");
-            }
-        }
-    </script>
-
     <!-- FOOTER PROFESIONAL IVYSNOWCASINO -->
     <footer class="casino-footer">
         <div class="footer-badges">
@@ -396,7 +365,7 @@
         </div>
 
         <div class="footer-disclaimer">
-            <p><strong>IVYSNOWCASINO</strong> es una plataforma de simulación de entretenimiento en entorno alpino. Las apuestas se realizan exclusivamente con créditos virtuales ("forfaits") sin valor monetario real. El juego está estrictamente prohibido para menores de 18 años. Fomenta el juego responsable.</p>
+            <p><strong>IVYSNOWCASINO</strong> es una plataforma de simulación de entretenimiento en entorno alpino. Las apuestas se realizan exclusivamente con créditos virtuales ("forfaits") sin valor monetario real. El juego está strictly prohibido para menores de 18 años. Fomenta el juego responsable.</p>
             <p>&copy; 2026 IVYSNOWCASINO - Todos los derechos reservados.</p>
         </div>
     </footer>
@@ -478,5 +447,80 @@
             color: #cbd5e1;
         }
     </style>
+
+    <!-- INTEGRACIÓN CON FIREBASE Y FIRESTORE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+        // Configuración de tu proyecto en Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAY9JQH1RdQ3JMHB-LNX3yyxk6_hI3Msd4",
+            authDomain: "ivysnowcasino-db.firebaseapp.com",
+            projectId: "ivysnowcasino-db",
+            storageBucket: "ivysnowcasino-db.appspot.com",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Gestión de saldo local y sincronización con Firestore
+        let lobbyBal = parseInt(localStorage.getItem('ivysnow_forfaits')) || 500;
+        let playerName = localStorage.getItem('ivysnow_player') || 'Rider';
+
+        document.getElementById('lobbyBal').textContent = lobbyBal;
+
+        async function syncWithFirebase() {
+            try {
+                const docRef = doc(db, "users", playerName);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.forfaits !== undefined) {
+                        lobbyBal = data.forfaits;
+                        localStorage.setItem('ivysnow_forfaits', lobbyBal);
+                        document.getElementById('lobbyBal').textContent = lobbyBal;
+                    }
+                } else {
+                    await setDoc(docRef, {
+                        name: playerName,
+                        forfaits: lobbyBal,
+                        updatedAt: Date.now()
+                    });
+                }
+            } catch (err) {
+                console.error("Error al sincronizar con Firebase:", err);
+            }
+        }
+
+        async function updateBalance(newBal) {
+            lobbyBal = newBal;
+            document.getElementById('lobbyBal').textContent = lobbyBal;
+            localStorage.setItem('ivysnow_forfaits', lobbyBal);
+
+            try {
+                await setDoc(doc(db, "users", playerName), {
+                    name: playerName,
+                    forfaits: lobbyBal,
+                    updatedAt: Date.now()
+                }, { merge: true });
+            } catch (err) {
+                console.error("Error al actualizar saldo en Firebase:", err);
+            }
+        }
+
+        window.recargarForfaits = function() {
+            if (lobbyBal < 100) {
+                updateBalance(lobbyBal + 500);
+            } else {
+                alert("¡Todavía tienes suficientes forfaits en la cartera, Rider! Guárdalos para la bajada.");
+            }
+        };
+
+        syncWithFirebase();
+    </script>
 </body>
 </html>
