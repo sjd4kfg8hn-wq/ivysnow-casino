@@ -341,21 +341,42 @@
   <div class="intro-sub">IVYSNOWCASINO • ARCTIC SIT & GO (BUY-IN: 1.000€)</div>
 
   <!-- DASHBOARD: PERFIL, STATS Y LOGROS -->
-  <div class="lobby-dashboard">
+ <div class="lobby-dashboard">
+
+    <!-- PERFIL -->
     <div class="lobby-card">
-      <h4>👤 PERFIL DEL RIDER</h4>
-      <div class="user-input-box">
-        <input type="text" id="playerNameInput" placeholder="Tu Nickname...">
-        <button onclick="savePlayerName()">GUARDAR</button>
-        <div class="lobby-card">
-  <h4>🏆 TOP 5 RIDERS</h4>
+        <h4>👤 PERFIL DEL RIDER</h4>
 
-  <div id="top5Leaderboard">
+        <div class="user-input-box">
+            <input
+              type="text"
+              id="playerNameInput"
+              placeholder="Tu Nickname...">
 
-    Cargando ranking...
+            <button onclick="savePlayerName()">
+              GUARDAR
+            </button>
+        </div>
+    </div>
 
-  </div>
+
+    <!-- TOP 5 -->
+    <div class="lobby-card">
+        <h4>🏆 TOP 5 RIDERS</h4>
+
+        <div id="top5Leaderboard">
+            Cargando ranking...
+        </div>
+    </div>
+
+
+    <!-- ESTADÍSTICAS -->
+    <div class="lobby-card">
+       ...
+    </div>
+
 </div>
+
       </div>
     </div>
 
@@ -545,6 +566,7 @@
         db,
         "pokeriglu_ranking"
       ),
+      ...
       orderBy(
         "wins",
         "desc"
@@ -611,7 +633,6 @@ let playerData = {
 };
 
 function loadPlayerData() {
-  loadTop5();
   const saved = localStorage.getItem("ivysnow_player_data");
   if(saved) {
     try { playerData = Object.assign(playerData, JSON.parse(saved)); } catch(e){}
@@ -1570,9 +1591,7 @@ function updateUI() {
 </script>
   <script type="module">
   // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-analytics.js";
-    import { initializeApp }
+  import { initializeApp }
 from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 
 import { getAnalytics }
@@ -1606,9 +1625,16 @@ from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-    const db = getFirestore(app);
-    console.log("¡Ivysnowcasino conectado a Firebase con éxito!");
-</script>
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
+
+window.db = getFirestore(app);
+
+loadTop5();
+
+console.log(
+ "Firebase conectado");
+    <script>
+    
 </body>
 </html>
