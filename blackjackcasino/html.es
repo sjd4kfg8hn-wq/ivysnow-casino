@@ -63,19 +63,31 @@
         </div>
 
         <!-- PANEL DE CONTROL Y FICHAS PREMIUM -->
-        <div class="control-panel">
-            <button class="chip-btn" data-value="10" style="background: #e5e7eb; color: #111;">10€</button>
-            <button class="chip-btn" data-value="100" style="background: #10b981; color: #fff;">100€</button>
-            <button class="chip-btn" data-value="1000" style="background: #3b82f6; color: #fff;">1K</button>
-            <button class="chip-btn" data-value="5000" style="background: #8b5cf6; color: #fff;">5K</button>
-            <button class="chip-btn" data-value="10000" style="background: #111827; color: #d4af37; border-color: #d4af37;">10K</button>
-            <button id="deal-btn" class="action-btn">REPARTIR</button>
-        </div>
-<!-- Botones de Acción de Juego (Aparecen durante el turno del jugador) -->
-<div id="game-actions" style="display: none; gap: 10px; margin-left: 15px;">
-    <button id="hit-btn" class="action-btn" style="background: #3b82f6; color: #fff; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer;">Pedir</button>
-    <button id="stand-btn" class="action-btn" style="background: #ef4444; color: #fff; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer;">Plantarse</button>
-    <button id="double-btn" class="action-btn" style="background: #f59e0b; color: #fff; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer;">Doblar</button>
+<div class="control-panel">
+    <div class="chips-group">
+        <button class="chip-btn" data-value="10" style="background: #e5e7eb; color: #111;">10€</button>
+        <button class="chip-btn" data-value="100" style="background: #10b981; color: #fff;">100€</button>
+        <button class="chip-btn" data-value="1000" style="background: #3b82f6; color: #fff;">1K</button>
+        <button class="chip-btn" data-value="5000" style="background: #8b5cf6; color: #fff;">5K</button>
+        <button class="chip-btn" data-value="10000" style="background: #111827; color: #d4af37; border-color: #d4af37;">10K</button>
+    </div>
+    
+    <button id="deal-btn" class="action-btn" style="background: #10b981; color: #fff; padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer;">REPARTIR</button>
+
+    <!-- Botones de Acción de Juego en tiempo real -->
+    <div id="game-actions" style="display: none; gap: 8px; align-items: center;">
+        <button id="hit-btn" class="action-btn" style="background: #3b82f6; color: #fff; padding: 10px 14px; border-radius: 8px; border: none; cursor: pointer;">Pedir</button>
+        <button id="stand-btn" class="action-btn" style="background: #ef4444; color: #fff; padding: 10px 14px; border-radius: 8px; border: none; cursor: pointer;">Plantarse</button>
+        <button id="double-btn" class="action-btn" style="background: #f59e0b; color: #fff; padding: 10px 14px; border-radius: 8px; border: none; cursor: pointer;">Doblar</button>
+        <button id="split-btn" class="action-btn" style="background: #8b5cf6; color: #fff; padding: 10px 14px; border-radius: 8px; border: none; cursor: pointer; display:none;">Dividir</button>
+    </div>
+
+    <!-- Modal / Alerta de Seguro -->
+    <div id="insurance-modal" style="display:none; background: rgba(0,0,0,0.9); padding: 10px; border: 1px solid #d4af37; border-radius: 8px; color: #fff;">
+        <span>¿Seguro contra Blackjack del Crupier?</span>
+        <button id="insurance-yes" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Sí</button>
+        <button id="insurance-no" style="background:#ef4444; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">No</button>
+    </div>
 </div>
 
     </div>
