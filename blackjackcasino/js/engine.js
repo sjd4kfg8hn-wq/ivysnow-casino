@@ -12,6 +12,15 @@ export class BlackjackEngine {
     this.deck = [];
     this.resetDeck();
   }
+  // Comprobar si se puede ofrecer seguro (cuando la carta visible del crupier es un As)
+  canOfferInsurance(dealerUpCard) {
+    return dealerUpCard.value === 'A';
+  }
+
+  // Comprobar si se puede doblar (generalmente con las 2 primeras cartas)
+  canDoubleDown(hand, playerBankroll, currentBet) {
+    return hand.length === 2 && playerBankroll >= currentBet;
+  }
 
   // Mezcla de 6 barajas con aleatoriedad segura
   resetDeck() {
