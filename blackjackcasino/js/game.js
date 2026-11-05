@@ -47,7 +47,12 @@ class CasinoGame {
 
   startRound() {
     this.gameState = 'PLAYING';
-    document.getElementById('dealer-dialogue.innerText') = `"${DEALER_CONFIG.dialogues.dealing}"`;
+    
+    // CORRECCIÓN AQUÍ: Selección limpia del elemento por ID
+    const dialogueEl = document.getElementById('dealer-dialogue');
+    if (dialogueEl) {
+      dialogueEl.innerText = `"${DEALER_CONFIG.dialogues.dealing}"`;
+    }
     
     // Repartir cartas iniciales a jugadores IA y humano
     AI_BOTS.forEach(bot => {
@@ -64,25 +69,41 @@ class CasinoGame {
     // Actualizar visualmente las manos y puntuaciones en el DOM
     AI_BOTS.forEach((bot, index) => {
       const seatElement = document.getElementById(`seat-${index + 1}`);
-      const cardsDiv = seatElement.querySelector('.cards');
-      cardsDiv.innerHTML = bot.hand.map(c => `<span class="card">${c.value}${c.suit}</span>`).join(' ');
+      if (seatElement) {
+        const cardsDiv = seatElement.querySelector('.cards');
+        if (cardsDiv) {
+          cardsDiv.innerHTML = bot.hand.map(c => `<span class="card">${c.value}${c.suit}</span>`).join(' ');
+        }
+      }
     });
 
     // Renderizar mano del jugador humano
     const humanSeat = document.getElementById('seat-human');
-    const humanCardsDiv = humanSeat.querySelector('.cards');
-    humanCardsDiv.innerHTML = this.humanHand.map(c => `<span class="card">${c.value}${c.suit}</span>`).join(' ');
+    if (humanSeat) {
+      const humanCardsDiv = humanSeat.querySelector('.cards');
+      if (humanCardsDiv) {
+        humanCardsDiv.innerHTML = this.humanHand.map(c => `<span class="card">${c.value}${c.suit}</span>`).join(' ');
+      }
+    }
 
     // Renderizar mano del crupier (ocultando la segunda carta inicialmente)
     const dealerCardsDiv = document.getElementById('dealer-cards');
-    dealerCardsDiv.innerHTML = `<span class="card">${this.dealerHand[0].value}${this.dealerHand[0].suit}</span> <span class="card">🎴</span>`;
+    if (dealerCardsDiv) {
+      dealerCardsDiv.innerHTML = `<span class="card">${this.dealerHand[0].value}${this.dealerHand[0].suit}</span> <span class="card">🎴</span>`;
+    }
     
-    document.getElementById('dealer-score').innerText = `Puntuación visible: ${this.dealerHand[0].numericValue}`;
+    const dealerScoreEl = document.getElementById('dealer-score');
+    if (dealerScoreEl) {
+      dealerScoreEl.innerText = `Puntuación visible: ${this.dealerHand[0].numericValue}`;
+    }
   }
 
   updateUI() {
-    document.getElementById('player-bankroll').innerText = `${this.bankroll.toLocaleString()}€`;
-    document.getElementById('human-bet').innerText = `Apuesta: ${this.currentBet.toLocaleString()}€`;
+    const bankrollEl = document.getElementById('player-bankroll');
+    if (bankrollEl) bankrollEl.innerText = `${this.bankroll.toLocaleString()}€`;
+
+    const humanBetEl = document.getElementById('human-bet');
+    if (humanBetEl) humanBetEl.innerText = `Apuesta: ${this.currentBet.toLocaleString()}€`;
   }
 }
 
