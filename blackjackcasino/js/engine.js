@@ -1,10 +1,6 @@
 /**
- * CASINO MONTE PINÁCULO - MOTOR DE BLACKJACK
- * Control de baraja, manos, reglas VIP y cálculo de resultados.
+ * CASINO MONTE PINÁCULO - MOTOR MATEMÁTICO DEL BLACKJACK (ENGINE.JS)
  */
-
-export const CARD_SUITS = ['♠', '♥', '♦', '♣'];
-export const CARD_VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
 export class BlackjackEngine {
   constructor(numDecks = 6) {
@@ -12,22 +8,15 @@ export class BlackjackEngine {
     this.deck = [];
     this.resetDeck();
   }
-  // Comprobar si se puede ofrecer seguro (cuando la carta visible del crupier es un As)
-  canOfferInsurance(dealerUpCard) {
-    return dealerUpCard.value === 'A';
-  }
 
-  // Comprobar si se puede doblar (generalmente con las 2 primeras cartas)
-  canDoubleDown(hand, playerBankroll, currentBet) {
-    return hand.length === 2 && playerBankroll >= currentBet;
-  }
-
-  // Mezcla de 6 barajas con aleatoriedad segura
   resetDeck() {
+    const suits = ['♠', '♥', '♦', '♣'];
+    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
     this.deck = [];
+
     for (let d = 0; d < this.numDecks; d++) {
-      for (const suit of CARD_SUITS) {
-        for (const value of CARD_VALUES) {
+      for (const suit of suits) {
+        for (const value of values) {
           let numericValue = parseInt(value);
           if (['J', 'Q', 'K'].includes(value)) numericValue = 10;
           if (value === 'A') numericValue = 11;
@@ -47,52 +36,49 @@ export class BlackjackEngine {
   }
 
   drawCard() {
-    if (this.deck.length < 30) {
+    if (this.deck.length < 15) {
       this.resetDeck();
     }
     return this.deck.pop();
   }
 
-  // Cálculo preciso de manos gestionando Ases (11 o 1)
   calculateHand(cards) {
     let score = 0;
     let aces = 0;
 
-    for (const card of cards) {
+    cards.forEach(card => {
       score += card.numericValue;
-      if (card.value === 'A') aces += 1;
-    }
+      if (card.value === 'A') aces++;
+    });
 
     while (score > 21 && aces > 0) {
       score -= 10;
-      aces -= 1;
+      aces--;
     }
 
     const isSoft = aces > 0 && score <= 21;
-    const isBlackjack = cards.length === 2 && score === 21;
-    const isBust = score > 21;
-
-    return { score, isSoft, isBlackjack, isBust };
+    return {
+      score,
+      isBust: score > 21,
+      isSoft
+    };
   }
 
-  // Comprobar si una mano se puede dividir (parejas)
-  canSplit(cards) {
-    if (cards.length !== 2) return false;
-    return cards[0].numericValue === cards[1].numericValue;
+  canOfferInsurance(dealerUpCard) {
+    return dealerUpCard && dealerUpCard.value === 'A';
   }
 
-  // Evaluación de resultados entre jugador y crupier
-  evaluateHand(playerHand, dealerHand) {
-    const p = this.calculateHand(playerHand);
-    const d = this.calculateHand(dealerHand);
+  canDoubleDown(hand, bankroll, currentBet) {
+    return hand.length === 2 && bankroll >= currentBet;
+  }
 
-    if (p.isBust) return { result: 'BUST', payoutRatio: 0 };
-    if (p.isBlackjack && !d.isBlackjack) return { result: 'BLACKJACK', payoutRatio: 2.5 }; // Paga 3:2 (Apuesta + 1.5x)
-    if (d.isBust) return { result: 'WIN', payoutRatio: 2 };
-    if (p.score > d.score) return { result: 'WIN', payoutRatio: 2 };
-    if (p.score === d.score) return { result: 'PUSH', payoutRatio: 1 }; // Empate: devuelve apuesta
+  canSplit(hand) {
+    return hand.length === 2 && hand[0].numericValue === hand[1].numericValue;
+  }
 
-    return { result: 'LOSE', payoutRatio: 0 };
+  shouldDealerHit(dealerScore, isSoft) {
+    if (dealerScore < 17) return true;
+    if (dealerScore === 17 && isSoft) return true;
+    return false;
   }
 }
-/**
