@@ -1,5 +1,5 @@
 /**
- * CASINO MONTE PINÁCULO - CONTROLADOR PRINCIPAL DEL JUEGO (GAME.JS)
+ * CASINO MONTE PINÁCULO - CONTROLADOR CON APUESTAS PARA EL JUGADOR HUMANO
  */
 
 import { BlackjackEngine } from './engine.js';
@@ -11,9 +11,9 @@ class CasinoGame {
     this.engine = new BlackjackEngine(6);
     this.bankroll = 10000;
     this.currentBet = 0;
-    this.gameState = 'BETTING'; // BETTING, INSURANCE, PLAYING, DEALER_TURN, FINISHED
+    this.gameState = 'BETTING'; // BETTING, PLAYING, DEALER_TURN, FINISHED
     
-    this.humanHands = []; // Soporte para manos divididas (array de manos)
+    this.humanHands = [];
     this.activeHandIndex = 0;
     this.dealerHand = [];
 
@@ -22,221 +22,101 @@ class CasinoGame {
   }
 
   initListeners() {
-    // Selección de fichas
+    // Escuchador de clic en cada ficha para el jugador humano
     document.querySelectorAll('.chip-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         if (this.gameState !== 'BETTING') return;
-        const value = parseInt(e.target.getAttribute('data-value'));
+        
+        // Obtener el valor de la ficha pulsada
+        const value = parseInt(btn.getAttribute('data-value'));
+        
+        // Validar si hay saldo suficiente
         if (this.bankroll >= value) {
           this.currentBet += value;
           this.bankroll -= value;
           this.updateUI();
+        } else {
+          alert("¡No tienes suficiente saldo para esta apuesta!");
         }
       });
     });
 
-    // Botón Repartir
-    document.getElementById('deal-btn').addEventListener('click', () => {
-      if (this.gameState === 'BETTING' && this.currentBet > 0) {
-        this.startRound();
-      } else if (this.currentBet === 0) {
-        alert("¡Coloca una ficha en la mesa antes de repartir, jefe!");
-      }
-    });
-
-    // Botones de Acción Profesional
-    document.getElementById('hit-btn').addEventListener('click', () => this.playerHit());
-    document.getElementById('stand-btn').addEventListener('click', () => this.playerStand());
-    document.getElementById('double-btn').addEventListener('click', () => this.playerDouble());
-    document.getElementById('split-btn').addEventListener('click', () => this.playerSplit());
+    // Botón de Repartir
+    const dealBtn = document.getElementById('deal-btn');
+    if (dealBtn) {
+      dealBtn.addEventListener('click', () => {
+        if (this.gameState === 'BETTING' && this.currentBet > 0) {
+          this.startRound();
+        } else if (this.currentBet === 0) {
+          alert("¡Haz tu apuesta seleccionando las fichas antes de repartir, jefe!");
+        }
+      });
+    }
   }
 
   startRound() {
     this.gameState = 'PLAYING';
-    document.getElementById('deal-btn').style.display = 'none';
-    document.getElementById('game-actions').style.display = 'flex';
-
+    
     const dialogueEl = document.getElementById('dealer-dialogue');
     if (dialogueEl) dialogueEl.innerText = `"${DEALER_CONFIG.dialogues.dealing}"`;
-    
-    // Reparto inicial IA
+
+    // Asignar apuestas a los animales IA
     AI_BOTS.forEach(bot => {
       bot.hand = [this.engine.drawCard(), this.engine.drawCard()];
     });
-    
-    // Reparto inicial Jugador y Crupier
-    this.humanHands = [{ cards: [this.engine.drawCard(), this.engine.drawCard()], bet: this.currentBet, doubled: false }];
-    this.activeHandIndex = 0;
+
+    // Crear la mano inicial del jugador humano
+    this.humanHands = [{ cards: [this.engine.drawCard(), this.engine.drawCard()], bet: this.currentBet }];
     this.dealerHand = [this.engine.drawCard(), this.engine.drawCard()];
 
-    // Comprobar regla de Seguro si el crupier muestra As
-    if (this.engine.canOfferInsurance(this.dealerHand[0])) {
-      document.getElementById('insurance-modal').style.display = 'flex';
-      document.getElementById('insurance-yes').onclick = () => { this.resolveInsurance(true); };
-      document.getElementById('insurance-no').onclick = () => { this.resolveInsurance(false); };
-    }
-
-    // Comprobar si se puede dividir la mano inicial del usuario
-    const splitBtn = document.getElementById('split-btn');
-    if (this.engine.canSplit(this.humanHands[0].cards) && this.bankroll >= this.currentBet) {
-      splitBtn.style.display = 'inline-block';
-    } else {
-      splitBtn.style.display = 'none';
-    }
-
     this.renderTable();
-  }
-
-  resolveInsurance(accepted) {
-    document.getElementById('insurance-modal').style.display = 'none';
-    if (accepted) {
-      const insuranceCost = this.currentBet / 2;
-      if (this.bankroll >= insuranceCost) {
-        this.bankroll -= insuranceCost;
-        this.insuranceBet = insuranceCost;
-      }
-    }
-    this.updateUI();
-  }
-
-  playerHit() {
-    const currentHand = this.humanHands[this.activeHandIndex];
-    currentHand.cards.push(this.engine.drawCard());
-    
-    // Ocultar botón de doblar o dividir tras pedir carta
-    document.getElementById('double-btn').style.display = 'none';
-    document.getElementById('split-btn').style.display = 'none';
-
-    const evaluation = this.engine.calculateHand(currentHand.cards);
-    if (evaluation.isBust || evaluation.score === 21) {
-      this.nextHandOrDealer();
-    }
-    this.renderTable();
-  }
-
-  playerStand() {
-    this.nextHandOrDealer();
-  }
-
-  playerDouble() {
-    const currentHand = this.humanHands[this.activeHandIndex];
-    if (this.bankroll >= currentHand.bet) {
-      this.bankroll -= currentHand.bet;
-      currentHand.bet *= 2;
-      currentHand.doubled = true;
-      currentHand.cards.push(this.engine.drawCard());
-      this.updateUI();
-      this.nextHandOrDealer();
-    }
-  }
-
-  playerSplit() {
-    const currentHand = this.humanHands[this.activeHandIndex];
-    if (this.bankroll >= currentHand.bet && currentHand.cards.length === 2) {
-      this.bankroll -= currentHand.bet;
-      
-      const secondHand = {
-        cards: [currentHand.cards.pop(), this.engine.drawCard()],
-        bet: currentHand.bet,
-        doubled: false
-      };
-      currentHand.cards.push(this.engine.drawCard());
-
-      this.humanHands.push(secondHand);
-      document.getElementById('split-btn').style.display = 'none';
-      this.updateUI();
-      this.renderTable();
-    }
-  }
-
-  nextHandOrDealer() {
-    this.activeHandIndex++;
-    if (this.activeHandIndex >= this.humanHands.length) {
-      // Turno de la IA y del Crupier
-      this.executeAiTurns();
-    } else {
-      this.renderTable();
-    }
-  }
-
-  executeAiTurns() {
-    document.getElementById('game-actions').style.display = 'none';
-    
-    // Simular turno de la IA
-    AI_BOTS.forEach((bot, idx) => {
-      let evalHand = this.engine.calculateHand(bot.hand);
-      while (bot.decideAction(evalHand.score, this.dealerHand[0].numericValue, evalHand.isSoft) === 'HIT') {
-        bot.hand.push(this.engine.drawCard());
-        evalHand = this.engine.calculateHand(bot.hand);
-      }
-    });
-
-    // Turno del Crupier
-    let dealerEval = this.engine.calculateHand(this.dealerHand);
-    while (this.engine.shouldDealerHit(dealerEval.score, dealerEval.isSoft)) {
-      this.dealerHand.push(this.engine.drawCard());
-      dealerEval = this.engine.calculateHand(this.dealerHand);
-    }
-
-    this.settleGame();
-  }
-
-  settleGame() {
-    this.gameState = 'FINISHED';
-    let totalWin = 0;
-
-    this.humanHands.forEach(hand => {
-      const result = this.engine.evaluateHand(hand.cards, this.dealerHand);
-      if (result.payoutRatio > 0) {
-        totalWin += hand.bet * result.payoutRatio;
-      }
-    });
-
-    this.bankroll += totalWin;
-    this.renderTable();
-
-    // Botón para reiniciar ronda
-    setTimeout(() => {
-      document.getElementById('deal-btn').style.display = 'inline-block';
-      document.getElementById('deal-btn').innerText = 'SIGUIENTE RONDA';
-      this.gameState = 'BETTING';
-      this.currentBet = 0;
-      this.updateUI();
-    }, 3000);
   }
 
   renderTable() {
+    // Renderizar cartas de los animales IA
     AI_BOTS.forEach((bot, index) => {
       const seat = document.getElementById(`seat-${index + 1}`);
       if (seat) {
-        seat.querySelector('.cards').innerHTML = bot.hand.map(c => `<span class="card">${c.value}${c.suit}</span>`).join(' ');
+        const cardsDiv = seat.querySelector('.cards');
+        if (cardsDiv) {
+          cardsDiv.innerHTML = bot.hand.map(c => `<span class="card">${c.value}${c.suit}</span>`).join(' ');
+        }
       }
     });
 
-    // Renderizar manos del jugador humano
-    const humanCardsDiv = document.querySelector('#seat-human .cards');
-    if (humanCardsDiv) {
-      humanCardsDiv.innerHTML = this.humanHands.map((h, idx) => `
-        <div class="hand-box ${idx === this.activeHandIndex && this.gameState === 'PLAYING' ? 'active-hand' : ''}">
-          Mano ${idx + 1} (${h.bet}€): ${h.cards.map(c => `${c.value}${c.suit}`).join(' ')}
-        </div>
-      `).join('');
+    // Renderizar mano y apuestas de la posición del jugador humano
+    const humanSeat = document.getElementById('seat-human');
+    if (humanSeat) {
+      const humanCardsDiv = humanSeat.querySelector('.cards');
+      if (humanCardsDiv && this.humanHands.length > 0) {
+        humanCardsDiv.innerHTML = this.humanHands[0].cards.map(c => `<span class="card">${c.value}${c.suit}</span>`).join(' ');
+      }
     }
 
-    // Renderizar Crupier (revelando cartas si terminó la partida)
+    // Renderizar Crupier
     const dealerCardsDiv = document.getElementById('dealer-cards');
     if (dealerCardsDiv) {
-      if (this.gameState === 'PLAYING' || this.gameState === 'INSURANCE') {
-        dealerCardsDiv.innerHTML = `<span class="card">${this.dealerHand[0].value}${this.dealerHand[0].suit}</span> <span class="card">🎴</span>`;
-      } else {
-        dealerCardsDiv.innerHTML = this.dealerHand.map(c => `<span class="card">${c.value}${c.suit}</span>`).join(' ');
-      }
+      dealerCardsDiv.innerHTML = `<span class="card">${this.dealerHand[0].value}${this.dealerHand[0].suit}</span> <span class="card">🎴</span>`;
     }
   }
 
   updateUI() {
-    document.getElementById('player-bankroll').innerText = `${this.bankroll.toLocaleString()}€`;
-    document.getElementById('human-bet').innerText = `Apuesta: ${this.currentBet.toLocaleString()}€`;
+    // Actualizar Saldo total y Apuesta actual en la interfaz y en el cuadro del humano
+    const bankrollEl = document.getElementById('player-bankroll');
+    if (bankrollEl) bankrollEl.innerText = `${this.bankroll.toLocaleString()}€`;
+
+    const humanBetEl = document.getElementById('human-bet');
+    if (humanBetEl) humanBetEl.innerText = `Apuesta: ${this.currentBet.toLocaleString()}€`;
+
+    // Actualizar también dentro del cuadro de la mesa de Tú (VIP)
+    const seatHuman = document.getElementById('seat-human');
+    if (seatHuman) {
+      const betInfo = seatHuman.querySelector('.bet-info');
+      if (betInfo) betInfo.innerText = `Apuesta: ${this.currentBet.toLocaleString()}€`;
+      
+      const bankInfo = seatHuman.querySelector('.bankroll-display');
+      if (bankInfo) bankInfo.innerHTML = `Saldo: <span>${this.bankroll.toLocaleString()}€</span>`;
+    }
   }
 }
 
