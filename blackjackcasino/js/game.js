@@ -1,5 +1,5 @@
 /**
- * CASINO MONTE PINÁCULO - ENGINE DE CONTROL (GAME.JS)
+ * CASINO MONTE PINÁCULO - CONTROLADOR PRINCIPAL DEL JUEGO (GAME.JS)
  */
 
 import { BlackjackEngine } from './engine.js';
@@ -8,6 +8,7 @@ import { DEALER_CONFIG } from './dealer.js';
 
 class CasinoGame {
   constructor() {
+    console.log("CasinoGame iniciado correctamente");
     this.engine = new BlackjackEngine(6);
     this.bankroll = 10000;
     this.currentBet = 0;
@@ -22,14 +23,18 @@ class CasinoGame {
   }
 
   bindEvents() {
-    // Escuchador de fichas
+    console.log("BindEvents ejecutado");
+
+    // 1. Selección de fichas mediante dataset.value
     document.querySelectorAll('.chip-btn').forEach(btn => {
       btn.onclick = () => {
+        console.log("Ficha pulsada");
         if (this.gameState !== 'BETTING') return;
-        const val = parseInt(btn.getAttribute('data-value'), 10);
-        if (this.bankroll >= val) {
-          this.currentBet += val;
-          this.bankroll -= val;
+        
+        const value = Number(btn.dataset.value);
+        if (this.bankroll >= value) {
+          this.currentBet += value;
+          this.bankroll -= value;
           this.updateUI();
         } else {
           alert("¡Saldo insuficiente para realizar esta apuesta!");
@@ -37,10 +42,11 @@ class CasinoGame {
       };
     });
 
-    // Botón Borrar Apuesta
+    // 2. Botón Borrar Apuesta
     const clearBtn = document.getElementById('clear-btn');
     if (clearBtn) {
       clearBtn.onclick = () => {
+        console.log("Apuesta borrada");
         if (this.gameState !== 'BETTING') return;
         this.bankroll += this.currentBet;
         this.currentBet = 0;
@@ -48,19 +54,20 @@ class CasinoGame {
       };
     }
 
-    // Botón Repartir
+    // 3. Botón Repartir
     const dealBtn = document.getElementById('deal-btn');
     if (dealBtn) {
       dealBtn.onclick = () => {
+        console.log("CLICK REPARTIR");
         if (this.gameState === 'BETTING' && this.currentBet > 0) {
           this.startRound();
         } else if (this.currentBet === 0) {
-          alert("¡Por favor, selecciona tus fichas para apostar antes de repartir!");
+          alert("¡Debes realizar una apuesta antes de repartir!");
         }
       };
     }
 
-    // Botones de juego
+    // 4. Botones de Acción de Juego
     const hitBtn = document.getElementById('hit-btn');
     const standBtn = document.getElementById('stand-btn');
     const doubleBtn = document.getElementById('double-btn');
@@ -70,14 +77,23 @@ class CasinoGame {
     if (standBtn) standBtn.onclick = () => this.playerStand();
     if (doubleBtn) doubleBtn.onclick = () => this.playerDouble();
     if (splitBtn) splitBtn.onclick = () => this.playerSplit();
+
+    // 5. Botones de Seguro
+    const insYes = document.getElementById('insurance-yes');
+    const insNo = document.getElementById('insurance-no');
+    if (insYes) insYes.onclick = () => this.resolveInsurance(true);
+    if (insNo) insNo.onclick = () => this.resolveInsurance(false);
   }
 
   startRound() {
+    console.log("Iniciando ronda de juego...");
     this.gameState = 'PLAYING';
     
-    // Cambiar paneles visuales
-    document.getElementById('betting-controls').style.display = 'none';
-    document.getElementById('game-actions').style.display = 'flex';
+    // Ocultar fichas/apuestas y mostrar acciones de juego
+    const bettingControls = document.getElementById('betting-controls');
+    const gameActions = document.getElementById('game-actions');
+    if (bettingControls) bettingControls.style.display = 'none';
+    if (gameActions) gameActions.style.display = 'flex';
 
     const dialogueEl = document.getElementById('dealer-dialogue');
     if (dialogueEl) dialogueEl.innerText = `"${DEALER_CONFIG.dialogues.dealing}"`;
@@ -88,26 +104,43 @@ class CasinoGame {
     });
 
     // Repartir al jugador y crupier
-    this.humanHands = [{ cards: [this.engine.drawCard(), this.engine.drawCard()], bet: this.currentBet, doubled: false }];
+    this.humanHands = [{ 
+      cards: [this.engine.drawCard(), this.engine.drawCard()], 
+      bet: this.currentBet, 
+      doubled: false 
+    }];
     this.activeHandIndex = 0;
     this.dealerHand = [this.engine.drawCard(), this.engine.drawCard()];
 
-    // Comprobar seguro si la carta visible del crupier es un As
+    // Comprobar Seguro si el crupier muestra un As
     if (this.engine.canOfferInsurance(this.dealerHand[0])) {
       const insModal = document.getElementById('insurance-modal');
       if (insModal) insModal.style.display = 'flex';
-      
-      document.getElementById('insurance-yes').onclick = () => this.resolveInsurance(true);
-      document.getElementById('insurance-no').onclick = () => this.resolveInsurance(false);
     }
 
-    // Evaluar si se puede dividir
+    this.evaluateActionButtons();
+    this.renderTable();
+    this.updateUI();
+  }
+
+  evaluateActionButtons() {
+    const currentHand = this.humanHands[this.activeHandIndex];
+
+    // Evaluar botón Dividir
     const splitBtn = document.getElementById('split-btn');
     if (splitBtn) {
-      splitBtn.style.display = (this.engine.canSplit(this.humanHands[0].cards) && this.bankroll >= this.currentBet) ? 'inline-block' : 'none';
+      splitBtn.style.display = (this.engine.canSplit(currentHand.cards) && this.bankroll >= currentHand.bet) 
+        ? 'inline-block' 
+        : 'none';
     }
 
-    this.renderTable();
+    // Evaluar botón Doblar
+    const doubleBtn = document.getElementById('double-btn');
+    if (doubleBtn) {
+      doubleBtn.style.display = (this.engine.canDoubleDown(currentHand.cards, this.bankroll, currentHand.bet)) 
+        ? 'inline-block' 
+        : 'none';
+    }
   }
 
   resolveInsurance(accepted) {
@@ -123,24 +156,29 @@ class CasinoGame {
   }
 
   playerHit() {
+    console.log("Jugador pide carta");
     const hand = this.humanHands[this.activeHandIndex];
     hand.cards.push(this.engine.drawCard());
     
+    // Al pedir carta ya no se puede doblar ni dividir
     document.getElementById('double-btn').style.display = 'none';
     document.getElementById('split-btn').style.display = 'none';
 
     const evalResult = this.engine.calculateHand(hand.cards);
     if (evalResult.isBust || evalResult.score === 21) {
       this.nextHandOrDealer();
+    } else {
+      this.renderTable();
     }
-    this.renderTable();
   }
 
   playerStand() {
+    console.log("Jugador se planta");
     this.nextHandOrDealer();
   }
 
   playerDouble() {
+    console.log("Jugador dobla apuesta");
     const hand = this.humanHands[this.activeHandIndex];
     if (this.bankroll >= hand.bet) {
       this.bankroll -= hand.bet;
@@ -153,6 +191,7 @@ class CasinoGame {
   }
 
   playerSplit() {
+    console.log("Jugador divide mano");
     const hand = this.humanHands[this.activeHandIndex];
     if (this.bankroll >= hand.bet && hand.cards.length === 2) {
       this.bankroll -= hand.bet;
@@ -163,8 +202,8 @@ class CasinoGame {
       };
       hand.cards.push(this.engine.drawCard());
       this.humanHands.push(newHand);
-      document.getElementById('split-btn').style.display = 'none';
       this.updateUI();
+      this.evaluateActionButtons();
       this.renderTable();
     }
   }
@@ -174,14 +213,17 @@ class CasinoGame {
     if (this.activeHandIndex >= this.humanHands.length) {
       this.executeAiTurns();
     } else {
+      this.evaluateActionButtons();
       this.renderTable();
     }
   }
 
   executeAiTurns() {
-    document.getElementById('game-actions').style.display = 'none';
+    console.log("Ejecutando turnos de IA y Crupier");
+    const gameActions = document.getElementById('game-actions');
+    if (gameActions) gameActions.style.display = 'none';
 
-    // Inteligencia de los bots
+    // Turno Bots IA
     AI_BOTS.forEach(bot => {
       let evalHand = this.engine.calculateHand(bot.hand);
       while (bot.decideAction(evalHand.score, this.dealerHand[0].numericValue, evalHand.isSoft) === 'HIT') {
@@ -190,7 +232,7 @@ class CasinoGame {
       }
     });
 
-    // Turno del Crupier
+    // Turno Crupier
     let dealerEval = this.engine.calculateHand(this.dealerHand);
     while (this.engine.shouldDealerHit(dealerEval.score, dealerEval.isSoft)) {
       this.dealerHand.push(this.engine.drawCard());
@@ -201,6 +243,7 @@ class CasinoGame {
   }
 
   settleGame() {
+    console.log("Liquidando resultados de la ronda");
     this.gameState = 'FINISHED';
     let totalPayout = 0;
     const dealerEval = this.engine.calculateHand(this.dealerHand);
@@ -218,15 +261,18 @@ class CasinoGame {
 
     this.bankroll += totalPayout;
     this.renderTable();
+    this.updateUI();
 
     const dialogueEl = document.getElementById('dealer-dialogue');
     if (dialogueEl) {
-      dialogueEl.innerText = totalPayout > 0 ? '"¡Enhorabuena VIP, excelente jugada!"' : '"La casa se queda la banca en esta mano."';
+      dialogueEl.innerText = totalPayout > 0 ? '"¡Excelente jugada, caballero VIP!"' : '"La casa se queda con la banca esta vez."';
     }
 
+    // Reiniciar para la siguiente ronda tras 4.5 segundos
     setTimeout(() => {
-      document.getElementById('betting-controls').style.display = 'flex';
-      document.getElementById('game-actions').style.display = 'none';
+      const bettingControls = document.getElementById('betting-controls');
+      if (bettingControls) bettingControls.style.display = 'flex';
+      
       this.gameState = 'BETTING';
       this.currentBet = 0;
       this.updateUI();
@@ -234,7 +280,7 @@ class CasinoGame {
   }
 
   renderTable() {
-    // Dibujar cartas de bots
+    // Renderizar bots
     AI_BOTS.forEach((bot, idx) => {
       const seat = document.getElementById(`seat-${idx + 1}`);
       if (seat) {
@@ -250,7 +296,7 @@ class CasinoGame {
       }
     });
 
-    // Dibujar cartas del jugador
+    // Renderizar mano humana
     const humanSeat = document.getElementById('seat-human');
     if (humanSeat) {
       let humanCardsDiv = humanSeat.querySelector('.cards');
@@ -268,7 +314,7 @@ class CasinoGame {
       }
     }
 
-    // Dibujar cartas del Crupier
+    // Renderizar crupier
     const dealerCardsDiv = document.getElementById('dealer-cards');
     if (dealerCardsDiv) {
       if (this.gameState === 'PLAYING') {
@@ -302,6 +348,8 @@ class CasinoGame {
   }
 }
 
+// Inicialización controlada al cargar el DOM
 window.addEventListener('DOMContentLoaded', () => {
+  console.log("DOM cargado - Arrancando CasinoGame");
   window.casinoGame = new CasinoGame();
 });
