@@ -1,1 +1,83 @@
+/* CASINO MONTE PINÁCULO - ESTILOS VIP BLACKJACK */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0b0e14;
+  color: #f3f4f6;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+}
 
+.casino-table-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('../images/blakjack_table.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Panel superior del Crupier */
+.dealer-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(11, 14, 20, 0.85);
+  border: 1px solid #d4af37; /* Detalle oro VIP */
+  padding: 10px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* Posiciones de la IA en la mesa */
+.table-positions {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.player-seat {
+  background: rgba(15, 23, 42, 0.8);
+  border: 2px solid #3b82f6;
+  border-radius: 10px;
+  padding: 10px;
+  width: 160px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.player-seat.human {
+  border-color: #d4af37; /* Destacar la posición del jugador humano */
+  background: rgba(30, 41, 59, 0.9);
+}
+
+/* Zona de fichas y controles */
+.control-panel {
+  display: flex;
+  gap: 15px;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 15px 30px;
+  border-radius: 30px;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.chip-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px dashed #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.chip-btn:hover {
+  transform: scale(1.1);
+}
