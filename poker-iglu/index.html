@@ -34,56 +34,56 @@
   .btn-top-back:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
 
   .intro-logo {
-    width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
-    border: 4px solid var(--neon-cyan); box-shadow: 0 0 30px var(--neon-cyan); margin-bottom: 15px;
+    width: 150px; height: 150px; border-radius: 50%; object-fit: cover;
+    border: 4px solid var(--neon-cyan); box-shadow: 0 0 30px var(--neon-cyan); margin-bottom: 10px;
     animation: pulseLogo 2s infinite alternate;
   }
   @keyframes pulseLogo { from { transform: scale(1); box-shadow: 0 0 20px var(--neon-cyan); } to { transform: scale(1.05); box-shadow: 0 0 40px var(--neon-green); } }
 
   .intro-title {
-    font-size: 2.8rem; font-weight: 900; font-family: 'Impact', sans-serif;
+    font-size: 2.4rem; font-weight: 900; font-family: 'Impact', sans-serif;
     letter-spacing: 4px; background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan), var(--neon-purple));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; text-align: center;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 2px; text-align: center;
   }
-  .intro-sub { font-size: 0.85rem; letter-spacing: 4px; color: var(--neon-cyan); margin-bottom: 15px; }
+  .intro-sub { font-size: 0.75rem; letter-spacing: 3px; color: var(--neon-cyan); margin-bottom: 10px; }
 
-  /* COMPONENTES DE LOBBY: PERFIL, STATS Y LOGROS */
+  /* COMPONENTES DE LOBBY: PERFIL, STATS, RANKING Y LOGROS */
   .lobby-dashboard {
-    display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; max-width: 900px; width: 100%; margin-bottom: 20px;
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; max-width: 950px; width: 100%; margin-bottom: 15px;
   }
 
   .lobby-card {
     background: rgba(5, 24, 41, 0.85); border: 1px solid rgba(0,243,255,0.3); border-radius: 12px;
-    padding: 12px 18px; backdrop-filter: blur(8px); flex: 1; min-width: 250px; text-align: left;
+    padding: 10px 15px; backdrop-filter: blur(8px); flex: 1; min-width: 210px; text-align: left;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
   }
-  .lobby-card h4 { color: var(--neon-cyan); font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 1px; border-bottom: 1px solid rgba(0,243,255,0.2); padding-bottom: 4px; }
+  .lobby-card h4 { color: var(--neon-cyan); font-size: 0.85rem; margin-bottom: 6px; letter-spacing: 1px; border-bottom: 1px solid rgba(0,243,255,0.2); padding-bottom: 4px; }
   
-  .user-input-box { display: flex; gap: 8px; align-items: center; }
+  .user-input-box { display: flex; gap: 6px; align-items: center; width: 100%; }
   .user-input-box input {
     background: rgba(3, 8, 20, 0.8); border: 1px solid var(--neon-cyan); color: #fff; padding: 6px 10px;
-    border-radius: 6px; font-weight: bold; outline: none; width: 100%; font-size: 0.9rem;
+    border-radius: 6px; font-weight: bold; outline: none; width: 100%; font-size: 0.85rem;
   }
   .user-input-box button {
-    background: var(--neon-cyan); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;
+    background: var(--neon-cyan); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap;
   }
 
-  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.8rem; }
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.75rem; }
   .stats-grid div span { color: var(--neon-green); font-weight: bold; }
 
-  .achievements-list { display: flex; gap: 8px; flex-wrap: wrap; }
+  .achievements-list { display: flex; gap: 6px; flex-wrap: wrap; }
   .badge {
-    background: rgba(3, 8, 20, 0.9); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px;
-    border-radius: 8px; font-size: 0.75rem; opacity: 0.4; filter: grayscale(1); transition: all 0.3s ease;
+    background: rgba(3, 8, 20, 0.9); border: 1px solid rgba(255,255,255,0.2); padding: 3px 6px;
+    border-radius: 6px; font-size: 0.7rem; opacity: 0.4; filter: grayscale(1); transition: all 0.3s ease;
   }
   .badge.unlocked { opacity: 1; filter: grayscale(0); border-color: var(--neon-gold); box-shadow: 0 0 10px rgba(255,204,0,0.4); color: var(--neon-gold); }
 
   .prizes-box {
     background: rgba(5, 24, 41, 0.9); border: 1px solid var(--neon-gold); border-radius: 12px;
-    padding: 12px 25px; margin-bottom: 15px; text-align: center; box-shadow: 0 0 20px rgba(255,204,0,0.2);
+    padding: 10px 20px; margin-bottom: 12px; text-align: center; box-shadow: 0 0 20px rgba(255,204,0,0.2);
   }
-  .prizes-box h3 { color: var(--neon-gold); font-size: 0.95rem; margin-bottom: 6px; letter-spacing: 2px; }
-  .prizes-list { display: flex; gap: 20px; font-size: 0.85rem; font-weight: bold; color: #fff; }
+  .prizes-box h3 { color: var(--neon-gold); font-size: 0.85rem; margin-bottom: 4px; letter-spacing: 2px; }
+  .prizes-list { display: flex; gap: 15px; font-size: 0.8rem; font-weight: bold; color: #fff; justify-content: center; }
   .prizes-list span { color: var(--neon-green); }
 
   /* FONDO & CANVAS AURORAS */
@@ -340,63 +340,44 @@
   <div class="intro-title">POKERIGLÚ</div>
   <div class="intro-sub">IVYSNOWCASINO • ARCTIC SIT & GO (BUY-IN: 1.000€)</div>
 
-  <!-- DASHBOARD: PERFIL, STATS Y LOGROS -->
- <div class="lobby-dashboard">
-
-    <!-- PERFIL -->
+  <!-- DASHBOARD: PERFIL, STATS, TOP 5 Y LOGROS -->
+  <div class="lobby-dashboard">
+    <!-- Perfil del Rider -->
     <div class="lobby-card">
-        <h4>👤 PERFIL DEL RIDER</h4>
-
-        <div class="user-input-box">
-            <input
-              type="text"
-              id="playerNameInput"
-              placeholder="Tu Nickname...">
-
-            <button onclick="savePlayerName()">
-              GUARDAR
-            </button>
-        </div>
-    </div>
-
-
-    <!-- TOP 5 -->
-    <div class="lobby-card">
-        <h4>🏆 TOP 5 RIDERS</h4>
-
-        <div id="top5Leaderboard">
-            Cargando ranking...
-        </div>
-    </div>
-
-
-    <!-- ESTADÍSTICAS -->
-    <div class="lobby-card">
-       ...
-    </div>
-
-</div>
-
+      <h4>👤 PERFIL DEL RIDER</h4>
+      <div class="user-input-box">
+        <input type="text" id="playerNameInput" placeholder="Tu Nickname...">
+        <button onclick="savePlayerName()">GUARDAR</button>
       </div>
     </div>
 
+    <!-- Top 5 Riders -->
+    <div class="lobby-card">
+      <h4>🏆 TOP 5 RIDERS</h4>
+      <div id="top5Leaderboard" style="font-size: 0.8rem; min-height: 45px;">
+        Cargando ranking...
+      </div>
+    </div>
+
+    <!-- Estadísticas Globales -->
     <div class="lobby-card">
       <h4>📊 ESTADÍSTICAS GLOBALES</h4>
       <div class="stats-grid">
         <div>🎰 Slots: <span id="statSlots">0</span></div>
-        <div>🃏 Torneos Ganados: <span id="statPokerWins">0</span></div>
+        <div>🃏 Torneos: <span id="statPokerWins">0</span></div>
         <div>🎯 Ruleta: <span id="statRoulette">0</span></div>
-        <div>🏔️ Nivel Montaña: <span id="statMountainLevel">1</span></div>
+        <div>🏔️ Nivel: <span id="statMountainLevel">1</span></div>
       </div>
     </div>
 
+    <!-- Sistema de Logros -->
     <div class="lobby-card">
       <h4>🏆 SISTEMA DE LOGROS</h4>
       <div class="achievements-list">
-        <div class="badge" id="badge-forfait">🏔️ Primer Forfait</div>
-        <div class="badge" id="badge-poker">🃏 Ganador Poker Alpino</div>
-        <div class="badge" id="badge-iglu">❄️ Rey del Iglú</div>
-        <div class="badge" id="badge-slots">🎰 Maestro Slots</div>
+        <div class="badge" id="badge-forfait">🏔️ Forfait</div>
+        <div class="badge" id="badge-poker">🃏 Poker Alpino</div>
+        <div class="badge" id="badge-iglu">❄️ Rey Iglú</div>
+        <div class="badge" id="badge-slots">🎰 Slots</div>
       </div>
     </div>
   </div>
@@ -555,161 +536,131 @@
   </iframe>
 </div>
 
-<script>
-/* ================= LOCAL STORAGE & PERSISTENCIA ================= */
-  async function loadTop5(){
+<!-- FIREBASE Y LÓGICA DEL JUEGO -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+  import { getFirestore, collection, doc, setDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
-  try{
+  const firebaseConfig = {
+    apiKey: "AIzaSyAY9JQH1RdQ3JMHB-LNX3yyxk6_hI3Msd4",
+    authDomain: "ivysnowcasino-db.firebaseapp.com",
+    projectId: "ivysnowcasino-db",
+    storageBucket: "ivysnowcasino-db.appspot.com",
+    messagingSenderId: "TU_SENDER_ID",
+    appId: "TU_APP_ID"
+  };
 
-    const rankingQuery = query(
-      collection(
-        db,
-        "pokeriglu_ranking"
-      ),
-      ...
-      orderBy(
-        "wins",
-        "desc"
-      ),
-      limit(5)
-    );
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    const snapshot =
-      await getDocs(
-        rankingQuery
-      );
+  let playerData = {
+    name: "Jugador",
+    slotsSpins: 0,
+    pokerWins: 0,
+    rouletteWins: 0,
+    mountainLevel: 1,
+    achievements: { forfait: false, poker: false, iglu: false, slots: false }
+  };
 
-    const container =
-      document.getElementById(
-        "top5Leaderboard"
-      );
+  async function loadTop5() {
+    try {
+      const rankingQuery = query(collection(db, "pokeriglu_ranking"), orderBy("wins", "desc"), limit(5));
+      const snapshot = await getDocs(rankingQuery);
+      const container = document.getElementById("top5Leaderboard");
+      container.innerHTML = "";
 
-    container.innerHTML = "";
+      if(snapshot.empty) {
+        container.innerHTML = "<span style='color:#94a3b8;'>Sin registros aún</span>";
+        return;
+      }
 
-    let position = 1;
-
-    snapshot.forEach(docSnap=>{
-
-      const p = docSnap.data();
-
-      container.innerHTML += `
-        <div style="
-          display:flex;
-          justify-content:space-between;
-          margin-bottom:6px;
-        ">
-          <span>
-            ${position}.
-            ${p.rider}
-          </span>
-
-          <span style="
-            color:var(--neon-gold);
-          ">
-            ${p.wins}
-          </span>
-        </div>
-      `;
-
-      position++;
-
-    });
-
-  }
-  catch(err){
-
-    console.error(err);
-
+      let position = 1;
+      snapshot.forEach(docSnap => {
+        const p = docSnap.data();
+        container.innerHTML += `
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px; border-bottom:1px solid rgba(0,243,255,0.1); padding-bottom:2px;">
+            <span>${position}. ${p.rider}</span>
+            <span style="color:var(--neon-gold); font-weight:bold;">${p.wins} 🏆</span>
+          </div>
+        `;
+        position++;
+      });
+    } catch(err) {
+      console.error("Error al cargar ranking:", err);
+      document.getElementById("top5Leaderboard").innerHTML = "<span style='color:#ff0055;'>Error de conexión</span>";
+    }
   }
 
-}
-let playerData = {
-  name: "Jugador",
-  slotsSpins: 0,
-  pokerWins: 0,
-  rouletteWins: 0,
-  mountainLevel: 1,
-  achievements: { forfait: false, poker: false, iglu: false, slots: false }
-};
-
-function loadPlayerData() {
-  const saved = localStorage.getItem("ivysnow_player_data");
-  if(saved) {
-    try { playerData = Object.assign(playerData, JSON.parse(saved)); } catch(e){}
-  } else {
-    const savedName = localStorage.getItem("ivysnow_player");
-    if(savedName) playerData.name = savedName;
-  }
-  document.getElementById('playerNameInput').value = playerData.name;
-  updateUIStats();
-}
-
-function savePlayerData() {
-  localStorage.setItem("ivysnow_player", playerData.name);
-  localStorage.setItem("ivysnow_player_data", JSON.stringify(playerData));
-  updateUIStats();
-}
-
-function savePlayerName() {
-  const inputVal = document.getElementById('playerNameInput').value.trim();
-  if(inputVal) {
-    playerData.name = inputVal;
-    savePlayerData();
-    unlockAchievement('forfait');
-  }
-}
   async function saveTopPlayer() {
-
-  try{
-
-    await setDoc(
-      doc(
-        db,
-        "pokeriglu_ranking",
-        playerData.name
-      ),
-      {
+    try {
+      await setDoc(doc(db, "pokeriglu_ranking", playerData.name), {
         rider: playerData.name,
         wins: playerData.pokerWins,
         level: playerData.mountainLevel,
         updatedAt: Date.now()
-      }
-    );
+      });
+      loadTop5();
+    } catch(err) {
+      console.error("Error al guardar ranking:", err);
+    }
+  }
 
+  window.savePlayerName = function() {
+    const inputVal = document.getElementById('playerNameInput').value.trim();
+    if(inputVal) {
+      playerData.name = inputVal;
+      savePlayerData();
+      unlockAchievement('forfait');
+      saveTopPlayer();
+    }
+  }
+
+  function loadPlayerData() {
     loadTop5();
-
-  }catch(err){
-
-    console.error(err);
-
+    const saved = localStorage.getItem("ivysnow_player_data");
+    if(saved) {
+      try { playerData = Object.assign(playerData, JSON.parse(saved)); } catch(e){}
+    } else {
+      const savedName = localStorage.getItem("ivysnow_player");
+      if(savedName) playerData.name = savedName;
+    }
+    document.getElementById('playerNameInput').value = playerData.name;
+    updateUIStats();
   }
 
-}
-
-function updateUIStats() {
-  document.getElementById('welcomeUserDisplay').innerText = `BIENVENIDO, ${playerData.name.toUpperCase()}`;
-  document.getElementById('seat-0-name').innerText = playerData.name.toUpperCase();
-  document.getElementById('statSlots').innerText = playerData.slotsSpins;
-  document.getElementById('statPokerWins').innerText = playerData.pokerWins;
-  document.getElementById('statRoulette').innerText = playerData.rouletteWins;
-  document.getElementById('statMountainLevel').innerText = playerData.mountainLevel;
-
-  if(playerData.achievements.forfait) document.getElementById('badge-forfait').classList.add('unlocked');
-  if(playerData.achievements.poker) document.getElementById('badge-poker').classList.add('unlocked');
-  if(playerData.achievements.iglu) document.getElementById('badge-iglu').classList.add('unlocked');
-  if(playerData.achievements.slots) document.getElementById('badge-slots').classList.add('unlocked');
-}
-
-function unlockAchievement(key) {
-  if(!playerData.achievements[key]) {
-    playerData.achievements[key] = true;
-    savePlayerData();
+  function savePlayerData() {
+    localStorage.setItem("ivysnow_player", playerData.name);
+    localStorage.setItem("ivysnow_player_data", JSON.stringify(playerData));
+    updateUIStats();
   }
-}
 
-loadPlayerData();
+  function updateUIStats() {
+    document.getElementById('welcomeUserDisplay').innerText = `BIENVENIDO, ${playerData.name.toUpperCase()}`;
+    document.getElementById('seat-0-name').innerText = playerData.name.toUpperCase();
+    document.getElementById('statSlots').innerText = playerData.slotsSpins;
+    document.getElementById('statPokerWins').innerText = playerData.pokerWins;
+    document.getElementById('statRoulette').innerText = playerData.rouletteWins;
+    document.getElementById('statMountainLevel').innerText = playerData.mountainLevel;
 
-/* ================= AUDIO ENGINE ================= */
+    if(playerData.achievements.forfait) document.getElementById('badge-forfait').classList.add('unlocked');
+    if(playerData.achievements.poker) document.getElementById('badge-poker').classList.add('unlocked');
+    if(playerData.achievements.iglu) document.getElementById('badge-iglu').classList.add('unlocked');
+    if(playerData.achievements.slots) document.getElementById('badge-slots').classList.add('unlocked');
+  }
+
+  function unlockAchievement(key) {
+    if(!playerData.achievements[key]) {
+      playerData.achievements[key] = true;
+      savePlayerData();
+    }
+  }
+
+  loadPlayerData();
+  window.saveTopPlayer = saveTopPlayer;
+</script>
+
+<script>
+/* ================= AUDIO & MOTOR DE JUEGO ================= */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 
@@ -775,7 +726,7 @@ function playSound(type) {
   }
 }
 
-/* ================= CANVAS NIEVE & AURORAS REACTIVAS ================= */
+/* ================= CANVAS NIEVE & AURORAS ================= */
 const snowCanvas = document.getElementById('bgCanvas');
 const snowCtx = snowCanvas.getContext('2d');
 const auroraCanvas = document.getElementById('auroraCanvas');
@@ -800,7 +751,6 @@ for(let i=0; i<60; i++) {
 let time = 0;
 function renderLoop() {
   time += 0.005;
-  
   snowCtx.clearRect(0,0,width,height);
   snowCtx.fillStyle = "rgba(255, 255, 255, 0.5)";
   snowCtx.beginPath();
@@ -835,12 +785,10 @@ function renderLoop() {
     auroraCtx.fillStyle = auroraGrad;
     auroraCtx.fill();
   }
-
   requestAnimationFrame(renderLoop);
 }
 renderLoop();
 
-/* ================= SISTEMA DE EMOTES PINGÜINOS ================= */
 function showEmote(playerId, emoji) {
   let bubble = document.getElementById(`emote-${playerId}`);
   if(bubble) {
@@ -850,7 +798,6 @@ function showEmote(playerId, emoji) {
   }
 }
 
-/* ================= FICHAS FÍSICAS AL BOTE ================= */
 function animateChipsToPot(playerId, amount) {
   if(amount <= 0) return;
   let seatEl = document.getElementById(`seat-${playerId}`);
@@ -877,13 +824,11 @@ function animateChipsToPot(playerId, amount) {
   setTimeout(() => { chip.remove(); }, 620);
 }
 
-/* ================= EVALUADOR REAL CON KICKERS Y ESCALERA DE COLOR A-2-3-4-5 ================= */
 const SUITS = ['♠', '♥', '♦', '♣'];
 const VALUES = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 
 function evaluateHand(cards7) {
   let ranked = cards7.map(c => ({ rank: c.rank, suit: c.suit })).sort((a,b) => b.rank - a.rank);
-  
   let counts = {};
   ranked.forEach(c => counts[c.rank] = (counts[c.rank] || 0) + 1);
   let groups = Object.keys(counts).map(r => ({ rank: Number(r), count: counts[r] })).sort((a,b) => b.count - a.count || b.rank - a.rank);
@@ -892,29 +837,18 @@ function evaluateHand(cards7) {
   let flushSuit = null;
   let suitCounts = {};
   cards7.forEach(c => suitCounts[c.suit] = (suitCounts[c.suit] || 0) + 1);
-  for(let s in suitCounts) { 
-    if(suitCounts[s] >= 5) { 
-      isFlush = true; 
-      flushSuit = s; 
-    } 
-  }
+  for(let s in suitCounts) { if(suitCounts[s] >= 5) { isFlush = true; flushSuit = s; } }
 
   let flushCards = isFlush ? cards7.filter(c => c.suit === flushSuit).sort((a,b) => b.rank - a.rank) : [];
-
   let isStraightFlush = false;
   let straightFlushHigh = -1;
   if (isFlush) {
     let uniqueFlushRanks = [...new Set(flushCards.map(c => c.rank))];
     for(let i=0; i<=uniqueFlushRanks.length - 5; i++) {
-      if(uniqueFlushRanks[i] - uniqueFlushRanks[i+4] === 4) {
-        isStraightFlush = true;
-        straightFlushHigh = uniqueFlushRanks[i];
-        break;
-      }
+      if(uniqueFlushRanks[i] - uniqueFlushRanks[i+4] === 4) { isStraightFlush = true; straightFlushHigh = uniqueFlushRanks[i]; break; }
     }
     if(!isStraightFlush && uniqueFlushRanks.includes(12) && uniqueFlushRanks.includes(3) && uniqueFlushRanks.includes(2) && uniqueFlushRanks.includes(1) && uniqueFlushRanks.includes(0)) {
-      isStraightFlush = true;
-      straightFlushHigh = 3;
+      isStraightFlush = true; straightFlushHigh = 3;
     }
   }
 
@@ -922,15 +856,10 @@ function evaluateHand(cards7) {
   let uniqueRanks = [...new Set(ranked.map(c => c.rank))];
   let straightHigh = -1;
   for(let i=0; i<=uniqueRanks.length - 5; i++) {
-    if(uniqueRanks[i] - uniqueRanks[i+4] === 4) {
-      isStraight = true;
-      straightHigh = uniqueRanks[i];
-      break;
-    }
+    if(uniqueRanks[i] - uniqueRanks[i+4] === 4) { isStraight = true; straightHigh = uniqueRanks[i]; break; }
   }
   if(!isStraight && uniqueRanks.includes(12) && uniqueRanks.includes(3) && uniqueRanks.includes(2) && uniqueRanks.includes(1) && uniqueRanks.includes(0)) {
-    isStraight = true;
-    straightHigh = 3;
+    isStraight = true; straightHigh = 3;
   }
 
   if(isStraightFlush) return { score: [8, straightFlushHigh], name: 'ESCALERA DE COLOR' };
@@ -938,47 +867,29 @@ function evaluateHand(cards7) {
     let kicker = ranked.find(c => c.rank !== groups[0].rank).rank;
     return { score: [7, groups[0].rank, kicker], name: 'PÓKER' };
   }
-  if(groups[0].count === 3 && groups[1] && groups[1].count >= 2) {
-    return { score: [6, groups[0].rank, groups[1].rank], name: 'FULL HOUSE' };
-  }
-  if(isFlush) {
-    let kickers = flushCards.slice(0, 5).map(c => c.rank);
-    return { score: [5, ...kickers], name: 'COLOR' };
-  }
+  if(groups[0].count === 3 && groups[1] && groups[1].count >= 2) return { score: [6, groups[0].rank, groups[1].rank], name: 'FULL HOUSE' };
+  if(isFlush) return { score: [5, ...flushCards.slice(0, 5).map(c => c.rank)], name: 'COLOR' };
   if(isStraight) return { score: [4, straightHigh], name: 'ESCALERA' };
-  if(groups[0].count === 3) {
-    let kickers = ranked.filter(c => c.rank !== groups[0].rank).slice(0, 2).map(c => c.rank);
-    return { score: [3, groups[0].rank, ...kickers], name: 'TRÍO' };
-  }
+  if(groups[0].count === 3) return { score: [3, groups[0].rank, ...ranked.filter(c => c.rank !== groups[0].rank).slice(0, 2).map(c => c.rank)], name: 'TRÍO' };
   if(groups[0].count === 2 && groups[1] && groups[1].count === 2) {
     let kicker = ranked.find(c => c.rank !== groups[0].rank && c.rank !== groups[1].rank).rank;
     return { score: [2, groups[0].rank, groups[1].rank, kicker], name: 'DOBLE PAREJA' };
   }
-  if(groups[0].count === 2) {
-    let kickers = ranked.filter(c => c.rank !== groups[0].rank).slice(0, 3).map(c => c.rank);
-    return { score: [1, groups[0].rank, ...kickers], name: 'PAREJA' };
-  }
-  let kickers = ranked.slice(0, 5).map(c => c.rank);
-  return { score: [0, ...kickers], name: 'CARTA ALTA' };
+  if(groups[0].count === 2) return { score: [1, groups[0].rank, ...ranked.filter(c => c.rank !== groups[0].rank).slice(0, 3).map(c => c.rank)], name: 'PAREJA' };
+  return { score: [0, ...ranked.slice(0, 5).map(c => c.rank)], name: 'CARTA ALTA' };
 }
 
 function compareScores(s1, s2) {
   for(let i = 0; i < Math.max(s1.length, s2.length); i++){
-    let v1 = s1[i] || 0;
-    let v2 = s2[i] || 0;
-    if(v1 !== v2){
-      return v1 - v2;
-    }
+    let v1 = s1[i] || 0, v2 = s2[i] || 0;
+    if(v1 !== v2) return v1 - v2;
   }
   return 0;
 }
 
-/* ================= DETECCIÓN DE PROYECTOS PARA LA IA ================= */
 function hasFlushDraw(cards) {
   let suits = {};
-  cards.forEach(c => {
-    suits[c.suit] = (suits[c.suit] || 0) + 1;
-  });
+  cards.forEach(c => { suits[c.suit] = (suits[c.suit] || 0) + 1; });
   return Object.values(suits).some(v => v === 4);
 }
 
@@ -986,14 +897,11 @@ function hasOpenEndedStraightDraw(cards) {
   let ranks = [...new Set(cards.map(c => c.rank))];
   ranks.sort((a,b) => a - b);
   for(let i = 0; i < ranks.length - 3; i++) {
-    if(ranks[i+3] - ranks[i] === 3) {
-      return true;
-    }
+    if(ranks[i+3] - ranks[i] === 3) return true;
   }
   return false;
 }
 
-/* ================= VARIABLES DE JACKPOT Y CONTROL DE CALLE ================= */
 let jackpotActive = false;
 let actedThisRound = new Set();
 
@@ -1002,7 +910,6 @@ function triggerJackpotRain() {
   document.getElementById('jackpotBanner').style.display = 'block';
   auroraIntensity = 1;
   unlockAchievement('iglu');
-  
   for(let i=0; i<40; i++) {
     let bill = document.createElement('div');
     bill.className = 'bill';
@@ -1019,13 +926,10 @@ function triggerJackpotRain() {
 function enterCasino() {
   initAudio();
   unlockAchievement('forfait');
-  
   let iframe = document.getElementById('soundCloudPlayer');
-  if(iframe && !iframe.src.includes('auto_play=true')) {
-    iframe.src += "&auto_play=true";
-  }
-
-  if(Math.random() < 0.3) { triggerJackpotRain(); }
+  if(iframe && !iframe.src.includes('auto_play=true')) iframe.src += "&auto_play=true";
+  if(Math.random() < 0.3) triggerJackpotRain();
+  
   document.getElementById('introScreen').style.opacity = '0';
   setTimeout(() => {
     document.getElementById('introScreen').style.display = 'none';
@@ -1036,13 +940,12 @@ function enterCasino() {
 }
 
 function returnToLobby() {
-  let iframe = document.getElementById('soundCloudPlayer');
+  let iframe = document.getElementById('soundCloudProvider');
   if(iframe) {
     let src = iframe.src;
     iframe.src = "";
     iframe.src = src;
   }
-
   document.getElementById('winOverlay').classList.remove('active');
   document.getElementById('app').classList.remove('active');
   document.getElementById('jackpotBanner').style.display = 'none';
@@ -1050,27 +953,14 @@ function returnToLobby() {
   document.getElementById('introScreen').style.opacity = '1';
   document.getElementById('handResult').innerText = '';
   
-  pot = 0;
-  dealerIdx = 0;
-  currentBlindIdx = 0;
-  blindTimerSeconds = 180;
-  communityCards = [];
-  actedThisRound.clear();
-  
+  pot = 0; dealerIdx = 0; currentBlindIdx = 0; blindTimerSeconds = 180; communityCards = []; actedThisRound.clear();
   players.forEach(p => {
-    p.stack = 1500;
-    p.eliminated = false;
-    p.folded = false;
+    p.stack = 1500; p.eliminated = false; p.folded = false;
     const seat = document.getElementById(`seat-${p.id}`);
-    if(seat) {
-      seat.classList.remove("folded");
-      seat.classList.remove("active");
-      seat.classList.remove("eliminating");
-    }
+    if(seat) { seat.classList.remove("folded", "active", "eliminating"); }
   });
 }
 
-/* ================= TORNEO SIT & GO (1.500 STACK) ================= */
 const BLIND_LEVELS = [
   {sb: 10, bb: 20}, {sb: 15, bb: 30}, {sb: 25, bb: 50},
   {sb: 50, bb: 100}, {sb: 75, bb: 150}, {sb: 100, bb: 200},
@@ -1087,7 +977,6 @@ let players = [
 ];
 
 let deck = [];
-let communityCards = [];
 let pot = 0;
 let currentBlindIdx = 0;
 let dealerIdx = 0;
@@ -1101,9 +990,7 @@ let timerInterval = null;
 function createDeck() {
   deck = [];
   for(let s of SUITS) {
-    for(let v of VALUES) {
-      deck.push({ suit: s, value: v, rank: VALUES.indexOf(v) });
-    }
+    for(let v of VALUES) { deck.push({ suit: s, value: v, rank: VALUES.indexOf(v) }); }
   }
   for(let i = deck.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -1128,20 +1015,13 @@ function startNewHand() {
 
   createDeck();
   communityCards = [];
-  pot = 0;
-  igluEnergy = 0;
-  auroraIntensity = 0.3;
-  gameStage = 'PREFLOP';
+  pot = 0; igluEnergy = 0; auroraIntensity = 0.3; gameStage = 'PREFLOP';
   actedThisRound.clear();
   document.getElementById('handResult').innerText = '';
   document.getElementById('pokerTable').style.boxShadow = "0 0 50px rgba(0,243,255,.35), inset 0 0 35px rgba(0,243,255,.2), inset 0 0 80px rgba(0,0,0,.6)";
   
   players.forEach(p => {
-    p.cards = [];
-    p.currentBet = 0;
-    p.totalInvested = 0;
-    p.folded = p.eliminated;
-    p.isAllIn = false;
+    p.cards = []; p.currentBet = 0; p.totalInvested = 0; p.folded = p.eliminated; p.isAllIn = false;
     document.getElementById(`action-${p.id}`).innerText = '';
     document.getElementById(`cards-${p.id}`).innerHTML = '';
   });
@@ -1149,9 +1029,7 @@ function startNewHand() {
   do { dealerIdx = (dealerIdx + 1) % players.length; } while(players[dealerIdx].eliminated);
 
   for(let i=0; i<2; i++) {
-    players.forEach(p => {
-      if(!p.eliminated) { p.cards.push(deck.pop()); playSound('card'); }
-    });
+    players.forEach(p => { if(!p.eliminated) { p.cards.push(deck.pop()); playSound('card'); } });
   }
 
   let sbIdx = getNextActivePlayerIdx(dealerIdx);
@@ -1187,7 +1065,6 @@ function postBet(player, amount) {
   igluEnergy += amount;
   auroraIntensity = Math.min(1, pot / 3000);
   document.getElementById('igluEnergyDisplay').innerText = Math.min(100, Math.floor(igluEnergy / 40)) + '%';
-  
   playSound('chip');
 }
 
@@ -1240,14 +1117,11 @@ function advanceStage() {
   highestBet = 0;
 
   if(gameStage === 'PREFLOP') {
-    gameStage = 'FLOP';
-    communityCards.push(deck.pop(), deck.pop(), deck.pop());
+    gameStage = 'FLOP'; communityCards.push(deck.pop(), deck.pop(), deck.pop());
   } else if(gameStage === 'FLOP') {
-    gameStage = 'TURN';
-    communityCards.push(deck.pop());
+    gameStage = 'TURN'; communityCards.push(deck.pop());
   } else if(gameStage === 'TURN') {
-    gameStage = 'RIVER';
-    communityCards.push(deck.pop());
+    gameStage = 'RIVER'; communityCards.push(deck.pop());
   } else if(gameStage === 'RIVER') {
     gameStage = 'SHOWDOWN';
     evaluateShowdown();
@@ -1260,7 +1134,6 @@ function advanceStage() {
   processTurn();
 }
 
-/* ================= INTELIGENCIA ARTIFICIAL TÁCTICA AVANZADA REAL ================= */
 function executeAITurn(player) {
   let callAmt = highestBet - player.currentBet;
   let action = 'check';
@@ -1268,62 +1141,33 @@ function executeAITurn(player) {
   let allCards = player.cards.concat(communityCards);
   let handEval = evaluateHand(allCards);
   let handStrength = handEval.score[0];
-
   let flushDraw = hasFlushDraw(allCards);
   let straightDraw = hasOpenEndedStraightDraw(allCards);
   let potOdds = callAmt / Math.max(pot, 1);
 
   if(player.style === "TIGHT") {
-    if(handStrength >= 5) {
-      action = "raise";
-      showEmote(player.id, '🧊');
-    } else if(handStrength >= 2) {
-      action = "call";
-    } else if(flushDraw && potOdds < 0.10) {
-      action = "call";
-    } else {
-      action = callAmt === 0 ? "check" : "fold";
-    }
+    if(handStrength >= 5) { action = "raise"; showEmote(player.id, '🧊'); }
+    else if(handStrength >= 2) action = "call";
+    else if(flushDraw && potOdds < 0.10) action = "call";
+    else action = callAmt === 0 ? "check" : "fold";
   } else if(player.style === "TAG") {
-    if(handStrength >= 4) {
-      action = Math.random() < 0.7 ? "raise" : "call";
-      showEmote(player.id, '😼');
-    } else if(handStrength >= 1) {
-      action = "call";
-    } else if(flushDraw || straightDraw) {
-      action = potOdds < 0.15 ? "call" : "fold";
-    } else {
-      action = callAmt === 0 ? "check" : "fold";
-    }
+    if(handStrength >= 4) { action = Math.random() < 0.7 ? "raise" : "call"; showEmote(player.id, '😼'); }
+    else if(handStrength >= 1) action = "call";
+    else if(flushDraw || straightDraw) action = potOdds < 0.15 ? "call" : "fold";
+    else action = callAmt === 0 ? "check" : "fold";
   } else if(player.style === "BLUFFER") {
-    if(Math.random() < 0.25) {
-      action = "raise";
-      showEmote(player.id, '😎');
-    } else if(handStrength >= 2) {
-      action = "call";
-    } else if(flushDraw || straightDraw) {
-      action = "call";
-    } else {
-      action = callAmt === 0 ? "check" : "fold";
-    }
+    if(Math.random() < 0.25) { action = "raise"; showEmote(player.id, '😎'); }
+    else if(handStrength >= 2) action = "call";
+    else if(flushDraw || straightDraw) action = "call";
+    else action = callAmt === 0 ? "check" : "fold";
   } else if(player.style === "MANIAC") {
-    if(handStrength >= 1 || Math.random() < 0.55) {
-      action = "raise";
-      showEmote(player.id, '🔥');
-    } else {
-      action = callAmt <= player.stack ? "call" : "fold";
-    }
+    if(handStrength >= 1 || Math.random() < 0.55) { action = "raise"; showEmote(player.id, '🔥'); }
+    else action = callAmt <= player.stack ? "call" : "fold";
   } else if(player.style === "GTO") {
-    if(handStrength >= 5) {
-      action = "raise";
-      showEmote(player.id, '👑');
-    } else if(handStrength >= 2) {
-      action = "call";
-    } else if(flushDraw || straightDraw) {
-      action = potOdds < 0.18 ? "call" : "fold";
-    } else {
-      action = callAmt === 0 ? "check" : "fold";
-    }
+    if(handStrength >= 5) { action = "raise"; showEmote(player.id, '👑'); }
+    else if(handStrength >= 2) action = "call";
+    else if(flushDraw || straightDraw) action = potOdds < 0.18 ? "call" : "fold";
+    else action = callAmt === 0 ? "check" : "fold";
   } else {
     action = callAmt === 0 ? "check" : "call";
   }
@@ -1366,7 +1210,6 @@ function humanAction(type) {
     let raiseVal = parseInt(document.getElementById('raiseSlider').value);
     let diff = Math.max(0, raiseVal - p.currentBet);
     let bet = Math.min(p.stack, diff);
-    
     postBet(p, bet);
     highestBet = p.currentBet;
     minRaise = highestBet * 2;
@@ -1412,42 +1255,33 @@ function enableControls(enable) {
   updateRaiseVal();
 }
 
-/* ================= MOTOR PROFESIONAL DE SIDE POTS & SHOWDOWN ================= */
 function calculatePots() {
   let eligiblePlayers = players.filter(p => !p.eliminated && !p.folded);
   let pots = [];
   let investments = eligiblePlayers.map(p => ({ player: p, inv: p.totalInvested })).sort((a,b) => a.inv - b.inv);
-  
   let previousInvested = 0;
-  investments.forEach((item, idx) => {
+  
+  investments.forEach((item) => {
     let currentInvested = item.inv;
     let diff = currentInvested - previousInvested;
     if(diff > 0) {
       let potAmount = 0;
       let contributors = [];
       investments.forEach(other => {
-        if(other.inv >= currentInvested) {
-          potAmount += diff;
-          contributors.push(other.player);
-        } else if(other.inv > previousInvested) {
-          potAmount += (other.inv - previousInvested);
-          contributors.push(other.player);
-        }
+        if(other.inv >= currentInvested) { potAmount += diff; contributors.push(other.player); }
+        else if(other.inv > previousInvested) { potAmount += (other.inv - previousInvested); contributors.push(other.player); }
       });
       pots.push({ amount: potAmount, eligible: contributors });
       previousInvested = currentInvested;
     }
   });
 
-  if(pots.length === 0 && pot > 0) {
-    pots.push({ amount: pot, eligible: eligiblePlayers });
-  }
+  if(pots.length === 0 && pot > 0) pots.push({ amount: pot, eligible: eligiblePlayers });
   return pots;
 }
 
 function evaluateShowdown() {
   let active = players.filter(p => !p.eliminated && !p.folded);
-  
   let scored = active.map(p => {
     let evalRes = evaluateHand(p.cards.concat(communityCards));
     document.getElementById(`action-${p.id}`).innerText = evalRes.name;
@@ -1480,6 +1314,7 @@ function evaluateShowdown() {
         playerData.mountainLevel++;
         unlockAchievement('poker');
         savePlayerData();
+        if(typeof window.saveTopPlayer === 'function') window.saveTopPlayer();
       }
     });
 
@@ -1501,8 +1336,7 @@ function evaluateShowdown() {
 
   if(['FULL HOUSE', 'PÓKER', 'ESCALERA DE COLOR'].includes(topHandName)) {
     auroraIntensity = 1;
-    let tableEl = document.getElementById('pokerTable');
-    tableEl.style.boxShadow = "0 0 120px cyan, 0 0 180px purple";
+    document.getElementById('pokerTable').style.boxShadow = "0 0 120px cyan, 0 0 180px purple";
   }
 
   document.getElementById('handResult').innerText = potSummaryText.join(' | ');
@@ -1518,11 +1352,8 @@ function evaluateShowdown() {
     });
 
     let remaining = players.filter(p => !p.eliminated);
-    if(remaining.length === 1) {
-      declareWinner(remaining[0]);
-    } else {
-      startNewHand();
-    }
+    if(remaining.length === 1) declareWinner(remaining[0]);
+    else startNewHand();
   }, 4000);
 }
 
@@ -1530,23 +1361,10 @@ function declareWinner(winner) {
   playSound('win');
   document.getElementById('winName').innerText = winner.name;
   let prizeText = "🥇 1º PUESTO: 3.400€";
-  if(jackpotActive) { prizeText += " + 🌟 ¡JACKPOT 5.000€ EXTRA! 🌟"; }
+  if(jackpotActive) prizeText += " + 🌟 ¡JACKPOT 5.000€ EXTRA! 🌟";
   document.getElementById('winPrizeText').innerText = prizeText;
   document.getElementById('winOverlay').classList.add('active');
-
-  if(winner.id === 0) {
-
-    playerData.pokerWins++;
-
-    playerData.mountainLevel++;
-
-    unlockAchievement('poker');
-
-    savePlayerData();
-
-    saveTopPlayer();
-
-}
+  if(winner.id === 0) unlockAchievement('poker');
 }
 
 function updateUI() {
@@ -1589,52 +1407,5 @@ function updateUI() {
   });
 }
 </script>
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp }
-from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-
-import { getAnalytics }
-from "https://www.gstatic.com/firebasejs/13.2.0/firebase-analytics.js";
-
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDocs,
-  collection,
-  query,
-  orderBy,
-  limit
-}
-from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAY9JQHlRdq3JMHB-LNX3yyxk6_hI3Msd4",
-    authDomain: "ivysnowcasino-db.firebaseapp.com",
-    projectId: "ivysnowcasino-db",
-    storageBucket: "ivysnowcasino-db.firebasestorage.app",
-    messagingSenderId: "118627524141",
-    appId: "1:118627524141:web:9d8a13920ed9f4ae08a2a4",
-    measurementId: "G-7JZVZBBMHR"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
-
-window.db = getFirestore(app);
-
-loadTop5();
-
-console.log(
- "Firebase conectado");
-    <script>
-    
 </body>
 </html>
